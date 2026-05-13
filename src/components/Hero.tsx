@@ -3,11 +3,15 @@ import heroImg from "@/assets/hero.jpg";
 export function Hero() {
   return (
     <section id="home" className="relative isolate overflow-hidden">
-      <img
-        src={heroImg}
-        alt="Elite Jewellery Gallery — luxury gold and diamond collection"
-        width={1920}
-        height={1280}
+      <video
+        src="/hero.mp4"
+        poster={heroImg}
+        autoPlay
+        loop
+        muted
+        playsInline
+        preload="auto"
+        aria-label="Elite Jewellery Gallery — luxury gold and diamond collection"
         className="absolute inset-0 -z-10 h-full w-full object-cover"
       />
       <div className="absolute inset-0 -z-10 bg-[var(--gradient-hero)]" />
