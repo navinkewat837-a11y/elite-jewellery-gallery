@@ -5,6 +5,7 @@ import necklace2 from "@/assets/necklace2.jpg";
 import earrings from "@/assets/earrings.jpg";
 import bracelet from "@/assets/bracelet.jpg";
 import bangles from "@/assets/bangles.jpg";
+import pinkFloralLuxe from "@/assets/pink-floral-luxe-set.jpg";
 
 export type Category = "Rings" | "Necklaces" | "Earrings" | "Bracelets" | "Bangles";
 
@@ -15,11 +16,14 @@ export interface Product {
   price: number;
   image: string;
   description: string;
+  isNew?: boolean;
 }
 
 export const CATEGORIES: Category[] = ["Rings", "Necklaces", "Earrings", "Bracelets", "Bangles"];
 
 export const PRODUCTS: Product[] = [
+  { id: "new1", name: "Pink Floral Luxe Set", category: "Necklaces", price: 78500, image: pinkFloralLuxe, isNew: true,
+    description: "An exquisite floral-inspired luxe set featuring a blush-pink centre stone surrounded by a halo of brilliant diamonds, complemented by matching earrings — crafted for unforgettable occasions." },
   { id: "r1", name: "Aurora Halo Ring", category: "Rings", price: 48500, image: ring,
     description: "A radiant halo of pavé diamonds embraces a brilliant centre stone, set in 18kt yellow gold." },
   { id: "r2", name: "Solitaire Étoile", category: "Rings", price: 92000, image: ring2,
