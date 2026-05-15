@@ -29,7 +29,7 @@ export function Footer() {
           </ul>
         </div>
       </div>
-      <div className="border-t border-white/10 py-5 text-center text-xs text-white/50">
+      <div className="border-t border-white/10 py-5 text-center text-xs text-white/80">
         © {new Date().getFullYear()} Elite Jewellery Gallery. All rights reserved.
       </div>
     </footer>

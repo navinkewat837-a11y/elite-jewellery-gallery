@@ -1,0 +1,14 @@
+# Elite Jewellery Gallery
+
+> Hand-crafted gold and diamond jewellery — rings, necklaces, earrings, bracelets and bangles — from Elite Jewellery Gallery in Amlai, Shahdol, Madhya Pradesh.
+
+Family-run jewellery atelier. Customers browse the collection online and request a quote on WhatsApp at +91 9340263932.
+
+## Pages
+
+- [Home](/): Hero, latest arrivals, full collection, about and contact.
+
+## Optional
+
+- [Email](mailto:navinkewat837@gmail.com): Direct enquiries.
+- [WhatsApp](https://wa.me/919340263932): Request a quote.

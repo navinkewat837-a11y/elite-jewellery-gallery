@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://elite-jewellery-gallery.lovable.app/sitemap.xml
