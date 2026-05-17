@@ -73,6 +73,7 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
       { title: "Elite Jewellery Gallery" },
+      { name: "google-site-verification", content: "fyzc4S52EslfizJ4W2KsfCMIgFhe3PsRMLavGvpmLs8" },
       { name: "description", content: "Premium gold and diamond jewelry collection for every occasion. Visit us in Amlai, Shahdol.\"" },
       { name: "author", content: "Lovable" },
       { property: "og:title", content: "Elite Jewellery Gallery" },
