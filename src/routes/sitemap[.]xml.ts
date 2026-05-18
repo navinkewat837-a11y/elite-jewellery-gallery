@@ -19,6 +19,11 @@ export const Route = createFileRoute("/sitemap.xml")({
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
+  <url>
+    <loc>${BASE_URL}/lookbook</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
 </urlset>`;
         return new Response(xml, {
           headers: {

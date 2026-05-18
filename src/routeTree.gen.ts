@@ -10,12 +10,18 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as SitemapDotxmlRouteImport } from './routes/sitemap[.]xml'
+import { Route as LookbookRouteImport } from './routes/lookbook'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as CollectionsFloralRingsRouteImport } from './routes/collections.floral-rings'
 
 const SitemapDotxmlRoute = SitemapDotxmlRouteImport.update({
   id: '/sitemap.xml',
   path: '/sitemap.xml',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const LookbookRoute = LookbookRouteImport.update({
+  id: '/lookbook',
+  path: '/lookbook',
   getParentRoute: () => rootRouteImport,
 } as any)
 const IndexRoute = IndexRouteImport.update({
@@ -31,30 +37,39 @@ const CollectionsFloralRingsRoute = CollectionsFloralRingsRouteImport.update({
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/lookbook': typeof LookbookRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/collections/floral-rings': typeof CollectionsFloralRingsRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/lookbook': typeof LookbookRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/collections/floral-rings': typeof CollectionsFloralRingsRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/lookbook': typeof LookbookRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/collections/floral-rings': typeof CollectionsFloralRingsRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/sitemap.xml' | '/collections/floral-rings'
+  fullPaths: '/' | '/lookbook' | '/sitemap.xml' | '/collections/floral-rings'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/sitemap.xml' | '/collections/floral-rings'
-  id: '__root__' | '/' | '/sitemap.xml' | '/collections/floral-rings'
+  to: '/' | '/lookbook' | '/sitemap.xml' | '/collections/floral-rings'
+  id:
+    | '__root__'
+    | '/'
+    | '/lookbook'
+    | '/sitemap.xml'
+    | '/collections/floral-rings'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  LookbookRoute: typeof LookbookRoute
   SitemapDotxmlRoute: typeof SitemapDotxmlRoute
   CollectionsFloralRingsRoute: typeof CollectionsFloralRingsRoute
 }
@@ -66,6 +81,13 @@ declare module '@tanstack/react-router' {
       path: '/sitemap.xml'
       fullPath: '/sitemap.xml'
       preLoaderRoute: typeof SitemapDotxmlRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/lookbook': {
+      id: '/lookbook'
+      path: '/lookbook'
+      fullPath: '/lookbook'
+      preLoaderRoute: typeof LookbookRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/': {
@@ -87,19 +109,10 @@ declare module '@tanstack/react-router' {
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  LookbookRoute: LookbookRoute,
   SitemapDotxmlRoute: SitemapDotxmlRoute,
   CollectionsFloralRingsRoute: CollectionsFloralRingsRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
-
-import type { getRouter } from './router.tsx'
-import type { startInstance } from './start.ts'
-declare module '@tanstack/react-start' {
-  interface Register {
-    ssr: true
-    router: Awaited<ReturnType<typeof getRouter>>
-    config: Awaited<ReturnType<typeof startInstance.getOptions>>
-  }
-}
