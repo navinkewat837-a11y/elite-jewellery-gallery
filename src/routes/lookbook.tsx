@@ -2,7 +2,7 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
 import { WhatsAppFAB } from "@/components/WhatsAppFAB";
-import { generalWhatsAppUrl, PHONE_INTL } from "@/components/contact";
+import { PHONE_INTL } from "@/components/contact";
 import yellowEmerald from "@/assets/lehenga-yellow-emerald.jpg";
 import pinkLeaf from "@/assets/lehenga-pink-leaf.jpg";
 import peachLotus from "@/assets/lehenga-peach-lotus.jpg";
@@ -158,10 +158,30 @@ const LOOKS: Look[] = [
   },
 ];
 
-function lookWhatsAppUrl(look: Look) {
-  const msg = `Hi Elite Gallery, I am interested in customizing this specific jewelry look/pairing — "${look.outfit}" (Look ${look.id}) from your Style with Lehenga lookbook. Please share more details.`;
-  return `https://wa.me/${PHONE_INTL}?text=${encodeURIComponent(msg)}`;
+function waUrl(message: string) {
+  return `https://wa.me/${PHONE_INTL}?text=${encodeURIComponent(message)}`;
 }
+
+function lookWhatsAppUrl(look: Look, index: number) {
+  const lookNo = String(index + 1).padStart(2, "0");
+  const pieces = look.pairings.map((p) => `• ${p.name}`).join("\n");
+  const msg =
+    `Hi Elite Gallery, I'm interested in customising this specific jewellery look from your Style with Lehenga lookbook:\n\n` +
+    `Look ${lookNo} — ${look.outfit}\n` +
+    `Occasion: ${look.vibe}\n` +
+    `Palette: ${look.palette}\n\n` +
+    `Suggested pairing:\n${pieces}\n\n` +
+    `Please share more details, pricing and how we can customise this set for me.`;
+  return waUrl(msg);
+}
+
+const HERO_WA_MSG =
+  `Hi Elite Gallery, I'm browsing your Style with Lehenga lookbook and would like a custom jewellery pairing designed for my outfit. ` +
+  `Please guide me on the available options and customisation process.`;
+
+const BOTTOM_WA_MSG =
+  `Hi Elite Gallery, my lehenga isn't in the Style with Lehenga lookbook. ` +
+  `I'd like to share a photo of my outfit and get a bespoke jewellery set — choker, jhumkas, ring and bangles — designed for my colour palette, neckline and occasion.`;
 
 export const Route = createFileRoute("/lookbook")({
   head: () => ({
@@ -226,7 +246,7 @@ function LookbookPage() {
             </p>
             <div className="mt-8 flex flex-wrap justify-center gap-3">
               <a
-                href={generalWhatsAppUrl()}
+                href={waUrl(HERO_WA_MSG)}
                 target="_blank"
                 rel="noopener noreferrer"
                 className="rounded-full bg-gradient-gold px-7 py-3 text-sm font-medium text-white shadow-soft transition-transform hover:scale-[1.02]"
@@ -299,7 +319,7 @@ function LookbookPage() {
 
                   <div className="mt-7 flex flex-wrap gap-3">
                     <a
-                      href={lookWhatsAppUrl(look)}
+                      href={lookWhatsAppUrl(look, i)}
                       target="_blank"
                       rel="noopener noreferrer"
                       className="rounded-full bg-gradient-gold px-6 py-2.5 text-sm font-medium text-white shadow-soft transition-transform hover:scale-[1.02]"
@@ -333,7 +353,7 @@ function LookbookPage() {
               your colour palette, neckline and occasion.
             </p>
             <a
-              href={generalWhatsAppUrl()}
+              href={waUrl(BOTTOM_WA_MSG)}
               target="_blank"
               rel="noopener noreferrer"
               className="mt-8 inline-block rounded-full bg-gradient-gold px-8 py-3.5 text-sm font-medium text-white shadow-soft transition-transform hover:scale-[1.02]"
