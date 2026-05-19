@@ -159,7 +159,7 @@ const LOOKS: Look[] = [
 ];
 
 function lookWhatsAppUrl(look: Look) {
-  const msg = `Hello Elite Jewellery Gallery,\n\nI loved the "${look.outfit}" look in your Style with Lehenga lookbook.\n\nCould you suggest matching jewellery from your collection (or a custom set)?\n\nThank you!`;
+  const msg = `Hi Elite Gallery, I am interested in customizing this specific jewelry look/pairing — "${look.outfit}" (Look ${look.id}) from your Style with Lehenga lookbook. Please share more details.`;
   return `https://wa.me/${PHONE_INTL}?text=${encodeURIComponent(msg)}`;
 }
 
