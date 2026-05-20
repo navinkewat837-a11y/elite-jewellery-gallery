@@ -298,6 +298,7 @@ function LookbookPage() {
             {LOOKS.map((look, i) => (
               <article
                 key={look.id}
+                id={`look-${i + 1}`}
                 className={`grid gap-8 md:grid-cols-2 md:items-center md:gap-14 ${
                   i % 2 === 1 ? "md:[&>div:first-child]:order-2" : ""
                 }`}
