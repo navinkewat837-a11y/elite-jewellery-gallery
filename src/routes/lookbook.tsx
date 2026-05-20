@@ -183,6 +183,27 @@ const BOTTOM_WA_MSG =
   `Hi Elite Gallery, my lehenga isn't in the Style with Lehenga lookbook. ` +
   `I'd like to share a photo of my outfit and get a bespoke jewellery set — choker, jhumkas, ring and bangles — designed for my colour palette, neckline and occasion.`;
 
+function shareLookOnWhatsApp(look: Look, index: number) {
+  const lookNo = String(index + 1).padStart(2, "0");
+  const lookUrl = `${URL}#look-${index + 1}`;
+  const text =
+    `Check out this jewellery pairing I'm considering from Elite Jewellery Gallery —\n\n` +
+    `Look ${lookNo}: ${look.outfit}\n` +
+    `${look.vibe} · ${look.palette}\n\n` +
+    `See the full look here: ${lookUrl}\n\n` +
+    `What do you think?`;
+
+  if (typeof navigator !== "undefined" && navigator.share) {
+    navigator
+      .share({ title: `${look.outfit} — Elite Jewellery Gallery`, text, url: lookUrl })
+      .catch(() => {
+        window.open(`https://wa.me/?text=${encodeURIComponent(text)}`, "_blank", "noopener,noreferrer");
+      });
+    return;
+  }
+  window.open(`https://wa.me/?text=${encodeURIComponent(text)}`, "_blank", "noopener,noreferrer");
+}
+
 export const Route = createFileRoute("/lookbook")({
   head: () => ({
     meta: [
@@ -277,6 +298,7 @@ function LookbookPage() {
             {LOOKS.map((look, i) => (
               <article
                 key={look.id}
+                id={`look-${i + 1}`}
                 className={`grid gap-8 md:grid-cols-2 md:items-center md:gap-14 ${
                   i % 2 === 1 ? "md:[&>div:first-child]:order-2" : ""
                 }`}
@@ -334,6 +356,32 @@ function LookbookPage() {
                         View {look.hero}
                       </Link>
                     )}
+                    <button
+                      type="button"
+                      onClick={() => shareLookOnWhatsApp(look, i)}
+                      aria-label={`Share Look ${String(i + 1).padStart(2, "0")} — ${look.outfit} with friends on WhatsApp`}
+                      title="Share with friends"
+                      className="inline-flex items-center gap-2 rounded-full border border-border px-4 py-2.5 text-sm font-medium text-foreground hover:bg-secondary"
+                    >
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        strokeWidth="1.8"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        className="h-4 w-4"
+                        aria-hidden="true"
+                      >
+                        <circle cx="18" cy="5" r="3" />
+                        <circle cx="6" cy="12" r="3" />
+                        <circle cx="18" cy="19" r="3" />
+                        <line x1="8.59" y1="13.51" x2="15.42" y2="17.49" />
+                        <line x1="15.41" y1="6.51" x2="8.59" y2="10.49" />
+                      </svg>
+                      Share
+                    </button>
                   </div>
                 </div>
               </article>
