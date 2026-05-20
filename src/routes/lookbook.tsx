@@ -1,4 +1,5 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
+import { useMemo, useState } from "react";
 import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
 import { WhatsAppFAB } from "@/components/WhatsAppFAB";
@@ -25,7 +26,11 @@ type Look = {
   pairings: { name: string; note: string }[];
   hero?: string;
   heroLink?: string;
+  tags: LookTag[];
 };
+
+const TAGS = ["Bridal", "Wedding", "Party", "Festive"] as const;
+type LookTag = (typeof TAGS)[number];
 
 const LOOKS: Look[] = [
   {
