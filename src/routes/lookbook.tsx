@@ -1,4 +1,5 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
+import { useMemo, useState } from "react";
 import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
 import { WhatsAppFAB } from "@/components/WhatsAppFAB";
@@ -25,7 +26,11 @@ type Look = {
   pairings: { name: string; note: string }[];
   hero?: string;
   heroLink?: string;
+  tags: LookTag[];
 };
+
+const TAGS = ["Bridal", "Wedding", "Party", "Festive"] as const;
+type LookTag = (typeof TAGS)[number];
 
 const LOOKS: Look[] = [
   {
@@ -39,6 +44,7 @@ const LOOKS: Look[] = [
       { name: "Emerald Drop Jhumkas", note: "Cabochon emerald drops mirror the green stones on the bust." },
       { name: "Matha Patti & Maang Tikka", note: "A delicate forehead piece to crown the daytime glow." },
     ],
+    tags: ["Festive"],
   },
   {
     id: "pink-leaf",
@@ -53,6 +59,7 @@ const LOOKS: Look[] = [
     ],
     hero: "Floral Ring Collection",
     heroLink: "/collections/floral-rings",
+    tags: ["Wedding", "Party"],
   },
   {
     id: "peach-lotus",
@@ -65,6 +72,7 @@ const LOOKS: Look[] = [
       { name: "Floral Jhumkas with Pearl Drops", note: "Petal motifs that mirror the lotus border." },
       { name: "Haath Phool", note: "A hand harness to complete the romantic, hand-crafted feel." },
     ],
+    tags: ["Bridal", "Party"],
   },
   {
     id: "blush-floral",
@@ -77,6 +85,7 @@ const LOOKS: Look[] = [
       { name: "Butterfly Bloom Statement Ring", note: "Hand-enamelled blooms to echo the dupatta scallops." },
       { name: "Delicate Diamond Studs", note: "Keep the ear simple — the dupatta is the drama." },
     ],
+    tags: ["Wedding", "Festive"],
   },
   {
     id: "pink-teal",
@@ -89,6 +98,7 @@ const LOOKS: Look[] = [
       { name: "Jhumkas with Green Beads", note: "Long jhumkas to balance the heavy pallu." },
       { name: "Gold Kamarbandh", note: "Define the waist over the teal pleats." },
     ],
+    tags: ["Wedding"],
   },
   {
     id: "red-green-peacock",
@@ -102,6 +112,7 @@ const LOOKS: Look[] = [
       { name: "Royal Sapphire Halo Ring", note: "An elegant accent against the deep red palette." },
       { name: "Statement Nath", note: "Hand-strung pearls and ruby — the heirloom finish." },
     ],
+    tags: ["Bridal", "Wedding"],
   },
   {
     id: "royal-blue-peacock",
@@ -116,6 +127,7 @@ const LOOKS: Look[] = [
       { name: "Diamond Bangles Stack", note: "Slim bangles, never thick — let the lehenga breathe." },
     ],
     hero: "Iridescent Feather Solitaire",
+    tags: ["Party", "Wedding"],
   },
   {
     id: "rainbow-sparkle",
@@ -128,6 +140,7 @@ const LOOKS: Look[] = [
       { name: "Diamond Studs", note: "Minimal ear, since the ombré already sings." },
       { name: "Stacked Diamond Bangles", note: "Light catches them like the lehenga's crystals." },
     ],
+    tags: ["Party"],
   },
   {
     id: "rainbow-holi",
@@ -140,6 +153,7 @@ const LOOKS: Look[] = [
       { name: "Colourful Beaded Jhumkas", note: "Playful, light — perfect for dancing." },
       { name: "Gold Kamarbandh", note: "Anchor the waist and add structure." },
     ],
+    tags: ["Festive"],
   },
   {
     id: "white-red-rose",
@@ -155,6 +169,7 @@ const LOOKS: Look[] = [
     ],
     hero: "Floral Ring Collection",
     heroLink: "/collections/floral-rings",
+    tags: ["Bridal", "Wedding"],
   },
 ];
 
@@ -244,6 +259,15 @@ export const Route = createFileRoute("/lookbook")({
 });
 
 function LookbookPage() {
+  const [activeTag, setActiveTag] = useState<LookTag | "All">("All");
+  const visibleLooks = useMemo(
+    () =>
+      LOOKS.map((look, index) => ({ look, index })).filter(({ look }) =>
+        activeTag === "All" ? true : look.tags.includes(activeTag),
+      ),
+    [activeTag],
+  );
+
   return (
     <div className="min-h-screen bg-background">
       <Header />
@@ -292,10 +316,55 @@ function LookbookPage() {
           </p>
         </section>
 
+        {/* Filter tabs */}
+        <section className="mx-auto max-w-5xl px-5 pt-8 md:px-10">
+          <div
+            role="tablist"
+            aria-label="Filter looks by occasion"
+            className="sticky top-16 z-20 -mx-5 flex gap-2 overflow-x-auto bg-background/85 px-5 py-3 backdrop-blur md:mx-0 md:justify-center md:rounded-full md:px-4"
+          >
+            {(["All", ...TAGS] as const).map((tag) => {
+              const isActive = activeTag === tag;
+              const count =
+                tag === "All"
+                  ? LOOKS.length
+                  : LOOKS.filter((l) => l.tags.includes(tag)).length;
+              return (
+                <button
+                  key={tag}
+                  type="button"
+                  role="tab"
+                  aria-selected={isActive}
+                  onClick={() => setActiveTag(tag)}
+                  className={`shrink-0 rounded-full border px-4 py-2 text-xs font-medium tracking-wide transition-colors md:text-sm ${
+                    isActive
+                      ? "border-transparent bg-gradient-gold text-white shadow-soft"
+                      : "border-border bg-background text-foreground hover:bg-secondary"
+                  }`}
+                >
+                  {tag}
+                  <span
+                    className={`ml-2 text-[10px] ${
+                      isActive ? "text-white/80" : "text-muted-foreground"
+                    }`}
+                  >
+                    {count}
+                  </span>
+                </button>
+              );
+            })}
+          </div>
+        </section>
+
         {/* Looks */}
         <section className="mx-auto max-w-7xl px-5 py-12 md:px-10 md:py-16">
           <div className="flex flex-col gap-20 md:gap-28">
-            {LOOKS.map((look, i) => (
+            {visibleLooks.length === 0 && (
+              <p className="text-center text-sm text-muted-foreground">
+                No looks in this category yet — try another filter.
+              </p>
+            )}
+            {visibleLooks.map(({ look, index: i }) => (
               <article
                 key={look.id}
                 id={`look-${i + 1}`}
