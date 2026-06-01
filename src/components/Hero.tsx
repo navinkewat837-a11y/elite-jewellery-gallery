@@ -25,8 +25,7 @@ export function Hero() {
           <br /> Crafted for You
         </h1>
         <p className="mt-6 max-w-xl text-base text-white/85 md:text-lg">
-          Discover handcrafted rings, necklaces, earrings, bracelets and bangles —
-          designed to celebrate every precious moment of your life.
+          Shine with Elegance — Discover Our Exclusive Heritage Collection.
         </p>
         <div className="mt-10 flex flex-wrap gap-4">
           <a
