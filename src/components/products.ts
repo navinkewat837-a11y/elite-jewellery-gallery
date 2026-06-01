@@ -12,7 +12,18 @@ import iridescentFeatherRing from "@/assets/iridescent-feather-ring.jpg";
 import sapphireHaloRing from "@/assets/sapphire-halo-ring.jpg";
 import butterflyBloomRing from "@/assets/butterfly-bloom-ring.jpg";
 
-export type Category = "Rings" | "Necklaces" | "Earrings" | "Bracelets" | "Bangles";
+// Bridal & Silver Anklets — CDN-hosted assets
+import ankletSilverGhungroo from "@/assets/anklet-f2db764dad65ea936ae267ae9ab0e9dd.jpg.asset.json";
+import ankletSilverMeenakari from "@/assets/anklet-faad645fac31fd91e898abb86443e078.jpg.asset.json";
+import ankletRubyFloral from "@/assets/anklet-d3bfee46556acdffbe855a7bdd3a2503.jpg.asset.json";
+import ankletSapphirePearl from "@/assets/anklet-be9a04ef08735431a69a7d620939f8fb.jpg.asset.json";
+import ankletPinkTassel from "@/assets/anklet-22df28158196f09b7e7ee231a3f92a4c.jpg.asset.json";
+import ankletRoseFloret from "@/assets/anklet-243cef3fbcb0b3b38657ef00085eb29f.jpg.asset.json";
+import ankletAquaBloom from "@/assets/anklet-6f54f096f45cce26fc5fb242edd4033f.jpg.asset.json";
+import ankletTealBarefoot from "@/assets/anklet-37b9ce18c05bf82c666ccf4776c3264f.jpg.asset.json";
+import ankletHeavyBridal from "@/assets/anklet-fc975a281d57063872ddbca12dab5f3a.jpg.asset.json";
+
+export type Category = "Rings" | "Necklaces" | "Earrings" | "Bracelets" | "Bangles" | "Anklets";
 
 export interface Product {
   id: string;
@@ -22,9 +33,11 @@ export interface Product {
   image: string;
   description: string;
   isNew?: boolean;
+  weight?: string;
+  metal?: string;
 }
 
-export const CATEGORIES: Category[] = ["Rings", "Necklaces", "Earrings", "Bracelets", "Bangles"];
+export const CATEGORIES: Category[] = ["Rings", "Necklaces", "Earrings", "Bracelets", "Bangles", "Anklets"];
 
 export const PRODUCTS: Product[] = [
   { id: "new1", name: "Pink Floral Luxe Set", category: "Necklaces", price: 78500, image: pinkFloralLuxe, isNew: true,
@@ -53,4 +66,42 @@ export const PRODUCTS: Product[] = [
     description: "A continuous band of bezel-set crystals on hand-finished yellow gold." },
   { id: "bg1", name: "Heritage Filigree Bangles", category: "Bangles", price: 67500, image: bangles,
     description: "Pair of traditional filigree bangles, hand-crafted with intricate granulation work." },
+
+  // ---------- Bridal & Silver Anklets ----------
+  { id: "ank1", name: "Ghungroo Cascade Silver Payal", category: "Anklets", price: 18500,
+    image: ankletSilverGhungroo.url, isNew: true, metal: "92.5 Sterling Silver",
+    weight: "Pair · approx. 145–155 g",
+    description: "A timeless pair of hand-crafted sterling silver payal featuring a scalloped jaali border, hand-painted meenakari paisleys and a cascading row of pure-silver ghungroos that chime with every step." },
+  { id: "ank2", name: "Rangeeli Meenakari Silver Anklets", category: "Anklets", price: 22500,
+    image: ankletSilverMeenakari.url, isNew: true, metal: "92.5 Sterling Silver",
+    weight: "Pair · approx. 165–175 g",
+    description: "Statement bridal payal in lustrous silver with multicolour stone florals and tiny jhumka drops in ruby, sapphire, emerald and amber — joyful, regal and made for festive aartis and pheras." },
+  { id: "ank3", name: "Ruby Blossom Floral Payal", category: "Anklets", price: 26500,
+    image: ankletRubyFloral.url, isNew: true, metal: "92.5 Sterling Silver with Ruby Enamel",
+    weight: "Pair · approx. 120–135 g",
+    description: "Delicate silver chains draped with ruby-red enamel flowers and faceted bead drops — a romantic everyday-bridal pair that flatters every saree, lehenga and silk drape." },
+  { id: "ank4", name: "Royal Sapphire & Pearl Bridal Anklet", category: "Anklets", price: 84500,
+    image: ankletSapphirePearl.url, isNew: true, metal: "22kt Gold Plated with Sapphires & Pearls",
+    weight: "Pair · approx. 95–110 g",
+    description: "A regal bridal anklet of sapphire-blue paisleys and pavé crystal scallops, hung with luminous baroque pearls and pink kundan teardrops — couture craftsmanship for the modern maharani." },
+  { id: "ank5", name: "Gulaab Pink Tassel Bridal Payal", category: "Anklets", price: 38500,
+    image: ankletPinkTassel.url, isNew: true, metal: "22kt Gold Plated with Pink Crystals",
+    weight: "Single · approx. 55–65 g",
+    description: "A festive payal hand-set with rose-pink crystal florals and a fringe of pink beaded tassels — the perfect statement piece for sangeet, mehendi and reception nights." },
+  { id: "ank6", name: "Rose Floret Heritage Anklet", category: "Anklets", price: 46500,
+    image: ankletRoseFloret.url, isNew: true, metal: "22kt Gold Plated with CZ & Pink Stones",
+    weight: "Single · approx. 70–80 g",
+    description: "Layered rose-gold florals studded with brilliant CZ and blush sapphires, finished with pink crystal drops — heirloom workmanship in a wearable, contemporary silhouette." },
+  { id: "ank7", name: "Aqua Bloom Diamanté Anklet", category: "Anklets", price: 52500,
+    image: ankletAquaBloom.url, isNew: true, metal: "22kt Gold Plated with Aquamarine Drops",
+    weight: "Single · approx. 80–90 g",
+    description: "An icy-blue floral centrepiece haloed in pavé crystals, with aquamarine teardrops dancing beneath — graceful, glamorous and unmistakably bridal." },
+  { id: "ank8", name: "Teal Peacock Barefoot Bridal Set", category: "Anklets", price: 96500,
+    image: ankletTealBarefoot.url, isNew: true, metal: "22kt Gold Plated with Emerald-Hue Stones",
+    weight: "Single · approx. 110–125 g",
+    description: "An elaborate barefoot bridal anklet with toe-ring drape, layered teal-and-gold florals and cascading emerald beads — inspired by Rajputi heritage, made for the showstopping bride." },
+  { id: "ank9", name: "Heavy Kundan Bridal Payal (Pair)", category: "Anklets", price: 145000,
+    image: ankletHeavyBridal.url, isNew: true, metal: "22kt Gold Plated with Kundan & Polki",
+    weight: "Pair · approx. 320–360 g",
+    description: "Our heaviest ceremonial payal — multi-layered gold cuffs encrusted with kundan, polki and iridescent stones, finished with rows of gold drops and bells. The ultimate heirloom for the wedding day." },
 ];
