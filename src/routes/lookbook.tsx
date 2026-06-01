@@ -275,6 +275,20 @@ export const Route = createFileRoute("/lookbook")({
 
 function LookbookPage() {
   const [activeTag, setActiveTag] = useState<LookTag | "All">("All");
+  const [zoomedLook, setZoomedLook] = useState<{ look: Look; index: number } | null>(null);
+
+  useEffect(() => {
+    if (!zoomedLook) return;
+    const onKey = (e: KeyboardEvent) => e.key === "Escape" && setZoomedLook(null);
+    document.addEventListener("keydown", onKey);
+    const prev = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+    return () => {
+      document.removeEventListener("keydown", onKey);
+      document.body.style.overflow = prev;
+    };
+  }, [zoomedLook]);
+
   const visibleLooks = useMemo(
     () =>
       LOOKS.map((look, index) => ({ look, index })).filter(({ look }) =>
@@ -388,14 +402,24 @@ function LookbookPage() {
                 }`}
               >
                 <div className="relative">
-                  <img
-                    src={look.image}
-                    alt={`${look.outfit} — styling reference for matching Elite Jewellery pairings`}
-                    loading="lazy"
-                    className="aspect-[3/4] w-full rounded-2xl object-cover shadow-luxe"
-                  />
+                  <button
+                    type="button"
+                    onClick={() => setZoomedLook({ look, index: i })}
+                    aria-label={`Zoom Look ${String(i + 1).padStart(2, "0")} — ${look.outfit}`}
+                    className="group block w-full overflow-hidden rounded-2xl shadow-luxe focus:outline-none focus-visible:ring-2 focus-visible:ring-[var(--gold-dark)]"
+                  >
+                    <img
+                      src={look.image}
+                      alt={`${look.outfit} — styling reference for matching Elite Jewellery pairings`}
+                      loading="lazy"
+                      className="aspect-[3/4] w-full object-cover transition-transform duration-500 group-hover:scale-105"
+                    />
+                  </button>
                   <span className="absolute left-4 top-4 rounded-full bg-background/90 px-3 py-1 text-[10px] tracking-luxe text-[var(--gold-dark)] backdrop-blur">
                     LOOK {String(i + 1).padStart(2, "0")}
+                  </span>
+                  <span className="pointer-events-none absolute right-4 top-4 rounded-full bg-background/90 px-3 py-1 text-[10px] tracking-luxe text-foreground/70 backdrop-blur">
+                    TAP TO ZOOM
                   </span>
                 </div>
                 <div>
