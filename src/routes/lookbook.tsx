@@ -1,5 +1,5 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
 import { WhatsAppFAB } from "@/components/WhatsAppFAB";
@@ -217,6 +217,21 @@ function shareLookOnWhatsApp(look: Look, index: number) {
     return;
   }
   window.open(`https://wa.me/?text=${encodeURIComponent(text)}`, "_blank", "noopener,noreferrer");
+}
+
+function inquireLookWhatsAppUrl(look: Look, index: number) {
+  const lookNo = String(index + 1).padStart(2, "0");
+  const lookUrl = `${URL}#look-${index + 1}`;
+  const tagsLine = look.tags.join(", ");
+  const msg =
+    `Hi Elite Jewellery Gallery, I am interested in this design:\n\n` +
+    `Look ${lookNo} — ${look.outfit}\n` +
+    `Tags: ${tagsLine}\n` +
+    `Occasion: ${look.vibe}\n` +
+    `Palette: ${look.palette}\n\n` +
+    `Reference: ${lookUrl}\n\n` +
+    `Please share more details and pricing.`;
+  return waUrl(msg);
 }
 
 export const Route = createFileRoute("/lookbook")({
