@@ -521,6 +521,73 @@ function LookbookPage() {
       </main>
       <Footer />
       <WhatsAppFAB />
+      {zoomedLook && (
+        <div
+          className="fixed inset-0 z-[60] flex items-center justify-center p-4 md:p-8"
+          role="dialog"
+          aria-modal="true"
+          aria-label={`${zoomedLook.look.outfit} — zoom view`}
+        >
+          <div
+            className="absolute inset-0 bg-charcoal/80 backdrop-blur-sm"
+            onClick={() => setZoomedLook(null)}
+          />
+          <div className="relative grid max-h-[92vh] w-full max-w-5xl overflow-hidden rounded-2xl bg-background shadow-luxe md:grid-cols-[1.2fr_1fr]">
+            <button
+              type="button"
+              onClick={() => setZoomedLook(null)}
+              aria-label="Close"
+              className="absolute right-3 top-3 z-10 rounded-full bg-background/90 p-2 text-foreground shadow-soft hover:bg-secondary"
+            >
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="h-5 w-5" aria-hidden="true">
+                <line x1="18" y1="6" x2="6" y2="18" />
+                <line x1="6" y1="6" x2="18" y2="18" />
+              </svg>
+            </button>
+            <div className="relative max-h-[60vh] overflow-auto bg-charcoal md:max-h-none">
+              <img
+                src={zoomedLook.look.image}
+                alt={`${zoomedLook.look.outfit} — zoomed view`}
+                className="h-auto w-full object-contain md:h-full md:object-cover"
+              />
+              <span className="absolute left-4 top-4 rounded-full bg-background/90 px-3 py-1 text-[10px] tracking-luxe text-[var(--gold-dark)] backdrop-blur">
+                LOOK {String(zoomedLook.index + 1).padStart(2, "0")}
+              </span>
+            </div>
+            <div className="flex flex-col gap-5 overflow-y-auto p-6 md:p-8">
+              <span className="text-[10px] tracking-luxe text-[var(--gold-dark)]">
+                {zoomedLook.look.vibe.toUpperCase()}
+              </span>
+              <h3 className="font-serif text-3xl md:text-4xl">{zoomedLook.look.outfit}</h3>
+              <p className="text-sm italic text-muted-foreground">{zoomedLook.look.palette}</p>
+              <div className="flex flex-wrap gap-2">
+                {zoomedLook.look.tags.map((t) => (
+                  <span
+                    key={t}
+                    className="rounded-full border border-border bg-secondary/60 px-3 py-1 text-[11px] font-medium tracking-wide text-foreground/80"
+                  >
+                    {t}
+                  </span>
+                ))}
+              </div>
+              <a
+                href={inquireLookWhatsAppUrl(zoomedLook.look, zoomedLook.index)}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="mt-2 inline-flex items-center justify-center gap-2 rounded-full bg-[#25D366] px-6 py-3.5 text-center text-sm font-semibold text-white shadow-soft transition-transform hover:scale-[1.02] hover:bg-[#1ebe5d]"
+              >
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="h-5 w-5" aria-hidden="true">
+                  <path d="M20.52 3.48A11.86 11.86 0 0 0 12.06 0C5.5 0 .15 5.34.15 11.9c0 2.1.55 4.14 1.6 5.95L0 24l6.31-1.66a11.86 11.86 0 0 0 5.74 1.46h.01c6.56 0 11.91-5.34 11.91-11.9 0-3.18-1.24-6.17-3.45-8.42ZM12.06 21.5h-.01a9.6 9.6 0 0 1-4.89-1.34l-.35-.21-3.74.98 1-3.65-.23-.37a9.55 9.55 0 0 1-1.47-5.12c0-5.29 4.31-9.6 9.61-9.6 2.57 0 4.98 1 6.79 2.81a9.52 9.52 0 0 1 2.82 6.8c0 5.29-4.31 9.6-9.53 9.7Zm5.27-7.18c-.29-.14-1.71-.84-1.97-.94-.27-.1-.46-.14-.65.14-.19.29-.74.94-.91 1.13-.17.19-.34.22-.62.07-.29-.14-1.22-.45-2.32-1.44a8.76 8.76 0 0 1-1.61-2c-.17-.29-.02-.45.13-.6.13-.13.29-.34.43-.51.14-.17.19-.29.29-.48.1-.19.05-.36-.02-.51-.07-.14-.65-1.57-.89-2.15-.23-.56-.47-.48-.65-.49h-.55c-.19 0-.51.07-.77.36-.27.29-1.02 1-1.02 2.43s1.04 2.82 1.19 3.02c.14.19 2.05 3.13 4.97 4.39.69.3 1.24.48 1.66.61.7.22 1.33.19 1.83.12.56-.08 1.71-.7 1.95-1.37.24-.67.24-1.25.17-1.37-.07-.12-.27-.19-.55-.34Z"/>
+                </svg>
+                Inquire on WhatsApp
+              </a>
+              <p className="text-xs text-muted-foreground">
+                Opens WhatsApp with your details pre-filled so we know exactly which look you mean.
+              </p>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
