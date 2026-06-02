@@ -5,18 +5,34 @@ import heroPoster from "@/assets/hero-poster.jpg.asset.json";
 export function Hero() {
   const videoRef = useRef<HTMLVideoElement>(null);
   const [muted, setMuted] = useState(true);
-  const [loading, setLoading] = useState(true);
+  const [mounted, setMounted] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(false);
 
   useEffect(() => {
+    setMounted(true);
     const v = videoRef.current;
     if (!v) return;
 
-    const onCanPlay = () => setLoading(false);
+    // Show loading only after mount so SSR and client trees match initially
+    if (v.readyState < HTMLMediaElement.HAVE_FUTURE_DATA) {
+      setLoading(true);
+    }
+
+    const onCanPlay = () => {
+      setLoading(false);
+      setError(false);
+    };
     const onWaiting = () => setLoading(true);
+    const onError = () => {
+      setLoading(false);
+      setError(true);
+    };
 
     v.addEventListener("canplaythrough", onCanPlay);
     v.addEventListener("playing", onCanPlay);
     v.addEventListener("waiting", onWaiting);
+    v.addEventListener("error", onError);
 
     // Try to play with sound; browsers usually block it and we fall back to muted autoplay.
     v.muted = false;
@@ -32,6 +48,7 @@ export function Hero() {
       v.removeEventListener("canplaythrough", onCanPlay);
       v.removeEventListener("playing", onCanPlay);
       v.removeEventListener("waiting", onWaiting);
+      v.removeEventListener("error", onError);
     };
   }, []);
 
@@ -41,6 +58,17 @@ export function Hero() {
     v.muted = !v.muted;
     setMuted(v.muted);
     if (!v.muted) v.play().catch(() => {});
+  };
+
+  const handleRetry = () => {
+    const v = videoRef.current;
+    if (!v) return;
+    setError(false);
+    setLoading(true);
+    v.load();
+    v.muted = true;
+    setMuted(true);
+    v.play().catch(() => {});
   };
 
   return (
@@ -57,7 +85,9 @@ export function Hero() {
         className="absolute inset-0 -z-10 h-full w-full object-cover"
       />
       <div className="absolute inset-0 -z-10 bg-[var(--gradient-hero)]" />
-      {loading && (
+
+      {/* Loading overlay — only shown client-side after mount to avoid hydration mismatch */}
+      {mounted && loading && (
         <div className="absolute inset-0 z-0 flex items-center justify-center">
           <img
             src={heroPoster.url}
@@ -71,6 +101,37 @@ export function Hero() {
           </div>
         </div>
       )}
+
+      {/* Error fallback */}
+      {mounted && error && (
+        <div className="absolute inset-0 z-0 flex items-center justify-center">
+          <img
+            src={heroPoster.url}
+            alt=""
+            className="absolute inset-0 h-full w-full object-cover"
+          />
+          <div className="absolute inset-0 bg-black/70 backdrop-blur-sm" />
+          <div className="relative z-10 flex flex-col items-center gap-5 px-6 text-center">
+            <div className="h-12 w-12 rounded-full border border-white/20 bg-white/10 flex items-center justify-center">
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" className="text-white/90">
+                <path d="M12 9v2m0 4h.01m-6.938 4h13.856c1.054 0 1.605-.64 1.605-1.562 0-.43-.156-.84-.437-1.155l-6.93-7.78a1.8 1.8 0 0 0-2.69 0l-6.93 7.78c-.281.315-.437.725-.437 1.155 0 .922.551 1.562 1.605 1.562Z" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+              </svg>
+            </div>
+            <div>
+              <p className="text-sm font-medium tracking-wide text-white">Video unavailable</p>
+              <p className="mt-1 text-xs text-white/60">We couldn&apos;t load the hero video.</p>
+            </div>
+            <button
+              type="button"
+              onClick={handleRetry}
+              className="rounded-full border border-white/40 bg-white/10 px-6 py-2.5 text-xs font-medium tracking-wide text-white backdrop-blur-md transition hover:bg-white/20"
+            >
+              Retry
+            </button>
+          </div>
+        </div>
+      )}
+
       <button
         type="button"
         onClick={toggleMute}
