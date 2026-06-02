@@ -5,10 +5,19 @@ import heroPoster from "@/assets/hero-poster.jpg.asset.json";
 export function Hero() {
   const videoRef = useRef<HTMLVideoElement>(null);
   const [muted, setMuted] = useState(true);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const v = videoRef.current;
     if (!v) return;
+
+    const onCanPlay = () => setLoading(false);
+    const onWaiting = () => setLoading(true);
+
+    v.addEventListener("canplaythrough", onCanPlay);
+    v.addEventListener("playing", onCanPlay);
+    v.addEventListener("waiting", onWaiting);
+
     // Try to play with sound; browsers usually block it and we fall back to muted autoplay.
     v.muted = false;
     v.play()
@@ -18,6 +27,12 @@ export function Hero() {
         setMuted(true);
         v.play().catch(() => {});
       });
+
+    return () => {
+      v.removeEventListener("canplaythrough", onCanPlay);
+      v.removeEventListener("playing", onCanPlay);
+      v.removeEventListener("waiting", onWaiting);
+    };
   }, []);
 
   const toggleMute = () => {
