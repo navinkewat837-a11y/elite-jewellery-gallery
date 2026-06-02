@@ -57,6 +57,20 @@ export function Hero() {
         className="absolute inset-0 -z-10 h-full w-full object-cover"
       />
       <div className="absolute inset-0 -z-10 bg-[var(--gradient-hero)]" />
+      {loading && (
+        <div className="absolute inset-0 z-0 flex items-center justify-center">
+          <img
+            src={heroPoster.url}
+            alt=""
+            className="absolute inset-0 h-full w-full object-cover"
+          />
+          <div className="absolute inset-0 bg-black/60 backdrop-blur-sm" />
+          <div className="relative z-10 flex flex-col items-center gap-4">
+            <div className="h-10 w-10 animate-spin rounded-full border-2 border-white/20 border-t-[var(--gold-light)]" />
+            <span className="text-xs tracking-luxe text-white/80">Loading experience…</span>
+          </div>
+        </div>
+      )}
       <button
         type="button"
         onClick={toggleMute}
