@@ -33,7 +33,7 @@ export function Hero() {
       <video
         ref={videoRef}
         src={heroVideo.url}
-        poster={heroImg}
+        poster={heroPoster.url}
         autoPlay
         loop
         playsInline
