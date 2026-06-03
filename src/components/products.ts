@@ -3,7 +3,6 @@ import ring2 from "@/assets/ring2.jpg";
 import necklaceRealAsset from "@/assets/necklace-real.jpg.asset.json";
 const necklace = necklaceRealAsset.url;
 import necklace2 from "@/assets/necklace2.jpg";
-import earrings from "@/assets/earrings.jpg";
 import bracelet from "@/assets/bracelet.jpg";
 import bangles from "@/assets/bangles.jpg";
 import pinkFloralLuxe from "@/assets/pink-floral-luxe-set.jpg";
