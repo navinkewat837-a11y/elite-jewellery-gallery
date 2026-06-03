@@ -108,17 +108,25 @@ export function Hero() {
 
   return (
     <section id="home" className="relative isolate overflow-hidden">
-      <video
-        ref={videoRef}
-        src={heroVideo.url}
-        poster={heroPoster.url}
-        autoPlay
-        loop
-        playsInline
-        preload="metadata"
-        aria-label="Elite Jewellery Gallery — luxury gold and diamond collection"
-        className="absolute inset-0 -z-10 h-full w-full object-cover"
-      />
+      {!videoFailed ? (
+        <video
+          ref={videoRef}
+          src={heroVideo.url}
+          poster={heroPoster.url}
+          autoPlay
+          loop
+          playsInline
+          preload="metadata"
+          aria-label="Elite Jewellery Gallery — luxury gold and diamond collection"
+          className="absolute inset-0 -z-10 h-full w-full object-cover"
+        />
+      ) : (
+        <img
+          src={heroPoster.url}
+          alt="Elite Jewellery Gallery — luxury gold and diamond collection"
+          className="absolute inset-0 -z-10 h-full w-full object-cover"
+        />
+      )}
       <div className="absolute inset-0 -z-10 bg-[var(--gradient-hero)]" />
 
       {/* Loading overlay — only shown client-side after mount to avoid hydration mismatch */}
