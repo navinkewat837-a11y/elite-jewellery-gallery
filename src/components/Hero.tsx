@@ -26,7 +26,7 @@ export function Hero() {
     if (!v) return;
     if (retryCountRef.current >= MAX_AUTO_RETRIES) {
       setRetrying(false);
-      setError(true);
+      setVideoFailed(true);
       return;
     }
     const attempt = retryCountRef.current + 1;
@@ -35,7 +35,7 @@ export function Hero() {
     retryCountRef.current = attempt;
     setRetryAttempt(attempt);
     setRetrying(true);
-    setError(false);
+    setVideoFailed(false);
     setLoading(true);
     clearRetryTimer();
     retryTimerRef.current = setTimeout(() => {
@@ -60,7 +60,7 @@ export function Hero() {
 
     const onCanPlay = () => {
       setLoading(false);
-      setError(false);
+      setVideoFailed(false);
       setRetrying(false);
       retryCountRef.current = 0;
       setRetryAttempt(0);
@@ -105,20 +105,6 @@ export function Hero() {
     if (!v.muted) v.play().catch(() => {});
   };
 
-  const handleRetry = () => {
-    const v = videoRef.current;
-    if (!v) return;
-    clearRetryTimer();
-    retryCountRef.current = 0;
-    setRetryAttempt(0);
-    setRetrying(false);
-    setError(false);
-    setLoading(true);
-    v.load();
-    v.muted = true;
-    setMuted(true);
-    v.play().catch(() => {});
-  };
 
   return (
     <section id="home" className="relative isolate overflow-hidden">
