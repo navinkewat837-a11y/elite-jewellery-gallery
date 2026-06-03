@@ -3,7 +3,6 @@ import ring2 from "@/assets/ring2.jpg";
 import necklaceRealAsset from "@/assets/necklace-real.jpg.asset.json";
 const necklace = necklaceRealAsset.url;
 import necklace2 from "@/assets/necklace2.jpg";
-import earrings from "@/assets/earrings.jpg";
 import bracelet from "@/assets/bracelet.jpg";
 import bangles from "@/assets/bangles.jpg";
 import pinkFloralLuxe from "@/assets/pink-floral-luxe-set.jpg";
@@ -61,7 +60,7 @@ export const PRODUCTS: Product[] = [
     description: "A double-marquise gold pendant cradling a topaz centre, on a fine cable chain." },
   { id: "n2", name: "Triple Layer Charm", category: "Necklaces", price: 28500, image: necklace2,
     description: "Three delicate gold chains layered effortlessly, finished with a soft diamond charm." },
-  { id: "e1", name: "Chandelier Diamond Earrings", category: "Earrings", price: 54200, image: earrings,
+  { id: "e1", name: "Chandelier Diamond Earrings", category: "Earrings", price: 54200, image: necklaceRealAsset.url,
     description: "Pear-cut diamonds suspended within a gold lattice — graceful with every movement." },
   { id: "b1", name: "Eternity Stone Bangle", category: "Bracelets", price: 41000, image: bracelet,
     description: "A continuous band of bezel-set crystals on hand-finished yellow gold." },
