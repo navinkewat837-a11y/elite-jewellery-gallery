@@ -4,10 +4,49 @@ import heroPoster from "@/assets/hero-poster.jpg.asset.json";
 
 export function Hero() {
   const videoRef = useRef<HTMLVideoElement>(null);
+  const retryTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const retryCountRef = useRef(0);
+  const MAX_AUTO_RETRIES = 5;
   const [muted, setMuted] = useState(true);
   const [mounted, setMounted] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(false);
+  const [retrying, setRetrying] = useState(false);
+  const [retryAttempt, setRetryAttempt] = useState(0);
+
+  const clearRetryTimer = () => {
+    if (retryTimerRef.current) {
+      clearTimeout(retryTimerRef.current);
+      retryTimerRef.current = null;
+    }
+  };
+
+  const scheduleAutoRetry = () => {
+    const v = videoRef.current;
+    if (!v) return;
+    if (retryCountRef.current >= MAX_AUTO_RETRIES) {
+      setRetrying(false);
+      setError(true);
+      return;
+    }
+    const attempt = retryCountRef.current + 1;
+    // Exponential backoff: 1s, 2s, 4s, 8s, 16s (+ small jitter)
+    const delay = Math.min(16000, 1000 * 2 ** (attempt - 1)) + Math.floor(Math.random() * 250);
+    retryCountRef.current = attempt;
+    setRetryAttempt(attempt);
+    setRetrying(true);
+    setError(false);
+    setLoading(true);
+    clearRetryTimer();
+    retryTimerRef.current = setTimeout(() => {
+      const node = videoRef.current;
+      if (!node) return;
+      node.load();
+      node.muted = true;
+      setMuted(true);
+      node.play().catch(() => {});
+    }, delay);
+  };
 
   useEffect(() => {
     setMounted(true);
@@ -22,11 +61,16 @@ export function Hero() {
     const onCanPlay = () => {
       setLoading(false);
       setError(false);
+      setRetrying(false);
+      retryCountRef.current = 0;
+      setRetryAttempt(0);
+      clearRetryTimer();
     };
     const onWaiting = () => setLoading(true);
     const onError = () => {
       setLoading(false);
-      setError(true);
+      // Auto-retry with exponential backoff before surfacing a hard error
+      scheduleAutoRetry();
     };
 
     v.addEventListener("canplaythrough", onCanPlay);
@@ -49,6 +93,7 @@ export function Hero() {
       v.removeEventListener("playing", onCanPlay);
       v.removeEventListener("waiting", onWaiting);
       v.removeEventListener("error", onError);
+      clearRetryTimer();
     };
   }, []);
 
@@ -63,6 +108,10 @@ export function Hero() {
   const handleRetry = () => {
     const v = videoRef.current;
     if (!v) return;
+    clearRetryTimer();
+    retryCountRef.current = 0;
+    setRetryAttempt(0);
+    setRetrying(false);
     setError(false);
     setLoading(true);
     v.load();
@@ -97,7 +146,11 @@ export function Hero() {
           <div className="absolute inset-0 bg-black/60 backdrop-blur-sm" />
           <div className="relative z-10 flex flex-col items-center gap-4">
             <div className="h-10 w-10 animate-spin rounded-full border-2 border-white/20 border-t-[var(--gold-light)]" />
-            <span className="text-xs tracking-luxe text-white/80">Loading experience…</span>
+            <span className="text-xs tracking-luxe text-white/80">
+              {retrying
+                ? `Reconnecting… attempt ${retryAttempt} of ${MAX_AUTO_RETRIES}`
+                : "Loading experience…"}
+            </span>
           </div>
         </div>
       )}
