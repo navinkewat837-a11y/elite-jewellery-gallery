@@ -10,7 +10,7 @@ export function Hero() {
   const [muted, setMuted] = useState(true);
   const [mounted, setMounted] = useState(false);
   const [loading, setLoading] = useState(false);
-  const [error, setError] = useState(false);
+  const [videoFailed, setVideoFailed] = useState(false);
   const [retrying, setRetrying] = useState(false);
   const [retryAttempt, setRetryAttempt] = useState(0);
 
