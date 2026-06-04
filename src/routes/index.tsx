@@ -3,6 +3,7 @@ import { Header } from "@/components/Header";
 import { Hero } from "@/components/Hero";
 import { LatestArrivals } from "@/components/LatestArrivals";
 import { Collection } from "@/components/Collection";
+import { BridalInspiration } from "@/components/BridalInspiration";
 import { About } from "@/components/About";
 import { Contact } from "@/components/Contact";
 import { Footer } from "@/components/Footer";
@@ -62,6 +63,7 @@ function Index() {
         <Hero />
         <LatestArrivals />
         <Collection />
+        <BridalInspiration />
         <About />
         <Contact />
       </main>
