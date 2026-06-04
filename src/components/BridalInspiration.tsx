@@ -3,21 +3,21 @@ import bridalVideo from "@/assets/bridal-inspiration.mp4.asset.json";
 
 export function BridalInspiration() {
   return (
-    <section id="bridal-inspiration" className="bg-background py-24 md:py-32">
-      <div className="mx-auto max-w-7xl px-5 md:px-10">
-        <div className="mx-auto max-w-2xl text-center">
+    <section id="bridal-inspiration" className="bg-background py-16 md:py-32">
+      <div className="mx-auto max-w-7xl px-4 sm:px-6 md:px-10">
+        <div className="mx-auto max-w-2xl px-2 text-center sm:px-0">
           <span className="text-[11px] tracking-luxe text-[var(--gold-dark)]">BRIDAL ATELIER</span>
-          <h2 className="mt-4 font-serif text-4xl font-light md:text-6xl">
+          <h2 className="mt-4 font-serif text-3xl font-light md:text-6xl">
             Bridal <span className="italic text-gradient-gold">Inspiration</span>
           </h2>
-          <p className="mt-4 text-muted-foreground">
+          <p className="mt-3 text-sm text-muted-foreground md:mt-4 md:text-base">
             Couture lehengas and wedding-day looks — curated to pair with our heirloom jewellery.
           </p>
         </div>
 
-        <div className="mt-14 grid grid-cols-1 gap-8 lg:grid-cols-2">
+        <div className="mt-10 grid grid-cols-1 gap-6 md:mt-14 md:gap-8 lg:grid-cols-2">
           <figure className="group overflow-hidden rounded-2xl bg-cream shadow-soft transition-all hover:-translate-y-1 hover:shadow-luxe">
-            <div className="relative aspect-[3/4] overflow-hidden">
+            <div className="relative aspect-[16/10] overflow-hidden md:aspect-[3/4]">
               <img
                 src={bridalImage.url}
                 alt="Peacock embroidered tiered bridal lehenga in pink, magenta and purple ombré with butterfly-motif blouse"
@@ -26,20 +26,20 @@ export function BridalInspiration() {
                 height={1200}
                 className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-105"
               />
-              <span className="absolute left-4 top-4 rounded-full bg-background/90 px-3 py-1 text-[10px] tracking-luxe text-[var(--gold-dark)] backdrop-blur">
+              <span className="absolute left-3 top-3 rounded-full bg-background/90 px-3 py-1 text-[10px] tracking-luxe text-[var(--gold-dark)] backdrop-blur md:left-4 md:top-4">
                 SIGNATURE LEHENGA
               </span>
             </div>
-            <figcaption className="p-6 md:p-8">
-              <h3 className="font-serif text-2xl font-medium md:text-3xl">Peacock Ombré Couture Lehenga</h3>
-              <p className="mt-2 text-sm text-muted-foreground">
+            <figcaption className="p-5 md:p-8">
+              <h3 className="font-serif text-xl font-medium md:text-3xl">Peacock Ombré Couture Lehenga</h3>
+              <p className="mt-2 text-sm leading-relaxed text-muted-foreground">
                 Hand-embroidered peacock and floral motifs cascade across tiered pink-to-purple net, finished with a sculpted butterfly blouse and lilac dupatta — pair with our bridal payal.
               </p>
             </figcaption>
           </figure>
 
           <figure className="group overflow-hidden rounded-2xl bg-cream shadow-soft transition-all hover:-translate-y-1 hover:shadow-luxe">
-            <div className="relative aspect-[3/4] overflow-hidden bg-charcoal">
+            <div className="relative aspect-[16/10] overflow-hidden bg-charcoal md:aspect-[3/4]">
               <video
                 src={bridalVideo.url}
                 autoPlay
@@ -50,13 +50,13 @@ export function BridalInspiration() {
                 className="h-full w-full object-cover"
                 aria-label="Modern wedding hairstyle inspiration video"
               />
-              <span className="absolute left-4 top-4 rounded-full bg-background/90 px-3 py-1 text-[10px] tracking-luxe text-[var(--gold-dark)] backdrop-blur">
+              <span className="absolute left-3 top-3 rounded-full bg-background/90 px-3 py-1 text-[10px] tracking-luxe text-[var(--gold-dark)] backdrop-blur md:left-4 md:top-4">
                 WEDDING HAIR LOOKS
               </span>
             </div>
-            <figcaption className="p-6 md:p-8">
-              <h3 className="font-serif text-2xl font-medium md:text-3xl">Modern Wedding Hair Inspiration</h3>
-              <p className="mt-2 text-sm text-muted-foreground">
+            <figcaption className="p-5 md:p-8">
+              <h3 className="font-serif text-xl font-medium md:text-3xl">Modern Wedding Hair Inspiration</h3>
+              <p className="mt-2 text-sm leading-relaxed text-muted-foreground">
                 Polished bridal hairstyles styled to showcase maang-tikka, jhumkas and statement chandbalis from our atelier.
               </p>
             </figcaption>
