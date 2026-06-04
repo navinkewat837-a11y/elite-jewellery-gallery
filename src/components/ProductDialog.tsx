@@ -1,11 +1,18 @@
 import { X } from "lucide-react";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import type { Product } from "./products";
 import { quoteUrl } from "./contact";
 
 const fmt = new Intl.NumberFormat("en-IN", { style: "currency", currency: "INR", maximumFractionDigits: 0 });
 
 export function ProductDialog({ product, onClose }: { product: Product | null; onClose: () => void }) {
+  const images = product ? (product.gallery && product.gallery.length > 0 ? product.gallery : [product.image]) : [];
+  const [activeIdx, setActiveIdx] = useState(0);
+
+  useEffect(() => {
+    setActiveIdx(0);
+  }, [product]);
+
   useEffect(() => {
     if (!product) return;
     const onKey = (e: KeyboardEvent) => e.key === "Escape" && onClose();
@@ -30,13 +37,36 @@ export function ProductDialog({ product, onClose }: { product: Product | null; o
         >
           <X className="h-5 w-5" />
         </button>
-        <img
-          src={product.image}
-          alt={product.name}
-          width={800}
-          height={800}
-          className="h-64 w-full object-cover md:h-full"
-        />
+        <div className="flex flex-col gap-3 bg-cream p-3 md:h-full md:p-4">
+          <div className="relative flex-1 overflow-hidden rounded-xl bg-background">
+            <img
+              key={images[activeIdx]}
+              src={images[activeIdx]}
+              alt={product.name}
+              width={1200}
+              height={1200}
+              className="h-64 w-full object-cover transition-opacity duration-300 md:h-full"
+            />
+          </div>
+          {images.length > 1 && (
+            <div className="flex gap-2 overflow-x-auto">
+              {images.map((src, i) => (
+                <button
+                  key={src + i}
+                  onClick={() => setActiveIdx(i)}
+                  aria-label={`View image ${i + 1}`}
+                  className={`relative h-16 w-16 shrink-0 overflow-hidden rounded-md border-2 transition-all md:h-20 md:w-20 ${
+                    activeIdx === i
+                      ? "border-[var(--gold)] shadow-soft"
+                      : "border-transparent opacity-70 hover:opacity-100"
+                  }`}
+                >
+                  <img src={src} alt="" className="h-full w-full object-cover" />
+                </button>
+              ))}
+            </div>
+          )}
+        </div>
         <div className="flex flex-col gap-5 overflow-y-auto p-8 md:p-10">
           <span className="text-[10px] tracking-luxe text-[var(--gold-dark)]">
             {product.category.toUpperCase()}
