@@ -1,5 +1,5 @@
-import { X } from "lucide-react";
-import { useEffect, useState } from "react";
+import { ChevronLeft, ChevronRight, Maximize2, Minus, Plus, X } from "lucide-react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import type { Product } from "./products";
 import { quoteUrl } from "./contact";
 
@@ -8,25 +8,33 @@ const fmt = new Intl.NumberFormat("en-IN", { style: "currency", currency: "INR",
 export function ProductDialog({ product, onClose }: { product: Product | null; onClose: () => void }) {
   const images = product ? (product.gallery && product.gallery.length > 0 ? product.gallery : [product.image]) : [];
   const [activeIdx, setActiveIdx] = useState(0);
+  const [lightboxOpen, setLightboxOpen] = useState(false);
 
   useEffect(() => {
     setActiveIdx(0);
+    setLightboxOpen(false);
   }, [product]);
 
   useEffect(() => {
     if (!product) return;
-    const onKey = (e: KeyboardEvent) => e.key === "Escape" && onClose();
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === "Escape") {
+        if (lightboxOpen) setLightboxOpen(false);
+        else onClose();
+      }
+    };
     document.addEventListener("keydown", onKey);
     document.body.style.overflow = "hidden";
     return () => {
       document.removeEventListener("keydown", onKey);
       document.body.style.overflow = "";
     };
-  }, [product, onClose]);
+  }, [product, onClose, lightboxOpen]);
 
   if (!product) return null;
 
   return (
+    <>
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4" role="dialog" aria-modal="true">
       <div className="absolute inset-0 bg-charcoal/60 backdrop-blur-sm" onClick={onClose} />
       <div className="relative grid max-h-[92vh] w-full max-w-4xl overflow-hidden rounded-2xl bg-background shadow-luxe md:grid-cols-2">
@@ -38,7 +46,12 @@ export function ProductDialog({ product, onClose }: { product: Product | null; o
           <X className="h-5 w-5" />
         </button>
         <div className="flex flex-col gap-3 bg-cream p-3 md:h-full md:p-4">
-          <div className="relative flex-1 overflow-hidden rounded-xl bg-background">
+          <button
+            type="button"
+            onClick={() => setLightboxOpen(true)}
+            aria-label="View image fullscreen"
+            className="group relative flex-1 overflow-hidden rounded-xl bg-background cursor-zoom-in"
+          >
             <img
               key={images[activeIdx]}
               src={images[activeIdx]}
@@ -47,7 +60,10 @@ export function ProductDialog({ product, onClose }: { product: Product | null; o
               height={1200}
               className="h-64 w-full object-cover transition-opacity duration-300 md:h-full"
             />
-          </div>
+            <span className="absolute right-3 top-3 flex items-center gap-1 rounded-full bg-background/90 px-2.5 py-1.5 text-[10px] tracking-luxe text-foreground/80 opacity-0 shadow-soft backdrop-blur transition-opacity group-hover:opacity-100">
+              <Maximize2 className="h-3 w-3" /> ZOOM
+            </span>
+          </button>
           {images.length > 1 && (
             <div className="flex gap-2 overflow-x-auto">
               {images.map((src, i) => (
@@ -102,6 +118,179 @@ export function ProductDialog({ product, onClose }: { product: Product | null; o
             Enquire on WhatsApp
           </a>
         </div>
+      </div>
+    </div>
+    {lightboxOpen && (
+      <Lightbox
+        images={images}
+        activeIdx={activeIdx}
+        setActiveIdx={setActiveIdx}
+        alt={product.name}
+        onClose={() => setLightboxOpen(false)}
+      />
+    )}
+    </>
+  );
+}
+
+function Lightbox({
+  images,
+  activeIdx,
+  setActiveIdx,
+  alt,
+  onClose,
+}: {
+  images: string[];
+  activeIdx: number;
+  setActiveIdx: (i: number) => void;
+  alt: string;
+  onClose: () => void;
+}) {
+  const [zoom, setZoom] = useState(1);
+  const [offset, setOffset] = useState({ x: 0, y: 0 });
+  const dragRef = useRef<{ startX: number; startY: number; ox: number; oy: number } | null>(null);
+  const containerRef = useRef<HTMLDivElement>(null);
+
+  const reset = useCallback(() => {
+    setZoom(1);
+    setOffset({ x: 0, y: 0 });
+  }, []);
+
+  useEffect(() => {
+    reset();
+  }, [activeIdx, reset]);
+
+  const prev = useCallback(() => {
+    setActiveIdx((activeIdx - 1 + images.length) % images.length);
+  }, [activeIdx, images.length, setActiveIdx]);
+  const next = useCallback(() => {
+    setActiveIdx((activeIdx + 1) % images.length);
+  }, [activeIdx, images.length, setActiveIdx]);
+
+  useEffect(() => {
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === "ArrowLeft") prev();
+      else if (e.key === "ArrowRight") next();
+      else if (e.key === "+" || e.key === "=") setZoom((z) => Math.min(z + 0.5, 4));
+      else if (e.key === "-") setZoom((z) => Math.max(z - 0.5, 1));
+      else if (e.key === "0") reset();
+    };
+    document.addEventListener("keydown", onKey);
+    return () => document.removeEventListener("keydown", onKey);
+  }, [prev, next, reset]);
+
+  const onWheel = (e: React.WheelEvent) => {
+    e.preventDefault();
+    const delta = -e.deltaY * 0.005;
+    setZoom((z) => Math.max(1, Math.min(4, z + delta)));
+  };
+
+  const onPointerDown = (e: React.PointerEvent) => {
+    if (zoom <= 1) return;
+    (e.target as HTMLElement).setPointerCapture(e.pointerId);
+    dragRef.current = { startX: e.clientX, startY: e.clientY, ox: offset.x, oy: offset.y };
+  };
+  const onPointerMove = (e: React.PointerEvent) => {
+    if (!dragRef.current) return;
+    setOffset({
+      x: dragRef.current.ox + (e.clientX - dragRef.current.startX),
+      y: dragRef.current.oy + (e.clientY - dragRef.current.startY),
+    });
+  };
+  const onPointerUp = () => {
+    dragRef.current = null;
+  };
+
+  const toggleZoom = () => {
+    if (zoom > 1) reset();
+    else setZoom(2);
+  };
+
+  return (
+    <div
+      className="fixed inset-0 z-[60] flex items-center justify-center bg-charcoal/95 backdrop-blur-md"
+      role="dialog"
+      aria-modal="true"
+      aria-label="Image lightbox"
+    >
+      <button
+        onClick={onClose}
+        aria-label="Close lightbox"
+        className="absolute right-4 top-4 z-10 rounded-full bg-background/10 p-2.5 text-white backdrop-blur transition hover:bg-background/20"
+      >
+        <X className="h-5 w-5" />
+      </button>
+
+      {images.length > 1 && (
+        <>
+          <button
+            onClick={prev}
+            aria-label="Previous image"
+            className="absolute left-4 top-1/2 z-10 -translate-y-1/2 rounded-full bg-background/10 p-3 text-white backdrop-blur transition hover:bg-background/20"
+          >
+            <ChevronLeft className="h-5 w-5" />
+          </button>
+          <button
+            onClick={next}
+            aria-label="Next image"
+            className="absolute right-4 top-1/2 z-10 -translate-y-1/2 rounded-full bg-background/10 p-3 text-white backdrop-blur transition hover:bg-background/20"
+          >
+            <ChevronRight className="h-5 w-5" />
+          </button>
+        </>
+      )}
+
+      <div
+        ref={containerRef}
+        className="relative h-full w-full overflow-hidden"
+        onWheel={onWheel}
+        onClick={(e) => {
+          if (e.target === e.currentTarget) onClose();
+        }}
+      >
+        <img
+          src={images[activeIdx]}
+          alt={alt}
+          draggable={false}
+          onDoubleClick={toggleZoom}
+          onPointerDown={onPointerDown}
+          onPointerMove={onPointerMove}
+          onPointerUp={onPointerUp}
+          onPointerCancel={onPointerUp}
+          style={{
+            transform: `translate(calc(-50% + ${offset.x}px), calc(-50% + ${offset.y}px)) scale(${zoom})`,
+            cursor: zoom > 1 ? (dragRef.current ? "grabbing" : "grab") : "zoom-in",
+            transition: dragRef.current ? "none" : "transform 0.2s ease",
+          }}
+          className="absolute left-1/2 top-1/2 max-h-[92vh] max-w-[92vw] select-none object-contain"
+        />
+      </div>
+
+      <div className="absolute bottom-6 left-1/2 z-10 flex -translate-x-1/2 items-center gap-1 rounded-full bg-background/10 p-1 text-white backdrop-blur">
+        <button
+          onClick={() => setZoom((z) => Math.max(1, z - 0.5))}
+          aria-label="Zoom out"
+          disabled={zoom <= 1}
+          className="rounded-full p-2 transition hover:bg-background/20 disabled:opacity-40"
+        >
+          <Minus className="h-4 w-4" />
+        </button>
+        <span className="min-w-[3rem] text-center text-xs tabular-nums tracking-luxe">
+          {Math.round(zoom * 100)}%
+        </span>
+        <button
+          onClick={() => setZoom((z) => Math.min(4, z + 0.5))}
+          aria-label="Zoom in"
+          disabled={zoom >= 4}
+          className="rounded-full p-2 transition hover:bg-background/20 disabled:opacity-40"
+        >
+          <Plus className="h-4 w-4" />
+        </button>
+        {images.length > 1 && (
+          <span className="ml-2 border-l border-white/20 pl-3 pr-2 text-xs tracking-luxe">
+            {activeIdx + 1} / {images.length}
+          </span>
+        )}
       </div>
     </div>
   );
