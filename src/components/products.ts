@@ -31,6 +31,7 @@ export interface Product {
   category: Category;
   price: number;
   image: string;
+  gallery?: string[];
   description: string;
   isNew?: boolean;
   weight?: string;
