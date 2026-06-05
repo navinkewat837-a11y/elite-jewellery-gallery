@@ -41,7 +41,10 @@ export function BridalInspiration() {
             </figcaption>
           </figure>
 
-          <figure className="group overflow-hidden rounded-2xl bg-cream shadow-soft transition-all hover:-translate-y-1 hover:shadow-luxe">
+          <figure
+            tabIndex={0}
+            className="group cursor-pointer overflow-hidden rounded-2xl bg-cream shadow-soft ring-1 ring-transparent transition-all duration-300 ease-out hover:-translate-y-1 hover:shadow-luxe hover:ring-[var(--gold-light)]/40 active:scale-[0.985] active:shadow-soft active:transition-transform active:duration-75 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--gold)]/60"
+          >
             <div className="relative aspect-[16/10] overflow-hidden bg-charcoal md:aspect-[3/4]">
               <video
                 src={bridalVideo.url}
@@ -50,16 +53,16 @@ export function BridalInspiration() {
                 loop
                 playsInline
                 preload="metadata"
-                className="h-full w-full object-cover"
+                className="h-full w-full object-cover transition-transform duration-700 ease-out group-hover:scale-105 group-active:scale-[1.02]"
                 aria-label="Modern wedding hairstyle inspiration video"
               />
-              <span className="absolute left-3 top-3 rounded-full bg-background/90 px-3 py-1 text-[10px] tracking-luxe text-[var(--gold-dark)] backdrop-blur md:left-4 md:top-4">
+              <span className="absolute left-3 top-3 rounded-full bg-background/90 px-3 py-1 text-[10px] tracking-luxe text-[var(--gold-dark)] shadow-sm backdrop-blur transition-transform duration-300 group-hover:scale-105 md:left-4 md:top-4">
                 WEDDING HAIR LOOKS
               </span>
             </div>
-            <figcaption className="p-5 md:p-8">
-              <h3 className="font-serif text-xl font-medium md:text-3xl">Modern Wedding Hair Inspiration</h3>
-              <p className="mt-2 text-sm leading-relaxed text-muted-foreground">
+            <figcaption className="p-5 transition-colors duration-300 group-hover:bg-[var(--cream)]/80 md:p-8">
+              <h3 className="font-serif text-xl font-medium transition-colors duration-300 group-hover:text-[var(--gold-dark)] md:text-3xl">Modern Wedding Hair Inspiration</h3>
+              <p className="mt-2 text-sm leading-relaxed text-muted-foreground transition-colors duration-300 group-hover:text-foreground/80">
                 Polished bridal hairstyles styled to showcase maang-tikka, jhumkas and statement chandbalis from our atelier.
               </p>
             </figcaption>
