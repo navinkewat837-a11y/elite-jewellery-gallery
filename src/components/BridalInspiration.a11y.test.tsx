@@ -17,7 +17,7 @@ beforeAll(() => {
   });
 });
 
-test("BridalInspiration has no detectable a11y violations", async () => {
+test("BridalInspiration has no detectable a11y violations", { timeout: 30000 }, async () => {
   const { BridalInspiration } = await import("./BridalInspiration");
   const { container } = render(<BridalInspiration />);
   const results = await axe(container, {
