@@ -127,6 +127,7 @@ export function Hero() {
           className="absolute inset-0 -z-10 h-full w-full object-cover"
         />
       )}
+      <div className="absolute inset-0 -z-10 bg-black/40" />
       <div className="absolute inset-0 -z-10 bg-[var(--gradient-hero)]" />
 
       {/* Loading overlay — only shown client-side after mount to avoid hydration mismatch */}
@@ -171,16 +172,16 @@ export function Hero() {
         <p className="mt-6 max-w-xl text-base text-white/85 md:text-lg">
           Shine with Elegance — Discover Our Exclusive Heritage Collection.
         </p>
-        <div className="mt-10 flex flex-wrap gap-4">
+        <div className="mt-10 flex w-full flex-col gap-3 sm:w-auto sm:flex-row">
           <a
             href="#collection"
-            className="rounded-full bg-gradient-gold px-8 py-4 text-sm font-medium tracking-wide text-white shadow-luxe transition-transform hover:scale-[1.03]"
+            className="w-full rounded-full bg-gradient-gold px-8 py-4 text-center text-sm font-medium tracking-wide text-white shadow-luxe transition-transform hover:scale-[1.03] sm:w-auto"
           >
             View Collection
           </a>
           <a
             href="#contact"
-            className="rounded-full border border-white/40 bg-white/10 px-8 py-4 text-sm font-medium text-white backdrop-blur-md transition-colors hover:bg-white/20"
+            className="w-full rounded-full border border-white/40 bg-white/10 px-8 py-4 text-center text-sm font-medium text-white backdrop-blur-md transition-colors hover:bg-white/20 sm:w-auto"
           >
             Book Consultation
           </a>
