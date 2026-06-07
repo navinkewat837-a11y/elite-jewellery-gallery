@@ -127,6 +127,7 @@ export function Hero() {
           className="absolute inset-0 -z-10 h-full w-full object-cover"
         />
       )}
+      <div className="absolute inset-0 -z-10 bg-black/40" />
       <div className="absolute inset-0 -z-10 bg-[var(--gradient-hero)]" />
 
       {/* Loading overlay — only shown client-side after mount to avoid hydration mismatch */}
