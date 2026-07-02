@@ -127,7 +127,7 @@ export function Hero() {
           className="absolute inset-0 -z-10 h-full w-full object-cover"
         />
       )}
-      <div className="absolute inset-0 -z-10 bg-black/40" />
+      <div className="absolute inset-0 -z-10 bg-black/25" />
       <div className="absolute inset-0 -z-10 bg-[var(--gradient-hero)]" />
 
       {/* Loading overlay — only shown client-side after mount to avoid hydration mismatch */}
@@ -165,11 +165,11 @@ export function Hero() {
           <span className="h-1 w-1 rounded-full bg-[var(--gold-light)]" />
           ELITE JEWELLERY GALLERY
         </span>
-        <h1 className="max-w-3xl font-serif text-5xl font-light leading-[1.05] text-white md:text-7xl lg:text-8xl">
+        <h1 className="max-w-3xl font-serif text-5xl font-light leading-[1.05] text-white [text-shadow:0_2px_4px_rgb(0_0_0_/_0.3)] md:text-7xl lg:text-8xl">
           Timeless <span className="italic text-gradient-gold">Elegance</span>,
           <br /> Crafted for You
         </h1>
-        <p className="mt-6 max-w-xl text-base text-white/85 md:text-lg">
+        <p className="mt-6 max-w-xl text-base text-white/85 [text-shadow:0_1px_3px_rgb(0_0_0_/_0.3)] md:text-lg">
           Shine with Elegance — Discover Our Exclusive Heritage Collection.
         </p>
         <div className="mt-10 flex w-full flex-col gap-3 sm:w-auto sm:flex-row">
