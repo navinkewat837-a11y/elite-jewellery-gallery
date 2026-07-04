@@ -2,6 +2,7 @@ import { useState } from "react";
 import { PRODUCTS, type Product } from "./products";
 import { ProductDialog } from "./ProductDialog";
 import { quoteUrl } from "./contact";
+import { BlurImage } from "./BlurImage";
 
 const fmt = new Intl.NumberFormat("en-IN", { style: "currency", currency: "INR", maximumFractionDigits: 0 });
 
