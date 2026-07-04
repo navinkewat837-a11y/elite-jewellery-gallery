@@ -57,6 +57,8 @@ export function BridalInspiration() {
                 src={bridalImage.url}
                 alt="Peacock embroidered tiered bridal lehenga in pink, magenta and purple ombré with butterfly-motif blouse"
                 loading="lazy"
+                decoding="async"
+                sizes="(min-width: 768px) 50vw, 100vw"
                 width={900}
                 height={1200}
                 className="h-full w-full object-cover transition-transform duration-700 ease-out group-hover:scale-105 group-active:scale-[1.02]"
