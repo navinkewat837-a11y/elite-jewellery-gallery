@@ -31,7 +31,7 @@ export function LatestArrivals() {
               className="group flex flex-col overflow-hidden rounded-xl bg-cream shadow-soft transition-all hover:-translate-y-1 hover:shadow-luxe"
             >
               <div className="relative aspect-square overflow-hidden bg-cream">
-                <img
+                <BlurImage
                   src={p.image}
                   alt={p.name}
                   width={800}
@@ -39,6 +39,7 @@ export function LatestArrivals() {
                   loading="lazy"
                   decoding="async"
                   sizes="(min-width: 1024px) 33vw, (min-width: 640px) 50vw, 100vw"
+                  wrapperClassName="h-full w-full"
                   className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-105"
                 />
                 <span className="absolute left-4 top-4 rounded-full bg-gradient-gold px-3 py-1 text-[10px] tracking-luxe text-white shadow-soft">
