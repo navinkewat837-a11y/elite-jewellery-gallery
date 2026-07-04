@@ -124,6 +124,8 @@ export function Hero() {
         <img
           src={heroPoster.url}
           alt="Elite Jewellery Gallery — luxury gold and diamond collection"
+          fetchPriority="high"
+          decoding="async"
           className="absolute inset-0 -z-10 h-full w-full object-cover"
         />
       )}
@@ -136,6 +138,8 @@ export function Hero() {
           <img
             src={heroPoster.url}
             alt=""
+            aria-hidden="true"
+            decoding="async"
             className="absolute inset-0 h-full w-full object-cover"
           />
           <div className="absolute inset-0 bg-black/60 backdrop-blur-sm" />
