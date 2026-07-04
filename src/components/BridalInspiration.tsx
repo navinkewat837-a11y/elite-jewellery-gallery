@@ -1,4 +1,5 @@
 import bridalImage from "@/assets/bridal-lehenga.jpg.asset.json";
+import { BlurImage } from "./BlurImage";
 import bridalVideo from "@/assets/bridal-inspiration.mp4.asset.json";
 import { useRef } from "react";
 
@@ -53,7 +54,7 @@ export function BridalInspiration() {
             className="group cursor-pointer overflow-hidden rounded-2xl bg-cream shadow-soft ring-1 ring-transparent transition-all duration-300 ease-out hover:-translate-y-1 hover:shadow-luxe hover:ring-[var(--gold-light)]/40 focus-visible:z-10 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--gold)]/60 focus-visible:ring-offset-2 focus-visible:ring-offset-background active:scale-[0.985] active:shadow-soft active:transition-transform active:duration-75"
           >
             <div className="relative aspect-[16/10] overflow-hidden md:aspect-[3/4]">
-              <img
+              <BlurImage
                 src={bridalImage.url}
                 alt="Peacock embroidered tiered bridal lehenga in pink, magenta and purple ombré with butterfly-motif blouse"
                 loading="lazy"
@@ -61,6 +62,7 @@ export function BridalInspiration() {
                 sizes="(min-width: 768px) 50vw, 100vw"
                 width={900}
                 height={1200}
+                wrapperClassName="h-full w-full"
                 className="h-full w-full object-cover transition-transform duration-700 ease-out group-hover:scale-105 group-active:scale-[1.02]"
               />
               <span
