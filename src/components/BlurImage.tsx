@@ -1,4 +1,4 @@
-import { useState, type ImgHTMLAttributes } from "react";
+import { useCallback, useState, type ImgHTMLAttributes } from "react";
 
 type Props = ImgHTMLAttributes<HTMLImageElement> & {
   /** Wrapper class — used for aspect ratio / positioning. */
@@ -21,6 +21,14 @@ export function BlurImage({
 }: Props) {
   const [loaded, setLoaded] = useState(false);
 
+  // Handle cached images: if the browser already decoded the image before
+  // React attached the onLoad handler, mark it loaded immediately.
+  const imgRef = useCallback((node: HTMLImageElement | null) => {
+    if (node && node.complete && node.naturalWidth > 0) {
+      setLoaded(true);
+    }
+  }, []);
+
   return (
     <span className={`relative block overflow-hidden ${wrapperClassName}`}>
       <span
@@ -35,6 +43,7 @@ export function BlurImage({
       />
       <img
         {...imgProps}
+        ref={imgRef}
         onLoad={(e) => {
           setLoaded(true);
           onLoad?.(e);
