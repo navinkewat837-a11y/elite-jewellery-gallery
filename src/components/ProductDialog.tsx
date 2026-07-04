@@ -58,6 +58,8 @@ export function ProductDialog({ product, onClose }: { product: Product | null; o
               alt={product.name}
               width={1200}
               height={1200}
+              decoding="async"
+              sizes="(min-width: 768px) 50vw, 100vw"
               className="h-64 w-full object-cover transition-opacity duration-300 md:h-full"
             />
             <span className="absolute right-3 top-3 flex items-center gap-1 rounded-full bg-background/90 px-2.5 py-1.5 text-[10px] tracking-luxe text-foreground/80 opacity-0 shadow-soft backdrop-blur transition-opacity group-hover:opacity-100">
@@ -77,7 +79,15 @@ export function ProductDialog({ product, onClose }: { product: Product | null; o
                       : "border-transparent opacity-70 hover:opacity-100"
                   }`}
                 >
-                  <img src={src} alt="" className="h-full w-full object-cover" />
+                  <img
+                    src={src}
+                    alt=""
+                    loading="lazy"
+                    decoding="async"
+                    width={80}
+                    height={80}
+                    className="h-full w-full object-cover"
+                  />
                 </button>
               ))}
             </div>
@@ -252,6 +262,7 @@ function Lightbox({
           src={images[activeIdx]}
           alt={alt}
           draggable={false}
+          decoding="async"
           onDoubleClick={toggleZoom}
           onPointerDown={onPointerDown}
           onPointerMove={onPointerMove}
