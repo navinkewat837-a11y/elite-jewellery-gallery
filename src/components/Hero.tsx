@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import heroVideo from "@/assets/hero.mp4.asset.json";
 import heroPoster from "@/assets/hero-poster.jpg.asset.json";
+import { BlurImage } from "./BlurImage";
 
 export function Hero() {
   const videoRef = useRef<HTMLVideoElement>(null);
@@ -121,12 +122,13 @@ export function Hero() {
           className="absolute inset-0 -z-10 h-full w-full object-cover"
         />
       ) : (
-        <img
+        <BlurImage
           src={heroPoster.url}
           alt="Elite Jewellery Gallery — luxury gold and diamond collection"
           fetchPriority="high"
           decoding="async"
-          className="absolute inset-0 -z-10 h-full w-full object-cover"
+          wrapperClassName="absolute inset-0 -z-10 h-full w-full"
+          className="h-full w-full object-cover"
         />
       )}
       <div className="absolute inset-0 -z-10 bg-black/25" />
