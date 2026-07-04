@@ -2,6 +2,7 @@ import { ChevronLeft, ChevronRight, Maximize2, Minus, Plus, X } from "lucide-rea
 import { useCallback, useEffect, useRef, useState } from "react";
 import type { Product } from "./products";
 import { quoteUrl } from "./contact";
+import { BlurImage } from "./BlurImage";
 
 const fmt = new Intl.NumberFormat("en-IN", { style: "currency", currency: "INR", maximumFractionDigits: 0 });
 
@@ -52,7 +53,7 @@ export function ProductDialog({ product, onClose }: { product: Product | null; o
             aria-label="View image fullscreen"
             className="group relative flex-1 overflow-hidden rounded-xl bg-background cursor-zoom-in"
           >
-            <img
+            <BlurImage
               key={images[activeIdx]}
               src={images[activeIdx]}
               alt={product.name}
@@ -60,7 +61,8 @@ export function ProductDialog({ product, onClose }: { product: Product | null; o
               height={1200}
               decoding="async"
               sizes="(min-width: 768px) 50vw, 100vw"
-              className="h-64 w-full object-cover transition-opacity duration-300 md:h-full"
+              wrapperClassName="h-64 w-full md:h-full"
+              className="h-full w-full object-cover"
             />
             <span className="absolute right-3 top-3 flex items-center gap-1 rounded-full bg-background/90 px-2.5 py-1.5 text-[10px] tracking-luxe text-foreground/80 opacity-0 shadow-soft backdrop-blur transition-opacity group-hover:opacity-100">
               <Maximize2 className="h-3 w-3" /> ZOOM
