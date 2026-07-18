@@ -31,6 +31,8 @@ export function Footer() {
       </div>
       <div className="border-t border-white/10 py-5 text-center text-xs text-white/80">
         © {new Date().getFullYear()} Elite Jewellery Gallery. All rights reserved.
+        {" · "}
+        <a href="/admin" className="hover:text-[var(--gold-light)] opacity-60 hover:opacity-100">Admin</a>
       </div>
     </footer>
   );
