@@ -3,6 +3,7 @@ import { CATEGORIES, PRODUCTS, type Category, type Product } from "./products";
 import { ProductDialog } from "./ProductDialog";
 import { quoteUrl } from "./contact";
 import { BlurImage } from "./BlurImage";
+import { useDbProducts } from "@/hooks/useDbProducts";
 
 const FILTERS: ("All" | Category)[] = ["All", ...CATEGORIES];
 const fmt = new Intl.NumberFormat("en-IN", { style: "currency", currency: "INR", maximumFractionDigits: 0 });
@@ -10,7 +11,23 @@ const fmt = new Intl.NumberFormat("en-IN", { style: "currency", currency: "INR",
 export function Collection() {
   const [active, setActive] = useState<(typeof FILTERS)[number]>("All");
   const [selected, setSelected] = useState<Product | null>(null);
-  const items = active === "All" ? PRODUCTS : PRODUCTS.filter((p) => p.category === active);
+  const { products: dbProducts } = useDbProducts();
+
+  const dbAsProducts: Product[] = dbProducts.map((p) => ({
+    id: `db-${p.id}`,
+    name: p.name,
+    category: p.category as Category,
+    price: Number(p.price),
+    image: p.image,
+    gallery: p.gallery?.length ? p.gallery : undefined,
+    description: p.description,
+    isNew: p.is_new,
+    weight: p.weight ?? undefined,
+    metal: p.metal ?? undefined,
+  }));
+
+  const all = [...dbAsProducts, ...PRODUCTS];
+  const items = active === "All" ? all : all.filter((p) => p.category === active);
 
   return (
     <section id="collection" className="bg-cream py-24 md:py-32">
