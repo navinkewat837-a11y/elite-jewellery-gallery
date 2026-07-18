@@ -8,6 +8,46 @@ import { About } from "@/components/About";
 import { Contact } from "@/components/Contact";
 import { Footer } from "@/components/Footer";
 import { WhatsAppFAB } from "@/components/WhatsAppFAB";
+import { PRODUCTS, CATEGORIES } from "@/components/products";
+
+const SITE_URL = "https://elite-jewellery-gallery.lovable.app";
+
+const productSchemas = PRODUCTS.map((p) => ({
+  "@context": "https://schema.org",
+  "@type": "Product",
+  "@id": `${SITE_URL}/#product-${p.id}`,
+  name: p.name,
+  description: p.description,
+  image: typeof p.image === "string" && p.image.startsWith("http") ? p.image : `${SITE_URL}${p.image}`,
+  category: p.category,
+  sku: p.id,
+  brand: { "@type": "Brand", name: "Elite Jewellery Gallery" },
+  ...(p.metal ? { material: p.metal } : {}),
+  ...(p.weight ? { weight: p.weight } : {}),
+  offers: {
+    "@type": "Offer",
+    price: p.price,
+    priceCurrency: "INR",
+    availability: "https://schema.org/InStock",
+    url: `${SITE_URL}/#product-${p.id}`,
+    seller: { "@type": "JewelryStore", name: "Elite Jewellery Gallery" },
+  },
+}));
+
+const categoryListSchema = {
+  "@context": "https://schema.org",
+  "@type": "ItemList",
+  name: "Jewellery Collections",
+  itemListElement: CATEGORIES.map((cat, i) => ({
+    "@type": "ListItem",
+    position: i + 1,
+    item: {
+      "@type": "CollectionPage",
+      name: cat,
+      url: `${SITE_URL}/#${cat.toLowerCase()}`,
+    },
+  })),
+};
 
 export const Route = createFileRoute("/")({
   head: () => ({
@@ -50,6 +90,14 @@ export const Route = createFileRoute("/")({
           },
         }),
       },
+      {
+        type: "application/ld+json",
+        children: JSON.stringify(categoryListSchema),
+      },
+      ...productSchemas.map((schema) => ({
+        type: "application/ld+json" as const,
+        children: JSON.stringify(schema),
+      })),
     ],
   }),
   component: Index,
