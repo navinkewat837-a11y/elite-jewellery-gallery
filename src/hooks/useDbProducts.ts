@@ -25,6 +25,7 @@ export function useDbProducts() {
     const { data } = await supabase
       .from("products")
       .select("*")
+      .eq("status", "published")
       .order("display_order", { ascending: true })
       .order("created_at", { ascending: false });
     setProducts((data as DbProduct[]) ?? []);
