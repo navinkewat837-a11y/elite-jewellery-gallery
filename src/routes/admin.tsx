@@ -28,6 +28,7 @@ const emptyForm: Editable = {
   weight: "",
   metal: "",
   is_new: false,
+  status: "draft",
 };
 
 function AdminPage() {
@@ -42,6 +43,7 @@ function AdminPage() {
   const [tab, setTab] = useState<"products" | "categories">("products");
   const { categories: dbCategories, refetch: refetchCategories } = useDbCategories();
   const [newCategoryName, setNewCategoryName] = useState("");
+  const [statusFilter, setStatusFilter] = useState<"all" | "published" | "draft">("all");
 
   const categoryOptions = dbCategories.length
     ? dbCategories.map((c) => c.name)
@@ -122,6 +124,7 @@ function AdminPage() {
       weight: editing.weight || null,
       metal: editing.metal || null,
       is_new: !!editing.is_new,
+      status: editing.status === "published" ? "published" : "draft",
     };
     if (editing.id) {
       const { error } = await supabase.from("products").update(payload).eq("id", editing.id);
@@ -148,12 +151,21 @@ function AdminPage() {
   }
 
   async function move(id: string, dir: -1 | 1) {
-    const idx = products.findIndex((p) => p.id === id);
-    const swap = products[idx + dir];
+    const list = filteredProducts;
+    const idx = list.findIndex((p) => p.id === id);
+    const swap = list[idx + dir];
     if (!swap) return;
-    const cur = products[idx];
+    const cur = list[idx];
     await supabase.from("products").update({ display_order: swap.display_order }).eq("id", cur.id);
     await supabase.from("products").update({ display_order: cur.display_order }).eq("id", swap.id);
+    load();
+  }
+
+  async function togglePublish(p: DbProduct) {
+    const next = p.status === "published" ? "draft" : "published";
+    const { error } = await supabase.from("products").update({ status: next }).eq("id", p.id);
+    if (error) return toast.error(error.message);
+    toast.success(next === "published" ? "Published — now live" : "Reverted to draft");
     load();
   }
 
