@@ -13,6 +13,7 @@ export interface DbProduct {
   metal: string | null;
   is_new: boolean;
   display_order: number;
+  status: "draft" | "published";
 }
 
 export function useDbProducts() {
