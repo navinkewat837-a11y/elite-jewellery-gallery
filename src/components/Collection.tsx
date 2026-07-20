@@ -4,14 +4,20 @@ import { ProductDialog } from "./ProductDialog";
 import { quoteUrl } from "./contact";
 import { BlurImage } from "./BlurImage";
 import { useDbProducts } from "@/hooks/useDbProducts";
+import { useDbCategories } from "@/hooks/useDbCategories";
 
-const FILTERS: ("All" | Category)[] = ["All", ...CATEGORIES];
 const fmt = new Intl.NumberFormat("en-IN", { style: "currency", currency: "INR", maximumFractionDigits: 0 });
 
 export function Collection() {
-  const [active, setActive] = useState<(typeof FILTERS)[number]>("All");
+  const [active, setActive] = useState<string>("All");
   const [selected, setSelected] = useState<Product | null>(null);
   const { products: dbProducts } = useDbProducts();
+  const { categories: dbCategories } = useDbCategories({ onlyVisible: true });
+
+  const visibleNames = dbCategories.length
+    ? dbCategories.map((c) => c.name)
+    : (CATEGORIES as readonly string[]);
+  const filters: string[] = ["All", ...visibleNames];
 
   const dbAsProducts: Product[] = dbProducts.map((p) => ({
     id: `db-${p.id}`,
@@ -26,7 +32,8 @@ export function Collection() {
     metal: p.metal ?? undefined,
   }));
 
-  const all = [...dbAsProducts, ...PRODUCTS];
+  const allowed = new Set(visibleNames);
+  const all = [...dbAsProducts, ...PRODUCTS].filter((p) => allowed.has(p.category));
   const items = active === "All" ? all : all.filter((p) => p.category === active);
 
   return (
@@ -43,7 +50,7 @@ export function Collection() {
         </div>
 
         <div className="mt-12 flex flex-wrap justify-center gap-2">
-          {FILTERS.map((f) => (
+          {filters.map((f) => (
             <button
               key={f}
               onClick={() => setActive(f)}
