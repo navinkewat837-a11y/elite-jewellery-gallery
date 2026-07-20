@@ -54,6 +54,7 @@ export type Database = {
           metal: string | null
           name: string
           price: number
+          status: string
           updated_at: string
           weight: string | null
         }
@@ -69,6 +70,7 @@ export type Database = {
           metal?: string | null
           name: string
           price?: number
+          status?: string
           updated_at?: string
           weight?: string | null
         }
@@ -84,6 +86,7 @@ export type Database = {
           metal?: string | null
           name?: string
           price?: number
+          status?: string
           updated_at?: string
           weight?: string | null
         }

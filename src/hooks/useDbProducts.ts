@@ -13,6 +13,7 @@ export interface DbProduct {
   metal: string | null;
   is_new: boolean;
   display_order: number;
+  status: "draft" | "published";
 }
 
 export function useDbProducts() {
@@ -24,6 +25,7 @@ export function useDbProducts() {
     const { data } = await supabase
       .from("products")
       .select("*")
+      .eq("status", "published")
       .order("display_order", { ascending: true })
       .order("created_at", { ascending: false });
     setProducts((data as DbProduct[]) ?? []);

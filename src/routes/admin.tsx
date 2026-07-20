@@ -28,6 +28,7 @@ const emptyForm: Editable = {
   weight: "",
   metal: "",
   is_new: false,
+  status: "draft",
 };
 
 function AdminPage() {
@@ -42,6 +43,13 @@ function AdminPage() {
   const [tab, setTab] = useState<"products" | "categories">("products");
   const { categories: dbCategories, refetch: refetchCategories } = useDbCategories();
   const [newCategoryName, setNewCategoryName] = useState("");
+  const [statusFilter, setStatusFilter] = useState<"all" | "published" | "draft">("all");
+
+  const filteredProducts = products.filter((p) =>
+    statusFilter === "all" ? true : p.status === statusFilter,
+  );
+  const draftCount = products.filter((p) => p.status === "draft").length;
+  const publishedCount = products.filter((p) => p.status === "published").length;
 
   const categoryOptions = dbCategories.length
     ? dbCategories.map((c) => c.name)
@@ -122,6 +130,7 @@ function AdminPage() {
       weight: editing.weight || null,
       metal: editing.metal || null,
       is_new: !!editing.is_new,
+      status: editing.status === "published" ? "published" : "draft",
     };
     if (editing.id) {
       const { error } = await supabase.from("products").update(payload).eq("id", editing.id);
@@ -148,12 +157,21 @@ function AdminPage() {
   }
 
   async function move(id: string, dir: -1 | 1) {
-    const idx = products.findIndex((p) => p.id === id);
-    const swap = products[idx + dir];
+    const list = filteredProducts;
+    const idx = list.findIndex((p) => p.id === id);
+    const swap = list[idx + dir];
     if (!swap) return;
-    const cur = products[idx];
+    const cur = list[idx];
     await supabase.from("products").update({ display_order: swap.display_order }).eq("id", cur.id);
     await supabase.from("products").update({ display_order: cur.display_order }).eq("id", swap.id);
+    load();
+  }
+
+  async function togglePublish(p: DbProduct) {
+    const next = p.status === "published" ? "draft" : "published";
+    const { error } = await supabase.from("products").update({ status: next }).eq("id", p.id);
+    if (error) return toast.error(error.message);
+    toast.success(next === "published" ? "Published — now live" : "Reverted to draft");
     load();
   }
 
@@ -416,6 +434,32 @@ function AdminPage() {
 
         {tab === "products" && (
         <div className="overflow-hidden rounded-xl border border-border bg-background">
+          <div className="flex flex-wrap items-center gap-2 border-b border-border p-4">
+            {(["all", "published", "draft"] as const).map((s) => {
+              const label =
+                s === "all"
+                  ? `All (${products.length})`
+                  : s === "published"
+                  ? `Published (${publishedCount})`
+                  : `Drafts (${draftCount})`;
+              return (
+                <button
+                  key={s}
+                  onClick={() => setStatusFilter(s)}
+                  className={`rounded-full px-4 py-1.5 text-xs ${
+                    statusFilter === s
+                      ? "bg-foreground text-background"
+                      : "border border-border text-muted-foreground hover:border-[var(--gold)]"
+                  }`}
+                >
+                  {label}
+                </button>
+              );
+            })}
+            <span className="ml-auto text-xs text-muted-foreground">
+              Only <strong>Published</strong> products appear on the public site.
+            </span>
+          </div>
           <table className="w-full text-sm">
             <thead className="bg-cream/50 text-left text-xs tracking-luxe text-muted-foreground">
               <tr>
@@ -424,11 +468,12 @@ function AdminPage() {
                 <th className="px-4 py-3">NAME</th>
                 <th className="px-4 py-3">CATEGORY</th>
                 <th className="px-4 py-3">PRICE</th>
+                <th className="px-4 py-3">STATUS</th>
                 <th className="px-4 py-3 text-right">ACTIONS</th>
               </tr>
             </thead>
             <tbody>
-              {products.map((p, i) => (
+              {filteredProducts.map((p, i) => (
                 <tr key={p.id} className="border-t border-border">
                   <td className="px-4 py-3">
                     <div className="flex flex-col gap-1">
@@ -442,7 +487,7 @@ function AdminPage() {
                       <span className="text-xs text-muted-foreground">{p.display_order}</span>
                       <button
                         onClick={() => move(p.id, 1)}
-                        disabled={i === products.length - 1}
+                        disabled={i === filteredProducts.length - 1}
                         className="text-xs disabled:opacity-30"
                       >
                         ▼
@@ -459,6 +504,19 @@ function AdminPage() {
                   <td className="px-4 py-3 font-medium">{p.name}</td>
                   <td className="px-4 py-3 text-muted-foreground">{p.category}</td>
                   <td className="px-4 py-3">₹{p.price.toLocaleString("en-IN")}</td>
+                  <td className="px-4 py-3">
+                    <button
+                      onClick={() => togglePublish(p)}
+                      className={`rounded-full px-3 py-1 text-[10px] font-medium tracking-luxe ${
+                        p.status === "published"
+                          ? "bg-emerald-100 text-emerald-800 hover:bg-emerald-200"
+                          : "bg-amber-100 text-amber-800 hover:bg-amber-200"
+                      }`}
+                      title={p.status === "published" ? "Click to revert to draft" : "Click to publish"}
+                    >
+                      {p.status === "published" ? "● PUBLISHED" : "○ DRAFT"}
+                    </button>
+                  </td>
                   <td className="px-4 py-3 text-right">
                     <button
                       onClick={() => setEditing(p)}
@@ -475,10 +533,12 @@ function AdminPage() {
                   </td>
                 </tr>
               ))}
-              {products.length === 0 && (
+              {filteredProducts.length === 0 && (
                 <tr>
-                  <td colSpan={6} className="px-4 py-12 text-center text-muted-foreground">
-                    No products yet. Click <strong>+ New Product</strong> to add one.
+                  <td colSpan={7} className="px-4 py-12 text-center text-muted-foreground">
+                    {products.length === 0
+                      ? <>No products yet. Click <strong>+ New Product</strong> to add one.</>
+                      : "No products match this filter."}
                   </td>
                 </tr>
               )}
@@ -556,6 +616,30 @@ function AdminPage() {
                 />
                 Show "NEW" badge
               </label>
+
+              <Field label="Publish status">
+                <div className="flex gap-2">
+                  {(["draft", "published"] as const).map((s) => (
+                    <button
+                      key={s}
+                      type="button"
+                      onClick={() => setEditing({ ...editing, status: s })}
+                      className={`flex-1 rounded-full px-4 py-2 text-sm ${
+                        (editing.status ?? "draft") === s
+                          ? s === "published"
+                            ? "bg-emerald-600 text-white"
+                            : "bg-amber-500 text-white"
+                          : "border border-border text-muted-foreground"
+                      }`}
+                    >
+                      {s === "published" ? "● Published (live)" : "○ Draft (hidden)"}
+                    </button>
+                  ))}
+                </div>
+                <p className="mt-2 text-xs text-muted-foreground">
+                  Drafts are only visible to you here in the admin. Published items appear on the site immediately.
+                </p>
+              </Field>
 
               <Field label="Main Image">
                 <div className="flex items-center gap-3">
