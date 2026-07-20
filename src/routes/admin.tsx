@@ -617,6 +617,30 @@ function AdminPage() {
                 Show "NEW" badge
               </label>
 
+              <Field label="Publish status">
+                <div className="flex gap-2">
+                  {(["draft", "published"] as const).map((s) => (
+                    <button
+                      key={s}
+                      type="button"
+                      onClick={() => setEditing({ ...editing, status: s })}
+                      className={`flex-1 rounded-full px-4 py-2 text-sm ${
+                        (editing.status ?? "draft") === s
+                          ? s === "published"
+                            ? "bg-emerald-600 text-white"
+                            : "bg-amber-500 text-white"
+                          : "border border-border text-muted-foreground"
+                      }`}
+                    >
+                      {s === "published" ? "● Published (live)" : "○ Draft (hidden)"}
+                    </button>
+                  ))}
+                </div>
+                <p className="mt-2 text-xs text-muted-foreground">
+                  Drafts are only visible to you here in the admin. Published items appear on the site immediately.
+                </p>
+              </Field>
+
               <Field label="Main Image">
                 <div className="flex items-center gap-3">
                   {editing.image && (
