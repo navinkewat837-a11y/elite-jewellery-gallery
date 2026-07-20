@@ -434,6 +434,32 @@ function AdminPage() {
 
         {tab === "products" && (
         <div className="overflow-hidden rounded-xl border border-border bg-background">
+          <div className="flex flex-wrap items-center gap-2 border-b border-border p-4">
+            {(["all", "published", "draft"] as const).map((s) => {
+              const label =
+                s === "all"
+                  ? `All (${products.length})`
+                  : s === "published"
+                  ? `Published (${publishedCount})`
+                  : `Drafts (${draftCount})`;
+              return (
+                <button
+                  key={s}
+                  onClick={() => setStatusFilter(s)}
+                  className={`rounded-full px-4 py-1.5 text-xs ${
+                    statusFilter === s
+                      ? "bg-foreground text-background"
+                      : "border border-border text-muted-foreground hover:border-[var(--gold)]"
+                  }`}
+                >
+                  {label}
+                </button>
+              );
+            })}
+            <span className="ml-auto text-xs text-muted-foreground">
+              Only <strong>Published</strong> products appear on the public site.
+            </span>
+          </div>
           <table className="w-full text-sm">
             <thead className="bg-cream/50 text-left text-xs tracking-luxe text-muted-foreground">
               <tr>
@@ -442,11 +468,12 @@ function AdminPage() {
                 <th className="px-4 py-3">NAME</th>
                 <th className="px-4 py-3">CATEGORY</th>
                 <th className="px-4 py-3">PRICE</th>
+                <th className="px-4 py-3">STATUS</th>
                 <th className="px-4 py-3 text-right">ACTIONS</th>
               </tr>
             </thead>
             <tbody>
-              {products.map((p, i) => (
+              {filteredProducts.map((p, i) => (
                 <tr key={p.id} className="border-t border-border">
                   <td className="px-4 py-3">
                     <div className="flex flex-col gap-1">
@@ -460,7 +487,7 @@ function AdminPage() {
                       <span className="text-xs text-muted-foreground">{p.display_order}</span>
                       <button
                         onClick={() => move(p.id, 1)}
-                        disabled={i === products.length - 1}
+                        disabled={i === filteredProducts.length - 1}
                         className="text-xs disabled:opacity-30"
                       >
                         ▼
@@ -477,6 +504,19 @@ function AdminPage() {
                   <td className="px-4 py-3 font-medium">{p.name}</td>
                   <td className="px-4 py-3 text-muted-foreground">{p.category}</td>
                   <td className="px-4 py-3">₹{p.price.toLocaleString("en-IN")}</td>
+                  <td className="px-4 py-3">
+                    <button
+                      onClick={() => togglePublish(p)}
+                      className={`rounded-full px-3 py-1 text-[10px] font-medium tracking-luxe ${
+                        p.status === "published"
+                          ? "bg-emerald-100 text-emerald-800 hover:bg-emerald-200"
+                          : "bg-amber-100 text-amber-800 hover:bg-amber-200"
+                      }`}
+                      title={p.status === "published" ? "Click to revert to draft" : "Click to publish"}
+                    >
+                      {p.status === "published" ? "● PUBLISHED" : "○ DRAFT"}
+                    </button>
+                  </td>
                   <td className="px-4 py-3 text-right">
                     <button
                       onClick={() => setEditing(p)}
@@ -493,10 +533,12 @@ function AdminPage() {
                   </td>
                 </tr>
               ))}
-              {products.length === 0 && (
+              {filteredProducts.length === 0 && (
                 <tr>
-                  <td colSpan={6} className="px-4 py-12 text-center text-muted-foreground">
-                    No products yet. Click <strong>+ New Product</strong> to add one.
+                  <td colSpan={7} className="px-4 py-12 text-center text-muted-foreground">
+                    {products.length === 0
+                      ? <>No products yet. Click <strong>+ New Product</strong> to add one.</>
+                      : "No products match this filter."}
                   </td>
                 </tr>
               )}
