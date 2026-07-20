@@ -45,6 +45,12 @@ function AdminPage() {
   const [newCategoryName, setNewCategoryName] = useState("");
   const [statusFilter, setStatusFilter] = useState<"all" | "published" | "draft">("all");
 
+  const filteredProducts = products.filter((p) =>
+    statusFilter === "all" ? true : p.status === statusFilter,
+  );
+  const draftCount = products.filter((p) => p.status === "draft").length;
+  const publishedCount = products.filter((p) => p.status === "published").length;
+
   const categoryOptions = dbCategories.length
     ? dbCategories.map((c) => c.name)
     : (CATEGORIES as readonly string[]);
