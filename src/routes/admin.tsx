@@ -551,6 +551,14 @@ function AdminPage() {
                     >
                       {p.status === "published" ? "● PUBLISHED" : "○ DRAFT"}
                     </button>
+                    {p.status === "draft" && p.publish_at && (
+                      <div
+                        className="mt-1 text-[10px] text-sky-700"
+                        title={`Scheduled to publish at ${formatScheduled(p.publish_at)}`}
+                      >
+                        ⏱ {formatScheduled(p.publish_at)}
+                      </div>
+                    )}
                   </td>
                   <td className="px-4 py-3 text-right">
                     <button
