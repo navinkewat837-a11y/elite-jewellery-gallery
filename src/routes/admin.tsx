@@ -296,16 +296,14 @@ function AdminPage() {
             <p className="text-xs text-muted-foreground">{userEmail}</p>
           </div>
           <div className="flex gap-2">
-            <button
-              onClick={() => {
-                setPreview(true);
-                navigate({ to: "/", search: { preview: "1" } as never });
-              }}
+            <a
+              href="/?preview=1#collection"
+              onClick={() => setPreview(true)}
               className="rounded-full border border-amber-400 bg-amber-50 px-4 py-2 text-sm text-amber-900 hover:bg-amber-100"
               title="View site with draft products visible"
             >
               Preview drafts on site
-            </button>
+            </a>
             <Link to="/" className="rounded-full border border-border px-4 py-2 text-sm">View site</Link>
             <button onClick={signOut} className="rounded-full border border-border px-4 py-2 text-sm">
               Sign out
