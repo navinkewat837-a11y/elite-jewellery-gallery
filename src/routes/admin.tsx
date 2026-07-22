@@ -63,11 +63,100 @@ function AdminPage() {
   const [products, setProducts] = useState<DbProduct[]>([]);
   const [editing, setEditing] = useState<Editable | null>(null);
   const [uploading, setUploading] = useState(false);
-  const [tab, setTab] = useState<"products" | "categories">("products");
+  const [tab, setTab] = useState<"products" | "categories" | "previews">("products");
   const { categories: dbCategories, refetch: refetchCategories } = useDbCategories();
   const [newCategoryName, setNewCategoryName] = useState("");
   const [statusFilter, setStatusFilter] = useState<"all" | "published" | "draft">("all");
   const { setPreview } = usePreviewMode();
+
+  // ---------- Preview tokens ----------
+  type PreviewToken = {
+    id: string;
+    token: string;
+    note: string | null;
+    expires_at: string;
+    revoked: boolean;
+    created_at: string;
+  };
+  const [previewTokens, setPreviewTokens] = useState<PreviewToken[]>([]);
+  const [ptNote, setPtNote] = useState("");
+  const [ptDays, setPtDays] = useState(7);
+
+  const loadPreviewTokens = useCallback(async () => {
+    const { data } = await supabase
+      .from("preview_tokens")
+      .select("id, token, note, expires_at, revoked, created_at")
+      .order("created_at", { ascending: false });
+    setPreviewTokens((data as PreviewToken[]) ?? []);
+  }, []);
+
+  useEffect(() => {
+    if (isAdmin && tab === "previews") loadPreviewTokens();
+  }, [isAdmin, tab, loadPreviewTokens]);
+
+  function randomToken(): string {
+    const bytes = new Uint8Array(24);
+    crypto.getRandomValues(bytes);
+    // URL-safe base64
+    let s = btoa(String.fromCharCode(...bytes));
+    s = s.replace(/\+/g, "-").replace(/\//g, "_").replace(/=+$/, "");
+    return s;
+  }
+
+  async function createPreviewToken() {
+    const days = Math.max(1, Math.min(90, Number(ptDays) || 7));
+    const expiresAt = new Date(Date.now() + days * 24 * 60 * 60 * 1000).toISOString();
+    const token = randomToken();
+    const { error } = await supabase.from("preview_tokens").insert({
+      token,
+      note: ptNote.trim() || null,
+      expires_at: expiresAt,
+      created_by: userId,
+    });
+    if (error) return toast.error(error.message);
+    toast.success("Preview link created");
+    setPtNote("");
+    loadPreviewTokens();
+  }
+
+  async function revokePreviewToken(id: string) {
+    const { error } = await supabase
+      .from("preview_tokens")
+      .update({ revoked: true })
+      .eq("id", id);
+    if (error) return toast.error(error.message);
+    toast.success("Link revoked");
+    loadPreviewTokens();
+  }
+
+  async function deletePreviewToken(id: string) {
+    if (!confirm("Delete this preview link permanently?")) return;
+    const { error } = await supabase.from("preview_tokens").delete().eq("id", id);
+    if (error) return toast.error(error.message);
+    toast.success("Deleted");
+    loadPreviewTokens();
+  }
+
+  function previewUrl(token: string): string {
+    const base = typeof window !== "undefined" ? window.location.origin : "";
+    return `${base}/preview/${token}`;
+  }
+
+  async function copyPreviewUrl(token: string) {
+    try {
+      await navigator.clipboard.writeText(previewUrl(token));
+      toast.success("Link copied to clipboard");
+    } catch {
+      toast.error("Could not copy — select and copy manually");
+    }
+  }
+
+  function tokenStatus(t: PreviewToken): { label: string; className: string; active: boolean } {
+    if (t.revoked) return { label: "Revoked", className: "bg-red-100 text-red-700", active: false };
+    const expired = new Date(t.expires_at).getTime() <= Date.now();
+    if (expired) return { label: "Expired", className: "bg-muted text-muted-foreground", active: false };
+    return { label: "Active", className: "bg-emerald-100 text-emerald-700", active: true };
+  }
 
   const filteredProducts = products.filter((p) =>
     statusFilter === "all" ? true : p.status === statusFilter,
