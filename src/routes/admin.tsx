@@ -5,6 +5,7 @@ import { toast } from "sonner";
 import { CATEGORIES } from "@/components/products";
 import type { DbProduct } from "@/hooks/useDbProducts";
 import { useDbCategories, type DbCategory } from "@/hooks/useDbCategories";
+import { usePreviewMode } from "@/hooks/usePreviewMode";
 
 export const Route = createFileRoute("/admin")({
   head: () => ({
@@ -44,6 +45,7 @@ function AdminPage() {
   const { categories: dbCategories, refetch: refetchCategories } = useDbCategories();
   const [newCategoryName, setNewCategoryName] = useState("");
   const [statusFilter, setStatusFilter] = useState<"all" | "published" | "draft">("all");
+  const { setPreview } = usePreviewMode();
 
   const filteredProducts = products.filter((p) =>
     statusFilter === "all" ? true : p.status === statusFilter,
@@ -294,6 +296,16 @@ function AdminPage() {
             <p className="text-xs text-muted-foreground">{userEmail}</p>
           </div>
           <div className="flex gap-2">
+            <button
+              onClick={() => {
+                setPreview(true);
+                navigate({ to: "/", search: { preview: "1" } as never });
+              }}
+              className="rounded-full border border-amber-400 bg-amber-50 px-4 py-2 text-sm text-amber-900 hover:bg-amber-100"
+              title="View site with draft products visible"
+            >
+              Preview drafts on site
+            </button>
             <Link to="/" className="rounded-full border border-border px-4 py-2 text-sm">View site</Link>
             <button onClick={signOut} className="rounded-full border border-border px-4 py-2 text-sm">
               Sign out
