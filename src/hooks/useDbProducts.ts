@@ -14,6 +14,7 @@ export interface DbProduct {
   is_new: boolean;
   display_order: number;
   status: "draft" | "published";
+  publish_at: string | null;
 }
 
 export function useDbProducts(options?: { preview?: boolean }) {
