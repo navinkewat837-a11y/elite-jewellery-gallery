@@ -441,6 +441,12 @@ function AdminPage() {
             >
               Categories ({dbCategories.length})
             </button>
+            <button
+              onClick={() => setTab("previews")}
+              className={`rounded-full px-5 py-2 text-sm ${tab === "previews" ? "bg-gradient-gold text-white" : "border border-border"}`}
+            >
+              Preview Links
+            </button>
           </div>
           {tab === "products" && (
             <button
