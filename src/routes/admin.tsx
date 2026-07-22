@@ -684,6 +684,40 @@ function AdminPage() {
                 </p>
               </Field>
 
+              {(editing.status ?? "draft") === "draft" && (
+                <Field label="Schedule publish (optional)">
+                  <div className="flex flex-wrap items-center gap-2">
+                    <input
+                      type="datetime-local"
+                      value={toLocalInput(editing.publish_at)}
+                      min={toLocalInput(new Date().toISOString())}
+                      onChange={(e) =>
+                        setEditing({ ...editing, publish_at: fromLocalInput(e.target.value) })
+                      }
+                      className="rounded-lg border border-border px-3 py-2 text-sm"
+                    />
+                    {editing.publish_at && (
+                      <button
+                        type="button"
+                        onClick={() => setEditing({ ...editing, publish_at: null })}
+                        className="rounded-full border border-border px-3 py-1 text-xs text-muted-foreground hover:border-red-300 hover:text-red-600"
+                      >
+                        Clear
+                      </button>
+                    )}
+                  </div>
+                  <p className="mt-2 text-xs text-muted-foreground">
+                    Leave empty for manual publishing. If set, this draft will auto-publish at the
+                    chosen time (checked every minute). Uses your local timezone.
+                  </p>
+                </Field>
+              )}
+              {(editing.status ?? "draft") === "published" && editing.publish_at && (
+                <p className="text-xs text-muted-foreground">
+                  Publishing now will clear the previously scheduled time ({formatScheduled(editing.publish_at)}).
+                </p>
+              )}
+
               <Field label="Main Image">
                 <div className="flex items-center gap-3">
                   {editing.image && (
