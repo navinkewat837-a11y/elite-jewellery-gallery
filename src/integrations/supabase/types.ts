@@ -41,6 +41,36 @@ export type Database = {
         }
         Relationships: []
       }
+      preview_tokens: {
+        Row: {
+          created_at: string
+          created_by: string | null
+          expires_at: string
+          id: string
+          note: string | null
+          revoked: boolean
+          token: string
+        }
+        Insert: {
+          created_at?: string
+          created_by?: string | null
+          expires_at: string
+          id?: string
+          note?: string | null
+          revoked?: boolean
+          token: string
+        }
+        Update: {
+          created_at?: string
+          created_by?: string | null
+          expires_at?: string
+          id?: string
+          note?: string | null
+          revoked?: boolean
+          token?: string
+        }
+        Relationships: []
+      }
       products: {
         Row: {
           category: string
@@ -121,6 +151,49 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      get_preview_categories: {
+        Args: { _token: string }
+        Returns: {
+          created_at: string
+          display_order: number
+          id: string
+          name: string
+          updated_at: string
+          visible: boolean
+        }[]
+        SetofOptions: {
+          from: "*"
+          to: "categories"
+          isOneToOne: false
+          isSetofReturn: true
+        }
+      }
+      get_preview_products: {
+        Args: { _token: string }
+        Returns: {
+          category: string
+          created_at: string
+          description: string
+          display_order: number
+          gallery: string[]
+          id: string
+          image: string
+          is_new: boolean
+          metal: string | null
+          name: string
+          price: number
+          publish_at: string | null
+          status: string
+          updated_at: string
+          weight: string | null
+        }[]
+        SetofOptions: {
+          from: "*"
+          to: "products"
+          isOneToOne: false
+          isSetofReturn: true
+        }
+      }
       has_role: {
         Args: {
           _role: Database["public"]["Enums"]["app_role"]
@@ -128,6 +201,7 @@ export type Database = {
         }
         Returns: boolean
       }
+      is_preview_token_valid: { Args: { _token: string }; Returns: boolean }
       run_scheduled_product_publishes: { Args: never; Returns: number }
     }
     Enums: {
