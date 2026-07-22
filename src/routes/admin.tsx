@@ -562,6 +562,132 @@ function AdminPage() {
           </div>
         )}
 
+        {tab === "previews" && (
+          <div className="overflow-hidden rounded-xl border border-border bg-background">
+            <div className="border-b border-border p-4">
+              <h2 className="font-serif text-lg">Shareable draft previews</h2>
+              <p className="mt-1 text-xs text-muted-foreground">
+                Create expiring links that let your team view drafts without signing in.
+                Each link works until it expires or you revoke it.
+              </p>
+              <div className="mt-4 flex flex-wrap items-end gap-3">
+                <div className="flex-1 min-w-[220px]">
+                  <label className="block text-xs text-muted-foreground">Note (optional)</label>
+                  <input
+                    value={ptNote}
+                    onChange={(e) => setPtNote(e.target.value)}
+                    placeholder="e.g. Diwali drop review for Priya"
+                    className="mt-1 w-full rounded-lg border border-border px-3 py-2 text-sm"
+                  />
+                </div>
+                <div>
+                  <label className="block text-xs text-muted-foreground">Expires in (days)</label>
+                  <input
+                    type="number"
+                    min={1}
+                    max={90}
+                    value={ptDays}
+                    onChange={(e) => setPtDays(Number(e.target.value))}
+                    className="mt-1 w-24 rounded-lg border border-border px-3 py-2 text-sm"
+                  />
+                </div>
+                <button
+                  onClick={createPreviewToken}
+                  className="rounded-full bg-gradient-gold px-5 py-2 text-sm font-medium text-white"
+                >
+                  + Create link
+                </button>
+              </div>
+            </div>
+
+            <table className="w-full text-sm">
+              <thead className="bg-cream/50 text-left text-xs tracking-luxe text-muted-foreground">
+                <tr>
+                  <th className="px-4 py-3">STATUS</th>
+                  <th className="px-4 py-3">NOTE</th>
+                  <th className="px-4 py-3">LINK</th>
+                  <th className="px-4 py-3">EXPIRES</th>
+                  <th className="px-4 py-3 text-right">ACTIONS</th>
+                </tr>
+              </thead>
+              <tbody>
+                {previewTokens.map((t) => {
+                  const s = tokenStatus(t);
+                  const url = previewUrl(t.token);
+                  return (
+                    <tr key={t.id} className="border-t border-border align-top">
+                      <td className="px-4 py-3">
+                        <span className={`inline-block rounded-full px-2 py-0.5 text-[10px] font-medium ${s.className}`}>
+                          {s.label}
+                        </span>
+                      </td>
+                      <td className="px-4 py-3">
+                        <span className="text-foreground/80">{t.note || <em className="text-muted-foreground">—</em>}</span>
+                      </td>
+                      <td className="px-4 py-3">
+                        <div className="flex items-center gap-2">
+                          <code className="max-w-[280px] truncate rounded bg-cream/70 px-2 py-1 text-xs">{url}</code>
+                          <button
+                            onClick={() => copyPreviewUrl(t.token)}
+                            className="rounded-full border border-border px-3 py-1 text-xs hover:border-[var(--gold)]"
+                          >
+                            Copy
+                          </button>
+                          {s.active && (
+                            <a
+                              href={url}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              className="rounded-full border border-border px-3 py-1 text-xs hover:border-[var(--gold)]"
+                            >
+                              Open
+                            </a>
+                          )}
+                        </div>
+                      </td>
+                      <td className="px-4 py-3 text-xs text-muted-foreground">
+                        {new Date(t.expires_at).toLocaleString(undefined, {
+                          dateStyle: "medium",
+                          timeStyle: "short",
+                        })}
+                      </td>
+                      <td className="px-4 py-3 text-right">
+                        <div className="inline-flex gap-2">
+                          {s.active && (
+                            <button
+                              onClick={() => revokePreviewToken(t.id)}
+                              className="rounded-full border border-amber-300 px-3 py-1 text-xs text-amber-700 hover:bg-amber-50"
+                            >
+                              Revoke
+                            </button>
+                          )}
+                          <button
+                            onClick={() => deletePreviewToken(t.id)}
+                            className="rounded-full border border-red-200 px-3 py-1 text-xs text-red-600 hover:bg-red-50"
+                          >
+                            Delete
+                          </button>
+                        </div>
+                      </td>
+                    </tr>
+                  );
+                })}
+                {previewTokens.length === 0 && (
+                  <tr>
+                    <td colSpan={5} className="px-4 py-12 text-center text-muted-foreground">
+                      No preview links yet. Create one above.
+                    </td>
+                  </tr>
+                )}
+              </tbody>
+            </table>
+            <p className="border-t border-border p-4 text-xs text-muted-foreground">
+              Anyone with an active link can view all products (including drafts) — no login required.
+              Revoke or delete a link to cut off access immediately.
+            </p>
+          </div>
+        )}
+
         {tab === "products" && (
         <div className="overflow-hidden rounded-xl border border-border bg-background">
           <div className="flex flex-wrap items-center gap-2 border-b border-border p-4">
