@@ -30,7 +30,29 @@ const emptyForm: Editable = {
   metal: "",
   is_new: false,
   status: "draft",
+  publish_at: null,
 };
+
+function toLocalInput(iso: string | null | undefined): string {
+  if (!iso) return "";
+  const d = new Date(iso);
+  if (Number.isNaN(d.getTime())) return "";
+  const pad = (n: number) => String(n).padStart(2, "0");
+  return `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}T${pad(d.getHours())}:${pad(d.getMinutes())}`;
+}
+
+function fromLocalInput(local: string): string | null {
+  if (!local) return null;
+  const d = new Date(local);
+  if (Number.isNaN(d.getTime())) return null;
+  return d.toISOString();
+}
+
+function formatScheduled(iso: string | null): string {
+  if (!iso) return "";
+  const d = new Date(iso);
+  return d.toLocaleString(undefined, { dateStyle: "medium", timeStyle: "short" });
+}
 
 function AdminPage() {
   const navigate = useNavigate();
@@ -133,6 +155,9 @@ function AdminPage() {
       metal: editing.metal || null,
       is_new: !!editing.is_new,
       status: editing.status === "published" ? "published" : "draft",
+      // Only drafts can have a scheduled publish time; clear when publishing directly.
+      publish_at:
+        editing.status === "published" ? null : editing.publish_at ?? null,
     };
     if (editing.id) {
       const { error } = await supabase.from("products").update(payload).eq("id", editing.id);
