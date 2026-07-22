@@ -16,25 +16,29 @@ export interface DbProduct {
   status: "draft" | "published";
 }
 
-export function useDbProducts() {
+export function useDbProducts(options?: { preview?: boolean }) {
+  const preview = !!options?.preview;
   const [products, setProducts] = useState<DbProduct[]>([]);
   const [loading, setLoading] = useState(true);
 
   const refetch = async () => {
     setLoading(true);
-    const { data } = await supabase
+    let query = supabase
       .from("products")
       .select("*")
-      .eq("status", "published")
       .order("display_order", { ascending: true })
       .order("created_at", { ascending: false });
+    // In preview mode, admin RLS allows drafts through; otherwise restrict.
+    if (!preview) query = query.eq("status", "published");
+    const { data } = await query;
     setProducts((data as DbProduct[]) ?? []);
     setLoading(false);
   };
 
   useEffect(() => {
     refetch();
-  }, []);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [preview]);
 
   return { products, loading, refetch };
 }
