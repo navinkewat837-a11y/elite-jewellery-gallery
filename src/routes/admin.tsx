@@ -30,7 +30,29 @@ const emptyForm: Editable = {
   metal: "",
   is_new: false,
   status: "draft",
+  publish_at: null,
 };
+
+function toLocalInput(iso: string | null | undefined): string {
+  if (!iso) return "";
+  const d = new Date(iso);
+  if (Number.isNaN(d.getTime())) return "";
+  const pad = (n: number) => String(n).padStart(2, "0");
+  return `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}T${pad(d.getHours())}:${pad(d.getMinutes())}`;
+}
+
+function fromLocalInput(local: string): string | null {
+  if (!local) return null;
+  const d = new Date(local);
+  if (Number.isNaN(d.getTime())) return null;
+  return d.toISOString();
+}
+
+function formatScheduled(iso: string | null): string {
+  if (!iso) return "";
+  const d = new Date(iso);
+  return d.toLocaleString(undefined, { dateStyle: "medium", timeStyle: "short" });
+}
 
 function AdminPage() {
   const navigate = useNavigate();
@@ -133,6 +155,9 @@ function AdminPage() {
       metal: editing.metal || null,
       is_new: !!editing.is_new,
       status: editing.status === "published" ? "published" : "draft",
+      // Only drafts can have a scheduled publish time; clear when publishing directly.
+      publish_at:
+        editing.status === "published" ? null : editing.publish_at ?? null,
     };
     if (editing.id) {
       const { error } = await supabase.from("products").update(payload).eq("id", editing.id);
@@ -526,6 +551,14 @@ function AdminPage() {
                     >
                       {p.status === "published" ? "● PUBLISHED" : "○ DRAFT"}
                     </button>
+                    {p.status === "draft" && p.publish_at && (
+                      <div
+                        className="mt-1 text-[10px] text-sky-700"
+                        title={`Scheduled to publish at ${formatScheduled(p.publish_at)}`}
+                      >
+                        ⏱ {formatScheduled(p.publish_at)}
+                      </div>
+                    )}
                   </td>
                   <td className="px-4 py-3 text-right">
                     <button
@@ -650,6 +683,40 @@ function AdminPage() {
                   Drafts are only visible to you here in the admin. Published items appear on the site immediately.
                 </p>
               </Field>
+
+              {(editing.status ?? "draft") === "draft" && (
+                <Field label="Schedule publish (optional)">
+                  <div className="flex flex-wrap items-center gap-2">
+                    <input
+                      type="datetime-local"
+                      value={toLocalInput(editing.publish_at)}
+                      min={toLocalInput(new Date().toISOString())}
+                      onChange={(e) =>
+                        setEditing({ ...editing, publish_at: fromLocalInput(e.target.value) })
+                      }
+                      className="rounded-lg border border-border px-3 py-2 text-sm"
+                    />
+                    {editing.publish_at && (
+                      <button
+                        type="button"
+                        onClick={() => setEditing({ ...editing, publish_at: null })}
+                        className="rounded-full border border-border px-3 py-1 text-xs text-muted-foreground hover:border-red-300 hover:text-red-600"
+                      >
+                        Clear
+                      </button>
+                    )}
+                  </div>
+                  <p className="mt-2 text-xs text-muted-foreground">
+                    Leave empty for manual publishing. If set, this draft will auto-publish at the
+                    chosen time (checked every minute). Uses your local timezone.
+                  </p>
+                </Field>
+              )}
+              {(editing.status ?? "draft") === "published" && editing.publish_at && (
+                <p className="text-xs text-muted-foreground">
+                  Publishing now will clear the previously scheduled time ({formatScheduled(editing.publish_at)}).
+                </p>
+              )}
 
               <Field label="Main Image">
                 <div className="flex items-center gap-3">

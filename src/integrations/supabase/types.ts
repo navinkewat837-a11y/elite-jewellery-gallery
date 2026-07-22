@@ -54,6 +54,7 @@ export type Database = {
           metal: string | null
           name: string
           price: number
+          publish_at: string | null
           status: string
           updated_at: string
           weight: string | null
@@ -70,6 +71,7 @@ export type Database = {
           metal?: string | null
           name: string
           price?: number
+          publish_at?: string | null
           status?: string
           updated_at?: string
           weight?: string | null
@@ -86,6 +88,7 @@ export type Database = {
           metal?: string | null
           name?: string
           price?: number
+          publish_at?: string | null
           status?: string
           updated_at?: string
           weight?: string | null
@@ -125,6 +128,7 @@ export type Database = {
         }
         Returns: boolean
       }
+      run_scheduled_product_publishes: { Args: never; Returns: number }
     }
     Enums: {
       app_role: "admin" | "user"
