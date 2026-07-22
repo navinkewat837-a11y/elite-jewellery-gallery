@@ -5,13 +5,15 @@ import { quoteUrl } from "./contact";
 import { BlurImage } from "./BlurImage";
 import { useDbProducts } from "@/hooks/useDbProducts";
 import { useDbCategories } from "@/hooks/useDbCategories";
+import { usePreviewMode } from "@/hooks/usePreviewMode";
 
 const fmt = new Intl.NumberFormat("en-IN", { style: "currency", currency: "INR", maximumFractionDigits: 0 });
 
 export function Collection() {
   const [active, setActive] = useState<string>("All");
   const [selected, setSelected] = useState<Product | null>(null);
-  const { products: dbProducts } = useDbProducts();
+  const { enabled: previewEnabled, setPreview } = usePreviewMode();
+  const { products: dbProducts } = useDbProducts({ preview: previewEnabled });
   const { categories: dbCategories } = useDbCategories({ onlyVisible: true });
 
   const visibleNames = dbCategories.length
@@ -32,12 +34,29 @@ export function Collection() {
     metal: p.metal ?? undefined,
   }));
 
+  const draftIds = new Set(
+    dbProducts.filter((p) => p.status === "draft").map((p) => `db-${p.id}`),
+  );
+
   const allowed = new Set(visibleNames);
   const all = [...dbAsProducts, ...PRODUCTS].filter((p) => allowed.has(p.category));
   const items = active === "All" ? all : all.filter((p) => p.category === active);
 
   return (
     <section id="collection" className="bg-cream py-24 md:py-32">
+      {previewEnabled && (
+        <div className="sticky top-16 z-40 mx-auto mb-6 flex max-w-7xl items-center justify-between gap-3 rounded-full border border-amber-300 bg-amber-50 px-5 py-2 text-xs text-amber-900 shadow-soft">
+          <span>
+            <strong>Preview mode</strong> — draft products are visible to admins only.
+          </span>
+          <button
+            onClick={() => setPreview(false)}
+            className="rounded-full border border-amber-400 bg-white px-3 py-1 text-xs font-medium text-amber-900 hover:bg-amber-100"
+          >
+            Exit preview
+          </button>
+        </div>
+      )}
       <div className="mx-auto max-w-7xl px-5 md:px-10">
         <div className="mx-auto max-w-2xl text-center">
           <span className="text-[11px] tracking-luxe text-[var(--gold-dark)]">OUR COLLECTION</span>
@@ -86,6 +105,11 @@ export function Collection() {
                 <span className="absolute left-4 top-4 rounded-full bg-background/90 px-3 py-1 text-[10px] tracking-luxe text-[var(--gold-dark)] backdrop-blur">
                   {p.category.toUpperCase()}
                 </span>
+                {draftIds.has(p.id) && (
+                  <span className="absolute right-4 top-4 rounded-full bg-amber-500 px-3 py-1 text-[10px] font-semibold tracking-luxe text-white shadow-soft">
+                    DRAFT
+                  </span>
+                )}
               </div>
               <div className="flex flex-1 flex-col gap-4 p-6">
                 <div>
