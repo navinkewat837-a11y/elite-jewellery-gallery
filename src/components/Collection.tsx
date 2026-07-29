@@ -180,6 +180,19 @@ export function Collection() {
                 />
               </label>
             </div>
+            <label className="md:w-44">
+              <span className="sr-only">Sort by</span>
+              <select
+                value={sortBy}
+                onChange={(e) => setSortBy(e.target.value as typeof sortBy)}
+                className="w-full cursor-pointer rounded-full border border-border bg-background px-4 py-2.5 text-sm outline-none transition-colors focus:border-[var(--gold)]"
+              >
+                <option value="default">Sort by: Featured</option>
+                <option value="price-asc">Price: Low to High</option>
+                <option value="price-desc">Price: High to Low</option>
+                <option value="newest">Newest First</option>
+              </select>
+            </label>
             {hasFilters && (
               <button
                 onClick={clearFilters}
