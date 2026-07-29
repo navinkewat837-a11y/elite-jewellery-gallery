@@ -15,6 +15,7 @@ export interface DbProduct {
   display_order: number;
   status: "draft" | "published";
   publish_at: string | null;
+  created_at: string;
 }
 
 export function useDbProducts(options?: { preview?: boolean }) {

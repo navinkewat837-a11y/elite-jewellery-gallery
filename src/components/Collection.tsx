@@ -14,6 +14,7 @@ export function Collection() {
   const [query, setQuery] = useState("");
   const [minPrice, setMinPrice] = useState("");
   const [maxPrice, setMaxPrice] = useState("");
+  const [sortBy, setSortBy] = useState<"default" | "price-asc" | "price-desc" | "newest">("default");
   const [selected, setSelected] = useState<Product | null>(null);
   const { enabled: previewEnabled, setPreview } = usePreviewMode();
   const { products: dbProducts } = useDbProducts({ preview: previewEnabled });
@@ -35,6 +36,7 @@ export function Collection() {
     isNew: p.is_new,
     weight: p.weight ?? undefined,
     metal: p.metal ?? undefined,
+    createdAt: p.created_at,
   }));
 
   const draftIds = new Set(
@@ -55,23 +57,48 @@ export function Collection() {
   const min = minPrice === "" ? null : Number(minPrice);
   const max = maxPrice === "" ? null : Number(maxPrice);
 
-  const items = byCategory.filter((p) => {
-    const matchesText =
-      !q ||
-      p.name.toLowerCase().includes(q) ||
-      p.category.toLowerCase().includes(q) ||
-      (p.description ?? "").toLowerCase().includes(q);
-    const matchesMin = min === null || Number.isNaN(min) || p.price >= min;
-    const matchesMax = max === null || Number.isNaN(max) || p.price <= max;
-    return matchesText && matchesMin && matchesMax;
-  });
+  const filtered = useMemo(() => {
+    return byCategory.filter((p) => {
+      const matchesText =
+        !q ||
+        p.name.toLowerCase().includes(q) ||
+        p.category.toLowerCase().includes(q) ||
+        (p.description ?? "").toLowerCase().includes(q);
+      const matchesMin = min === null || Number.isNaN(min) || p.price >= min;
+      const matchesMax = max === null || Number.isNaN(max) || p.price <= max;
+      return matchesText && matchesMin && matchesMax;
+    });
+  }, [byCategory, q, min, max]);
 
-  const hasFilters = q !== "" || minPrice !== "" || maxPrice !== "" || active !== "All";
+  const items = useMemo(() => {
+    const list = [...filtered];
+    switch (sortBy) {
+      case "price-asc":
+        list.sort((a, b) => a.price - b.price);
+        break;
+      case "price-desc":
+        list.sort((a, b) => b.price - a.price);
+        break;
+      case "newest":
+        list.sort((a, b) => {
+          const da = a.createdAt ? new Date(a.createdAt).getTime() : 0;
+          const db = b.createdAt ? new Date(b.createdAt).getTime() : 0;
+          return db - da;
+        });
+        break;
+      default:
+        break;
+    }
+    return list;
+  }, [filtered, sortBy]);
+
+  const hasFilters = q !== "" || minPrice !== "" || maxPrice !== "" || active !== "All" || sortBy !== "default";
   const clearFilters = () => {
     setQuery("");
     setMinPrice("");
     setMaxPrice("");
     setActive("All");
+    setSortBy("default");
   };
 
   return (
@@ -155,6 +182,19 @@ export function Collection() {
                 />
               </label>
             </div>
+            <label className="md:w-44">
+              <span className="sr-only">Sort by</span>
+              <select
+                value={sortBy}
+                onChange={(e) => setSortBy(e.target.value as typeof sortBy)}
+                className="w-full cursor-pointer rounded-full border border-border bg-background px-4 py-2.5 text-sm outline-none transition-colors focus:border-[var(--gold)]"
+              >
+                <option value="default">Sort by: Featured</option>
+                <option value="price-asc">Price: Low to High</option>
+                <option value="price-desc">Price: High to Low</option>
+                <option value="newest">Newest First</option>
+              </select>
+            </label>
             {hasFilters && (
               <button
                 onClick={clearFilters}
