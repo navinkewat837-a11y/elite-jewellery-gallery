@@ -265,6 +265,7 @@ function AdminPage() {
   }
 
   async function remove(id: string) {
+    // placeholder
     if (!confirm("Delete this product?")) return;
     const { error } = await supabase.from("products").delete().eq("id", id);
     if (error) return toast.error(error.message);
