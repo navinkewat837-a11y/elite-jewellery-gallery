@@ -57,16 +57,18 @@ export function Collection() {
   const min = minPrice === "" ? null : Number(minPrice);
   const max = maxPrice === "" ? null : Number(maxPrice);
 
-  const filtered = byCategory.filter((p) => {
-    const matchesText =
-      !q ||
-      p.name.toLowerCase().includes(q) ||
-      p.category.toLowerCase().includes(q) ||
-      (p.description ?? "").toLowerCase().includes(q);
-    const matchesMin = min === null || Number.isNaN(min) || p.price >= min;
-    const matchesMax = max === null || Number.isNaN(max) || p.price <= max;
-    return matchesText && matchesMin && matchesMax;
-  });
+  const filtered = useMemo(() => {
+    return byCategory.filter((p) => {
+      const matchesText =
+        !q ||
+        p.name.toLowerCase().includes(q) ||
+        p.category.toLowerCase().includes(q) ||
+        (p.description ?? "").toLowerCase().includes(q);
+      const matchesMin = min === null || Number.isNaN(min) || p.price >= min;
+      const matchesMax = max === null || Number.isNaN(max) || p.price <= max;
+      return matchesText && matchesMin && matchesMax;
+    });
+  }, [byCategory, q, min, max]);
 
   const items = useMemo(() => {
     const list = [...filtered];
@@ -87,7 +89,6 @@ export function Collection() {
       default:
         break;
     }
-    console.log("sorted", sortBy, list.slice(0, 3).map(p => `${p.name}=${p.price}`));
     return list;
   }, [filtered, sortBy]);
 
