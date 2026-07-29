@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import { CATEGORIES, PRODUCTS, type Category, type Product } from "./products";
 import { ProductDialog } from "./ProductDialog";
 import { quoteUrl } from "./contact";
@@ -11,6 +11,9 @@ const fmt = new Intl.NumberFormat("en-IN", { style: "currency", currency: "INR",
 
 export function Collection() {
   const [active, setActive] = useState<string>("All");
+  const [query, setQuery] = useState("");
+  const [minPrice, setMinPrice] = useState("");
+  const [maxPrice, setMaxPrice] = useState("");
   const [selected, setSelected] = useState<Product | null>(null);
   const { enabled: previewEnabled, setPreview } = usePreviewMode();
   const { products: dbProducts } = useDbProducts({ preview: previewEnabled });
@@ -40,7 +43,36 @@ export function Collection() {
 
   const allowed = new Set(visibleNames);
   const all = [...dbAsProducts, ...PRODUCTS].filter((p) => allowed.has(p.category));
-  const items = active === "All" ? all : all.filter((p) => p.category === active);
+  const byCategory = active === "All" ? all : all.filter((p) => p.category === active);
+
+  const priceBounds = useMemo(() => {
+    if (!all.length) return { min: 0, max: 0 };
+    const prices = all.map((p) => p.price);
+    return { min: Math.min(...prices), max: Math.max(...prices) };
+  }, [all]);
+
+  const q = query.trim().toLowerCase();
+  const min = minPrice === "" ? null : Number(minPrice);
+  const max = maxPrice === "" ? null : Number(maxPrice);
+
+  const items = byCategory.filter((p) => {
+    const matchesText =
+      !q ||
+      p.name.toLowerCase().includes(q) ||
+      p.category.toLowerCase().includes(q) ||
+      (p.description ?? "").toLowerCase().includes(q);
+    const matchesMin = min === null || Number.isNaN(min) || p.price >= min;
+    const matchesMax = max === null || Number.isNaN(max) || p.price <= max;
+    return matchesText && matchesMin && matchesMax;
+  });
+
+  const hasFilters = q !== "" || minPrice !== "" || maxPrice !== "" || active !== "All";
+  const clearFilters = () => {
+    setQuery("");
+    setMinPrice("");
+    setMaxPrice("");
+    setActive("All");
+  };
 
   return (
     <section id="collection" className="bg-cream py-24 md:py-32">
@@ -82,6 +114,59 @@ export function Collection() {
               {f}
             </button>
           ))}
+        </div>
+
+        <div className="mt-6 rounded-2xl border border-border bg-background/70 p-4 shadow-soft md:p-5">
+          <div className="flex flex-col gap-3 md:flex-row md:items-center">
+            <label className="relative flex-1">
+              <span className="sr-only">Search jewellery by name</span>
+              <input
+                type="search"
+                value={query}
+                onChange={(e) => setQuery(e.target.value)}
+                placeholder="Search rings, necklaces, earrings…"
+                className="w-full rounded-full border border-border bg-background px-5 py-2.5 text-sm outline-none transition-colors placeholder:text-muted-foreground focus:border-[var(--gold)]"
+              />
+            </label>
+            <div className="flex items-center gap-2">
+              <label className="flex-1">
+                <span className="sr-only">Minimum price</span>
+                <input
+                  type="number"
+                  inputMode="numeric"
+                  min={0}
+                  value={minPrice}
+                  onChange={(e) => setMinPrice(e.target.value)}
+                  placeholder={`Min ${priceBounds.min}`}
+                  className="w-full rounded-full border border-border bg-background px-4 py-2.5 text-sm outline-none focus:border-[var(--gold)]"
+                />
+              </label>
+              <span className="text-muted-foreground">–</span>
+              <label className="flex-1">
+                <span className="sr-only">Maximum price</span>
+                <input
+                  type="number"
+                  inputMode="numeric"
+                  min={0}
+                  value={maxPrice}
+                  onChange={(e) => setMaxPrice(e.target.value)}
+                  placeholder={`Max ${priceBounds.max}`}
+                  className="w-full rounded-full border border-border bg-background px-4 py-2.5 text-sm outline-none focus:border-[var(--gold)]"
+                />
+              </label>
+            </div>
+            {hasFilters && (
+              <button
+                onClick={clearFilters}
+                className="rounded-full border border-border px-4 py-2.5 text-sm text-muted-foreground transition-colors hover:border-[var(--gold)] hover:text-[var(--gold-dark)]"
+              >
+                Clear
+              </button>
+            )}
+          </div>
+          <p className="mt-3 text-center text-xs text-muted-foreground md:text-left">
+            Showing {items.length} of {all.length} pieces
+          </p>
         </div>
 
         <div className="mt-14 grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-3">
@@ -142,6 +227,21 @@ export function Collection() {
             </article>
           ))}
         </div>
+
+        {items.length === 0 && (
+          <div className="mt-14 rounded-2xl border border-dashed border-border py-16 text-center">
+            <p className="font-serif text-2xl">No pieces match your search</p>
+            <p className="mt-2 text-sm text-muted-foreground">
+              Try a different name or widen the price range.
+            </p>
+            <button
+              onClick={clearFilters}
+              className="mt-6 rounded-full bg-gradient-gold px-6 py-2.5 text-sm font-medium text-white"
+            >
+              Reset filters
+            </button>
+          </div>
+        )}
       </div>
       <ProductDialog product={selected} onClose={() => setSelected(null)} />
     </section>
