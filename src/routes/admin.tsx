@@ -266,10 +266,18 @@ function AdminPage() {
 
   async function remove(id: string) {
     if (!confirm("Delete this product?")) return;
-    if (!confirm("Delete this product?")) return;
     const { error } = await supabase.from("products").delete().eq("id", id);
     if (error) return toast.error(error.message);
     toast.success("Deleted");
+    load();
+  }
+
+  // Cancel a saved scheduled publish immediately (persists without saving the form).
+  async function cancelSchedule(id: string) {
+    const { error } = await supabase.from("products").update({ publish_at: null }).eq("id", id);
+    if (error) return toast.error(error.message);
+    setEditing((prev) => (prev && prev.id === id ? { ...prev, publish_at: null } : prev));
+    toast.success("Scheduled publish cancelled");
     load();
   }
 
