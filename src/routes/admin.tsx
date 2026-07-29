@@ -272,6 +272,15 @@ function AdminPage() {
     load();
   }
 
+  // Cancel a saved scheduled publish immediately (persists without saving the form).
+  async function cancelSchedule(id: string) {
+    const { error } = await supabase.from("products").update({ publish_at: null }).eq("id", id);
+    if (error) return toast.error(error.message);
+    setEditing((prev) => (prev && prev.id === id ? { ...prev, publish_at: null } : prev));
+    toast.success("Scheduled publish cancelled");
+    load();
+  }
+
   async function move(id: string, dir: -1 | 1) {
     const list = filteredProducts;
     const idx = list.findIndex((p) => p.id === id);
@@ -907,6 +916,26 @@ function AdminPage() {
 
               {(editing.status ?? "draft") === "draft" && (
                 <Field label="Schedule publish (optional)">
+                  {(() => {
+                    const saved = editing.id
+                      ? products.find((p) => p.id === editing.id)?.publish_at
+                      : null;
+                    if (!saved) return null;
+                    return (
+                      <div className="mb-3 flex flex-wrap items-center justify-between gap-2 rounded-lg border border-amber-300 bg-amber-50 px-3 py-2">
+                        <span className="text-xs text-amber-800">
+                          ⏱ Scheduled to publish at {formatScheduled(saved)}
+                        </span>
+                        <button
+                          type="button"
+                          onClick={() => cancelSchedule(editing.id!)}
+                          className="rounded-full bg-red-600 px-3 py-1 text-xs font-medium text-white hover:bg-red-700"
+                        >
+                          Cancel schedule
+                        </button>
+                      </div>
+                    );
+                  })()}
                   <div className="flex flex-wrap items-center gap-2">
                     <input
                       type="datetime-local"
