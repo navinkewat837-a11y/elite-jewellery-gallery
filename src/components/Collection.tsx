@@ -69,6 +69,7 @@ export function Collection() {
   });
 
   const items = useMemo(() => {
+    console.log("sorting by", sortBy, "filtered count", filtered.length);
     const list = [...filtered];
     switch (sortBy) {
       case "price-asc":
