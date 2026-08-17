@@ -29,7 +29,6 @@ export function Collection() {
       search: (prev) => ({ ...prev, ...patch }),
       replace: true,
       resetScroll: false,
-      hash: "collection",
     });
 
   const setActive = (v: string) => update({ category: v });
