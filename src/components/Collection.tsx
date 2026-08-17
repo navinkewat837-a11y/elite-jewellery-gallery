@@ -1,4 +1,5 @@
 import { useMemo, useState } from "react";
+import { getRouteApi } from "@tanstack/react-router";
 import { CATEGORIES, PRODUCTS, type Category, type Product } from "./products";
 import { ProductDialog } from "./ProductDialog";
 import { quoteUrl } from "./contact";
@@ -9,12 +10,33 @@ import { usePreviewMode } from "@/hooks/usePreviewMode";
 
 const fmt = new Intl.NumberFormat("en-IN", { style: "currency", currency: "INR", maximumFractionDigits: 0 });
 
+const routeApi = getRouteApi("/");
+type SortKey = "default" | "price-asc" | "price-desc" | "newest";
+const SORTS: SortKey[] = ["default", "price-asc", "price-desc", "newest"];
+
 export function Collection() {
-  const [active, setActive] = useState<string>("All");
-  const [query, setQuery] = useState("");
-  const [minPrice, setMinPrice] = useState("");
-  const [maxPrice, setMaxPrice] = useState("");
-  const [sortBy, setSortBy] = useState<"default" | "price-asc" | "price-desc" | "newest">("default");
+  const search = routeApi.useSearch();
+  const navigate = routeApi.useNavigate();
+
+  const active = search.category || "All";
+  const query = search.q ?? "";
+  const minPrice = search.min ?? "";
+  const maxPrice = search.max ?? "";
+  const sortBy: SortKey = SORTS.includes(search.sort as SortKey) ? (search.sort as SortKey) : "default";
+
+  const update = (patch: Partial<{ q: string; category: string; min: string; max: string; sort: string }>) =>
+    navigate({
+      search: (prev) => ({ ...prev, ...patch }),
+      replace: true,
+      resetScroll: false,
+      hash: "collection",
+    });
+
+  const setActive = (v: string) => update({ category: v });
+  const setQuery = (v: string) => update({ q: v });
+  const setMinPrice = (v: string) => update({ min: v });
+  const setMaxPrice = (v: string) => update({ max: v });
+  const setSortBy = (v: SortKey) => update({ sort: v });
   const [selected, setSelected] = useState<Product | null>(null);
   const { enabled: previewEnabled, setPreview } = usePreviewMode();
   const { products: dbProducts } = useDbProducts({ preview: previewEnabled });
@@ -93,13 +115,8 @@ export function Collection() {
   }, [filtered, sortBy]);
 
   const hasFilters = q !== "" || minPrice !== "" || maxPrice !== "" || active !== "All" || sortBy !== "default";
-  const clearFilters = () => {
-    setQuery("");
-    setMinPrice("");
-    setMaxPrice("");
-    setActive("All");
-    setSortBy("default");
-  };
+  const clearFilters = () =>
+    update({ q: "", min: "", max: "", category: "All", sort: "default" });
 
   return (
     <section id="collection" className="bg-cream py-24 md:py-32">
