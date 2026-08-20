@@ -119,7 +119,7 @@ export function ProductDialog({ product, onClose }: { product: Product | null; o
             </li>
           </ul>
           <a
-            href={quoteUrl(product.name, product.price)}
+            href={quoteUrl(product.name, product.price, { category: product.category, weight: product.weight })}
             target="_blank"
             rel="noopener noreferrer"
             className="mt-2 inline-flex items-center justify-center gap-2 rounded-full bg-[#25D366] px-6 py-3.5 text-center text-sm font-medium text-white shadow-soft transition-transform hover:scale-[1.02]"

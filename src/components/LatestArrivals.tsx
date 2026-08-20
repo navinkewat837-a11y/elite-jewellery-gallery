@@ -66,7 +66,7 @@ export function LatestArrivals() {
                     Details
                   </button>
                   <a
-                    href={quoteUrl(p.name, p.price)}
+                    href={quoteUrl(p.name, p.price, { category: p.category, weight: p.weight })}
                     target="_blank"
                     rel="noopener noreferrer"
                     className="rounded-full bg-gradient-gold px-4 py-2.5 text-center text-sm font-medium text-white transition-transform hover:scale-[1.02]"

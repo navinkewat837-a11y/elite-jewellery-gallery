@@ -50,6 +50,9 @@ function ProductDetailsPage() {
   const { enabled: previewEnabled } = usePreviewMode();
   const { products: dbProducts, loading } = useDbProducts({ preview: previewEnabled });
   const [activeIdx, setActiveIdx] = useState(0);
+  const [metalChoice, setMetalChoice] = useState("");
+  const [sizeChoice, setSizeChoice] = useState("");
+  const [note, setNote] = useState("");
 
   const product: Product | null = useMemo(() => {
     const stat = PRODUCTS.find((p) => p.id === id);
@@ -73,6 +76,9 @@ function ProductDetailsPage() {
 
   useEffect(() => {
     setActiveIdx(0);
+    setMetalChoice("");
+    setSizeChoice("");
+    setNote("");
   }, [id]);
 
   const images = product ? (product.gallery?.length ? product.gallery : [product.image]) : [];
@@ -108,7 +114,15 @@ function ProductDetailsPage() {
     );
   }
 
-  const quote = quoteUrl(product.name, product.price);
+  const quote = quoteUrl(product.name, product.price, {
+    category: product.category,
+    weight: product.weight,
+    metal: metalChoice || undefined,
+    size: sizeChoice.trim() || undefined,
+    note: note.trim() || undefined,
+    link: `${SITE}/product/${product.id}`,
+  });
+  const hasCustomisation = !!(metalChoice || sizeChoice.trim() || note.trim());
 
   return (
     <div className="min-h-screen bg-background">
@@ -219,6 +233,54 @@ function ProductDetailsPage() {
             </ul>
 
             {/* Always-available quote button (inline, desktop) */}
+            <div className="rounded-2xl border border-border bg-cream/60 p-5">
+              <h2 className="font-serif text-lg">Customise this piece <span className="text-xs tracking-luxe text-muted-foreground">(OPTIONAL)</span></h2>
+              <p className="mt-1 text-xs text-muted-foreground">
+                Anything you select here is added to your WhatsApp message automatically.
+              </p>
+              <div className="mt-4 grid gap-3 sm:grid-cols-2">
+                <label className="flex flex-col gap-1.5 text-xs tracking-luxe text-muted-foreground">
+                  METAL / FINISH
+                  <select
+                    value={metalChoice}
+                    onChange={(e) => setMetalChoice(e.target.value)}
+                    className="rounded-full border border-border bg-background px-4 py-2.5 text-sm tracking-normal text-foreground outline-none focus:border-[var(--gold)]"
+                  >
+                    <option value="">As listed</option>
+                    <option value="18kt Yellow Gold">18kt Yellow Gold</option>
+                    <option value="18kt Rose Gold">18kt Rose Gold</option>
+                    <option value="18kt White Gold">18kt White Gold</option>
+                    <option value="925 Sterling Silver">925 Sterling Silver</option>
+                    <option value="Platinum">Platinum</option>
+                  </select>
+                </label>
+                <label className="flex flex-col gap-1.5 text-xs tracking-luxe text-muted-foreground">
+                  SIZE / LENGTH
+                  <input
+                    value={sizeChoice}
+                    onChange={(e) => setSizeChoice(e.target.value)}
+                    placeholder="e.g. Ring size 14 / 16 inch"
+                    className="rounded-full border border-border bg-background px-4 py-2.5 text-sm tracking-normal text-foreground outline-none placeholder:text-muted-foreground/70 focus:border-[var(--gold)]"
+                  />
+                </label>
+              </div>
+              <label className="mt-3 flex flex-col gap-1.5 text-xs tracking-luxe text-muted-foreground">
+                SPECIAL REQUESTS
+                <textarea
+                  value={note}
+                  onChange={(e) => setNote(e.target.value)}
+                  rows={2}
+                  placeholder="Stone colour, engraving, delivery timeline…"
+                  className="rounded-2xl border border-border bg-background px-4 py-3 text-sm tracking-normal text-foreground outline-none placeholder:text-muted-foreground/70 focus:border-[var(--gold)]"
+                />
+              </label>
+              {hasCustomisation && (
+                <p className="mt-3 text-xs text-[var(--gold-dark)]">
+                  Your customisation details will be included in the quote message.
+                </p>
+              )}
+            </div>
+
             <a
               href={quote}
               target="_blank"

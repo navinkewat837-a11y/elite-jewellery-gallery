@@ -30,8 +30,47 @@ export const ADDRESS = "Amlai, Shahdol, Madhya Pradesh — 484116";
 
 const fmt = new Intl.NumberFormat("en-IN", { style: "currency", currency: "INR", maximumFractionDigits: 0 });
 
-export function quoteUrl(productName: string, price: number) {
-  const msg = `Hello Elite Jewellery Gallery,\n\nI'd like to request a quote for:\n\n• ${productName}\n• Listed price: ${fmt.format(price)}\n\nPlease share availability and any current offers. Thank you!`;
+export interface QuoteOptions {
+  /** e.g. "Necklaces" */
+  category?: string;
+  /** Selected metal / finish */
+  metal?: string;
+  /** Selected size (ring size, chain length, bangle size…) */
+  size?: string;
+  /** Approx. weight of the listed piece */
+  weight?: string;
+  /** Free-text customisation request from the customer */
+  note?: string;
+  /** Absolute or relative link to the product page */
+  link?: string;
+}
+
+export function quoteUrl(productName: string, price: number, opts: QuoteOptions = {}) {
+  const lines = [
+    `• Product: ${productName}`,
+    ...(opts.category ? [`• Category: ${opts.category}`] : []),
+    `• Listed price: ${fmt.format(price)}`,
+    ...(opts.weight ? [`• Weight: ${opts.weight}`] : []),
+  ];
+
+  const custom = [
+    ...(opts.metal ? [`• Metal / finish: ${opts.metal}`] : []),
+    ...(opts.size ? [`• Size: ${opts.size}`] : []),
+    ...(opts.note ? [`• Notes: ${opts.note}`] : []),
+  ];
+
+  const msg = [
+    `Hello Elite Jewellery Gallery,`,
+    ``,
+    `I'd like to request a quote for:`,
+    ``,
+    lines.join("\n"),
+    ...(custom.length ? [``, `Customisation requested:`, ``, custom.join("\n")] : []),
+    ...(opts.link ? [``, `Link: ${opts.link}`] : []),
+    ``,
+    `Please share availability and any current offers. Thank you!`,
+  ].join("\n");
+
   return `https://wa.me/${PHONE_INTL}?text=${encodeURIComponent(msg)}`;
 }
 
