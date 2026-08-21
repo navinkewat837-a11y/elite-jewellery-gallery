@@ -88,6 +88,7 @@ export function ProductDialog({ product, onClose }: { product: Product | null; o
                     decoding="async"
                     width={80}
                     height={80}
+                    sizes="80px"
                     className="h-full w-full object-cover"
                   />
                 </button>
