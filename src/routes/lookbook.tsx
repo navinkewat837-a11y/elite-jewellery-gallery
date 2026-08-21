@@ -553,6 +553,9 @@ function LookbookPage() {
               <img
                 src={zoomedLook.look.image}
                 alt={`${zoomedLook.look.outfit} — zoomed view`}
+                decoding="async"
+                fetchPriority="high"
+                sizes="(min-width: 768px) 60vw, 100vw"
                 className="h-auto w-full object-contain md:h-full md:object-cover"
               />
               <span className="absolute left-4 top-4 rounded-full bg-background/90 px-3 py-1 text-[10px] tracking-luxe text-[var(--gold-dark)] backdrop-blur">
