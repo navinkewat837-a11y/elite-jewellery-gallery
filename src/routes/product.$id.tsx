@@ -182,6 +182,9 @@ function ProductDetailsPage() {
                       alt=""
                       loading="lazy"
                       decoding="async"
+                      width={120}
+                      height={120}
+                      sizes="120px"
                       className="aspect-square h-full w-full object-cover"
                     />
                   </button>
