@@ -88,6 +88,7 @@ export function ProductDialog({ product, onClose }: { product: Product | null; o
                     decoding="async"
                     width={80}
                     height={80}
+                    sizes="80px"
                     className="h-full w-full object-cover"
                   />
                 </button>
@@ -265,6 +266,9 @@ function Lightbox({
           alt={alt}
           draggable={false}
           decoding="async"
+          loading="eager"
+          fetchPriority="high"
+          sizes="92vw"
           onDoubleClick={toggleZoom}
           onPointerDown={onPointerDown}
           onPointerMove={onPointerMove}

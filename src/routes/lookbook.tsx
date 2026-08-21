@@ -411,7 +411,12 @@ function LookbookPage() {
                     <img
                       src={look.image}
                       alt={`${look.outfit} — styling reference for matching Elite Jewellery pairings`}
-                      loading="lazy"
+                      loading={i === 0 ? "eager" : "lazy"}
+                      fetchPriority={i === 0 ? "high" : "auto"}
+                      decoding="async"
+                      width={900}
+                      height={1200}
+                      sizes="(min-width: 768px) 50vw, 100vw"
                       className="aspect-[3/4] w-full object-cover transition-transform duration-500 group-hover:scale-105"
                     />
                   </button>
@@ -548,6 +553,9 @@ function LookbookPage() {
               <img
                 src={zoomedLook.look.image}
                 alt={`${zoomedLook.look.outfit} — zoomed view`}
+                decoding="async"
+                fetchPriority="high"
+                sizes="(min-width: 768px) 60vw, 100vw"
                 className="h-auto w-full object-contain md:h-full md:object-cover"
               />
               <span className="absolute left-4 top-4 rounded-full bg-background/90 px-3 py-1 text-[10px] tracking-luxe text-[var(--gold-dark)] backdrop-blur">
