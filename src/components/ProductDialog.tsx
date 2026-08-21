@@ -266,6 +266,9 @@ function Lightbox({
           alt={alt}
           draggable={false}
           decoding="async"
+          loading="eager"
+          fetchPriority="high"
+          sizes="92vw"
           onDoubleClick={toggleZoom}
           onPointerDown={onPointerDown}
           onPointerMove={onPointerMove}
