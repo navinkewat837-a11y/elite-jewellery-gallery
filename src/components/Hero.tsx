@@ -115,16 +115,20 @@ export function Hero() {
 
 
   return (
-    <section id="home" className="relative isolate overflow-hidden">
+    <section
+      id="home"
+      ref={sectionRef}
+      className="relative isolate overflow-hidden"
+    >
       {!videoFailed ? (
         <video
           ref={videoRef}
-          src={heroVideo.url}
+          {...(inView ? { src: heroVideo.url } : {})}
           poster={heroPoster.url}
           autoPlay
           loop
           playsInline
-          preload="metadata"
+          preload="none"
           aria-label="Elite Jewellery Gallery — luxury gold and diamond collection"
           className="absolute inset-0 -z-10 h-full w-full object-cover"
         />
