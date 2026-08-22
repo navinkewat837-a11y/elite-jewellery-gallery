@@ -53,6 +53,10 @@ export function Hero() {
 
   useEffect(() => {
     setMounted(true);
+  }, []);
+
+  useEffect(() => {
+    if (!inView) return;
     const v = videoRef.current;
     if (!v) return;
 
