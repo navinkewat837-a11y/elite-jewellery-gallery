@@ -1,6 +1,7 @@
 import bridalImage from "@/assets/bridal-lehenga.jpg.asset.json";
 import { BlurImage } from "./BlurImage";
 import bridalVideo from "@/assets/bridal-inspiration.mp4.asset.json";
+import bridalPoster from "@/assets/bridal-poster.jpg.asset.json";
 import { useRef } from "react";
 import { useInView } from "@/hooks/useInView";
 
