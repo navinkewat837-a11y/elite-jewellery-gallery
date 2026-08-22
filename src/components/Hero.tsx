@@ -2,8 +2,10 @@ import { useEffect, useRef, useState } from "react";
 import heroVideo from "@/assets/hero.mp4.asset.json";
 import heroPoster from "@/assets/hero-poster.jpg.asset.json";
 import { BlurImage } from "./BlurImage";
+import { useInView } from "@/hooks/useInView";
 
 export function Hero() {
+  const { ref: sectionRef, inView } = useInView<HTMLElement>();
   const videoRef = useRef<HTMLVideoElement>(null);
   const retryTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const retryCountRef = useRef(0);
@@ -51,6 +53,10 @@ export function Hero() {
 
   useEffect(() => {
     setMounted(true);
+  }, []);
+
+  useEffect(() => {
+    if (!inView) return;
     const v = videoRef.current;
     if (!v) return;
 
@@ -96,7 +102,8 @@ export function Hero() {
       v.removeEventListener("error", onError);
       clearRetryTimer();
     };
-  }, []);
+  }, [inView]);
+
 
   const toggleMute = () => {
     const v = videoRef.current;
@@ -108,16 +115,20 @@ export function Hero() {
 
 
   return (
-    <section id="home" className="relative isolate overflow-hidden">
+    <section
+      id="home"
+      ref={sectionRef}
+      className="relative isolate overflow-hidden"
+    >
       {!videoFailed ? (
         <video
           ref={videoRef}
-          src={heroVideo.url}
+          {...(inView ? { src: heroVideo.url } : {})}
           poster={heroPoster.url}
           autoPlay
           loop
           playsInline
-          preload="metadata"
+          preload="none"
           aria-label="Elite Jewellery Gallery — luxury gold and diamond collection"
           className="absolute inset-0 -z-10 h-full w-full object-cover"
         />

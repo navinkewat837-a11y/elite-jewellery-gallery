@@ -2,10 +2,13 @@ import bridalImage from "@/assets/bridal-lehenga.jpg.asset.json";
 import { BlurImage } from "./BlurImage";
 import bridalVideo from "@/assets/bridal-inspiration.mp4.asset.json";
 import { useRef } from "react";
+import { useInView } from "@/hooks/useInView";
 
 export function BridalInspiration() {
   const lehengaRef = useRef<HTMLElement>(null);
   const hairRef = useRef<HTMLElement>(null);
+  const { ref: videoWrapRef, inView: videoInView } =
+    useInView<HTMLDivElement>();
 
   const handleKeyDown = (
     e: React.KeyboardEvent<HTMLElement>,
@@ -101,17 +104,22 @@ export function BridalInspiration() {
             onKeyDown={(e) => handleKeyDown(e, hairRef)}
             className="group cursor-pointer overflow-hidden rounded-2xl bg-cream shadow-soft ring-1 ring-transparent transition-all duration-300 ease-out hover:-translate-y-1 hover:shadow-luxe hover:ring-[var(--gold-light)]/40 focus-visible:z-10 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--gold)]/60 focus-visible:ring-offset-2 focus-visible:ring-offset-background active:scale-[0.985] active:shadow-soft active:transition-transform active:duration-75"
           >
-            <div className="relative aspect-[16/10] overflow-hidden bg-charcoal md:aspect-[3/4]">
-              <video
-                src={bridalVideo.url}
-                autoPlay
-                muted
-                loop
-                playsInline
-                preload="metadata"
-                className="h-full w-full object-cover transition-transform duration-700 ease-out group-hover:scale-105 group-active:scale-[1.02]"
-                aria-label="Modern wedding hairstyle inspiration video showing polished bridal looks"
-              />
+            <div
+              ref={videoWrapRef}
+              className="relative aspect-[16/10] overflow-hidden bg-charcoal md:aspect-[3/4]"
+            >
+              {videoInView && (
+                <video
+                  src={bridalVideo.url}
+                  autoPlay
+                  muted
+                  loop
+                  playsInline
+                  preload="none"
+                  className="h-full w-full object-cover transition-transform duration-700 ease-out group-hover:scale-105 group-active:scale-[1.02]"
+                  aria-label="Modern wedding hairstyle inspiration video showing polished bridal looks"
+                />
+              )}
               <span
                 aria-hidden="true"
                 className="absolute left-3 top-3 rounded-full bg-background/90 px-3 py-1 text-[10px] tracking-luxe text-[var(--gold-dark)] shadow-sm backdrop-blur transition-transform duration-300 group-hover:scale-105 md:left-4 md:top-4"
