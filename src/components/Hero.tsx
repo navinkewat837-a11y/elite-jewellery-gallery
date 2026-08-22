@@ -102,7 +102,8 @@ export function Hero() {
       v.removeEventListener("error", onError);
       clearRetryTimer();
     };
-  }, []);
+  }, [inView]);
+
 
   const toggleMute = () => {
     const v = videoRef.current;
