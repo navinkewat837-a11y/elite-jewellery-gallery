@@ -108,18 +108,30 @@ export function BridalInspiration() {
               ref={videoWrapRef}
               className="relative aspect-[16/10] overflow-hidden bg-charcoal md:aspect-[3/4]"
             >
+              <img
+                src={bridalPoster.url}
+                alt=""
+                aria-hidden="true"
+                width={900}
+                height={1200}
+                loading="lazy"
+                decoding="async"
+                className="absolute inset-0 h-full w-full object-cover"
+              />
               {videoInView && (
                 <video
                   src={bridalVideo.url}
+                  poster={bridalPoster.url}
                   autoPlay
                   muted
                   loop
                   playsInline
                   preload="none"
-                  className="h-full w-full object-cover transition-transform duration-700 ease-out group-hover:scale-105 group-active:scale-[1.02]"
+                  className="relative h-full w-full object-cover transition-transform duration-700 ease-out group-hover:scale-105 group-active:scale-[1.02]"
                   aria-label="Modern wedding hairstyle inspiration video showing polished bridal looks"
                 />
               )}
+
               <span
                 aria-hidden="true"
                 className="absolute left-3 top-3 rounded-full bg-background/90 px-3 py-1 text-[10px] tracking-luxe text-[var(--gold-dark)] shadow-sm backdrop-blur transition-transform duration-300 group-hover:scale-105 md:left-4 md:top-4"
