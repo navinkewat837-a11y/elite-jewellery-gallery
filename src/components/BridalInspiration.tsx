@@ -2,10 +2,13 @@ import bridalImage from "@/assets/bridal-lehenga.jpg.asset.json";
 import { BlurImage } from "./BlurImage";
 import bridalVideo from "@/assets/bridal-inspiration.mp4.asset.json";
 import { useRef } from "react";
+import { useInView } from "@/hooks/useInView";
 
 export function BridalInspiration() {
   const lehengaRef = useRef<HTMLElement>(null);
   const hairRef = useRef<HTMLElement>(null);
+  const { ref: videoWrapRef, inView: videoInView } =
+    useInView<HTMLDivElement>();
 
   const handleKeyDown = (
     e: React.KeyboardEvent<HTMLElement>,
