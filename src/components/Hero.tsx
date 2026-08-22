@@ -2,8 +2,10 @@ import { useEffect, useRef, useState } from "react";
 import heroVideo from "@/assets/hero.mp4.asset.json";
 import heroPoster from "@/assets/hero-poster.jpg.asset.json";
 import { BlurImage } from "./BlurImage";
+import { useInView } from "@/hooks/useInView";
 
 export function Hero() {
+  const { ref: sectionRef, inView } = useInView<HTMLElement>();
   const videoRef = useRef<HTMLVideoElement>(null);
   const retryTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const retryCountRef = useRef(0);
