@@ -87,6 +87,14 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       { name: "twitter:image", content: "https://storage.googleapis.com/gpt-engineer-file-uploads/2ZaxsoVyNxbpMaAhYnGg7iwALuD3/social-images/social-1778667194593-1000016562.webp" },
     ],
     links: [
+      { rel: "preconnect", href: "https://fonts.googleapis.com" },
+      { rel: "preconnect", href: "https://fonts.gstatic.com", crossOrigin: "anonymous" },
+      {
+        rel: "stylesheet",
+        // display=optional: browser uses the fallback if the webfont isn't ready
+        // within ~100ms and never swaps later — eliminates font-driven CLS.
+        href: "https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500&family=Inter:wght@400;500;600&display=optional",
+      },
       {
         rel: "stylesheet",
         href: appCss,
