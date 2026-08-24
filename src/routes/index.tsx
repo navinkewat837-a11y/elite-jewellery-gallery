@@ -78,6 +78,13 @@ export const Route = createFileRoute("/")({
     ],
     links: [
       { rel: "canonical", href: "https://elite-jewellery-gallery.lovable.app/" },
+      {
+        rel: "preload",
+        as: "image",
+        href: heroPoster.url,
+        type: "image/jpeg",
+        fetchPriority: "high",
+      },
       { rel: "preconnect", href: "https://fonts.googleapis.com" },
       { rel: "preconnect", href: "https://fonts.gstatic.com", crossOrigin: "anonymous" },
       {
