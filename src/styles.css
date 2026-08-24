@@ -33,8 +33,28 @@
   --color-gold-dark: var(--gold-dark);
   --color-cream: var(--cream);
   --color-charcoal: var(--charcoal);
-  --font-serif: "Cormorant Garamond", "Playfair Display", Georgia, serif;
-  --font-sans: "Inter", system-ui, sans-serif;
+  --font-serif: "Cormorant Garamond", "Cormorant Fallback", Georgia, serif;
+  --font-sans: "Inter", "Inter Fallback", system-ui, sans-serif;
+}
+
+/* Metric-matched fallbacks: keep the fallback text box the same size as the
+   webfont so nothing reflows when (or if) the webfont arrives. */
+@font-face {
+  font-family: "Cormorant Fallback";
+  src: local("Georgia"), local("Times New Roman");
+  size-adjust: 92%;
+  ascent-override: 95%;
+  descent-override: 25%;
+  line-gap-override: 0%;
+}
+
+@font-face {
+  font-family: "Inter Fallback";
+  src: local("Arial"), local("Helvetica");
+  size-adjust: 107%;
+  ascent-override: 90%;
+  descent-override: 22%;
+  line-gap-override: 0%;
 }
 
 :root {
