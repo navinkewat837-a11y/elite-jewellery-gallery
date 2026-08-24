@@ -11,6 +11,7 @@ import { Contact } from "@/components/Contact";
 import { Footer } from "@/components/Footer";
 import { WhatsAppFAB } from "@/components/WhatsAppFAB";
 import { PRODUCTS, CATEGORIES } from "@/components/products";
+import heroPoster from "@/assets/hero-poster.jpg.asset.json";
 
 const SITE_URL = "https://elite-jewellery-gallery.lovable.app";
 
