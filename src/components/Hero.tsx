@@ -1,8 +1,53 @@
 import { useEffect, useRef, useState } from "react";
 import heroVideo from "@/assets/hero.mp4.asset.json";
-import heroPoster from "@/assets/hero-poster.jpg.asset.json";
-import { BlurImage } from "./BlurImage";
+
+import avif640 from "@/assets/hero-poster-640.avif.asset.json";
+import avif960 from "@/assets/hero-poster-960.avif.asset.json";
+import avif1280 from "@/assets/hero-poster-1280.avif.asset.json";
+import webp640 from "@/assets/hero-poster-640.webp.asset.json";
+import webp960 from "@/assets/hero-poster-960.webp.asset.json";
+import webp1280 from "@/assets/hero-poster-1280.webp.asset.json";
+import jpg640 from "@/assets/hero-poster-640.jpg.asset.json";
+import jpg960 from "@/assets/hero-poster-960.jpg.asset.json";
+import jpg1280 from "@/assets/hero-poster-1280.jpg.asset.json";
 import { useInView } from "@/hooks/useInView";
+
+const POSTER_SIZES = "100vw";
+const avifSrcSet = `${avif640.url} 640w, ${avif960.url} 960w, ${avif1280.url} 1280w`;
+const webpSrcSet = `${webp640.url} 640w, ${webp960.url} 960w, ${webp1280.url} 1280w`;
+const jpgSrcSet = `${jpg640.url} 640w, ${jpg960.url} 960w, ${jpg1280.url} 1280w`;
+
+/** Responsive AVIF/WebP hero still — paints as the LCP element before the video mounts. */
+function HeroPoster({
+  className = "",
+  priority = false,
+  alt,
+}: {
+  className?: string;
+  priority?: boolean;
+  alt: string;
+}) {
+  return (
+    <picture>
+      <source type="image/avif" srcSet={avifSrcSet} sizes={POSTER_SIZES} />
+      <source type="image/webp" srcSet={webpSrcSet} sizes={POSTER_SIZES} />
+      <img
+        src={jpg960.url}
+        srcSet={jpgSrcSet}
+        sizes={POSTER_SIZES}
+        width={1280}
+        height={854}
+        alt={alt}
+        aria-hidden={alt === "" ? true : undefined}
+        decoding="async"
+        loading={priority ? "eager" : "lazy"}
+        fetchPriority={priority ? "high" : "auto"}
+        className={className}
+      />
+    </picture>
+  );
+}
+
 
 export function Hero() {
   const { ref: sectionRef, inView } = useInView<HTMLElement>();
@@ -120,26 +165,22 @@ export function Hero() {
       ref={sectionRef}
       className="relative isolate overflow-hidden"
     >
-      {!videoFailed ? (
+      {/* Responsive still sits behind the video and is the LCP paint */}
+      <HeroPoster
+        priority
+        alt="Elite Jewellery Gallery — luxury gold and diamond collection"
+        className="absolute inset-0 -z-10 h-full w-full object-cover"
+      />
+      {!videoFailed && (
         <video
           ref={videoRef}
           {...(inView ? { src: heroVideo.url } : {})}
-          poster={heroPoster.url}
           autoPlay
           loop
           playsInline
           preload="none"
           aria-label="Elite Jewellery Gallery — luxury gold and diamond collection"
           className="absolute inset-0 -z-10 h-full w-full object-cover"
-        />
-      ) : (
-        <BlurImage
-          src={heroPoster.url}
-          alt="Elite Jewellery Gallery — luxury gold and diamond collection"
-          fetchPriority="high"
-          decoding="async"
-          wrapperClassName="absolute inset-0 -z-10 h-full w-full"
-          className="h-full w-full object-cover"
         />
       )}
       <div className="absolute inset-0 -z-10 bg-black/25" />
@@ -148,13 +189,8 @@ export function Hero() {
       {/* Loading overlay — only shown client-side after mount to avoid hydration mismatch */}
       {mounted && loading && (
         <div className="absolute inset-0 z-0 flex items-center justify-center">
-          <img
-            src={heroPoster.url}
-            alt=""
-            aria-hidden="true"
-            decoding="async"
-            className="absolute inset-0 h-full w-full object-cover"
-          />
+          <HeroPoster alt="" className="absolute inset-0 h-full w-full object-cover" />
+
           <div className="absolute inset-0 bg-black/60 backdrop-blur-sm" />
           <div className="relative z-10 flex flex-col items-center gap-4">
             <div className="h-10 w-10 animate-spin rounded-full border-2 border-white/20 border-t-[var(--gold-light)]" />
