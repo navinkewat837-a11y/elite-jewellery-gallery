@@ -165,26 +165,22 @@ export function Hero() {
       ref={sectionRef}
       className="relative isolate overflow-hidden"
     >
-      {!videoFailed ? (
+      {/* Responsive still sits behind the video and is the LCP paint */}
+      <HeroPoster
+        priority
+        alt="Elite Jewellery Gallery — luxury gold and diamond collection"
+        className="absolute inset-0 -z-10 h-full w-full object-cover"
+      />
+      {!videoFailed && (
         <video
           ref={videoRef}
           {...(inView ? { src: heroVideo.url } : {})}
-          poster={heroPoster.url}
           autoPlay
           loop
           playsInline
           preload="none"
           aria-label="Elite Jewellery Gallery — luxury gold and diamond collection"
           className="absolute inset-0 -z-10 h-full w-full object-cover"
-        />
-      ) : (
-        <BlurImage
-          src={heroPoster.url}
-          alt="Elite Jewellery Gallery — luxury gold and diamond collection"
-          fetchPriority="high"
-          decoding="async"
-          wrapperClassName="absolute inset-0 -z-10 h-full w-full"
-          className="h-full w-full object-cover"
         />
       )}
       <div className="absolute inset-0 -z-10 bg-black/25" />
@@ -193,13 +189,8 @@ export function Hero() {
       {/* Loading overlay — only shown client-side after mount to avoid hydration mismatch */}
       {mounted && loading && (
         <div className="absolute inset-0 z-0 flex items-center justify-center">
-          <img
-            src={heroPoster.url}
-            alt=""
-            aria-hidden="true"
-            decoding="async"
-            className="absolute inset-0 h-full w-full object-cover"
-          />
+          <HeroPoster alt="" className="absolute inset-0 h-full w-full object-cover" />
+
           <div className="absolute inset-0 bg-black/60 backdrop-blur-sm" />
           <div className="relative z-10 flex flex-col items-center gap-4">
             <div className="h-10 w-10 animate-spin rounded-full border-2 border-white/20 border-t-[var(--gold-light)]" />
