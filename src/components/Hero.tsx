@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import heroVideo from "@/assets/hero.mp4.asset.json";
-import heroPoster from "@/assets/hero-poster.jpg.asset.json";
+
 import avif640 from "@/assets/hero-poster-640.avif.asset.json";
 import avif960 from "@/assets/hero-poster-960.avif.asset.json";
 import avif1280 from "@/assets/hero-poster-1280.avif.asset.json";
