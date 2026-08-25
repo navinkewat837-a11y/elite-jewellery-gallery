@@ -1,8 +1,53 @@
 import { useEffect, useRef, useState } from "react";
 import heroVideo from "@/assets/hero.mp4.asset.json";
 import heroPoster from "@/assets/hero-poster.jpg.asset.json";
-import { BlurImage } from "./BlurImage";
+import avif640 from "@/assets/hero-poster-640.avif.asset.json";
+import avif960 from "@/assets/hero-poster-960.avif.asset.json";
+import avif1280 from "@/assets/hero-poster-1280.avif.asset.json";
+import webp640 from "@/assets/hero-poster-640.webp.asset.json";
+import webp960 from "@/assets/hero-poster-960.webp.asset.json";
+import webp1280 from "@/assets/hero-poster-1280.webp.asset.json";
+import jpg640 from "@/assets/hero-poster-640.jpg.asset.json";
+import jpg960 from "@/assets/hero-poster-960.jpg.asset.json";
+import jpg1280 from "@/assets/hero-poster-1280.jpg.asset.json";
 import { useInView } from "@/hooks/useInView";
+
+const POSTER_SIZES = "100vw";
+const avifSrcSet = `${avif640.url} 640w, ${avif960.url} 960w, ${avif1280.url} 1280w`;
+const webpSrcSet = `${webp640.url} 640w, ${webp960.url} 960w, ${webp1280.url} 1280w`;
+const jpgSrcSet = `${jpg640.url} 640w, ${jpg960.url} 960w, ${jpg1280.url} 1280w`;
+
+/** Responsive AVIF/WebP hero still — paints as the LCP element before the video mounts. */
+function HeroPoster({
+  className = "",
+  priority = false,
+  alt,
+}: {
+  className?: string;
+  priority?: boolean;
+  alt: string;
+}) {
+  return (
+    <picture>
+      <source type="image/avif" srcSet={avifSrcSet} sizes={POSTER_SIZES} />
+      <source type="image/webp" srcSet={webpSrcSet} sizes={POSTER_SIZES} />
+      <img
+        src={jpg960.url}
+        srcSet={jpgSrcSet}
+        sizes={POSTER_SIZES}
+        width={1280}
+        height={854}
+        alt={alt}
+        aria-hidden={alt === "" ? true : undefined}
+        decoding="async"
+        loading={priority ? "eager" : "lazy"}
+        fetchPriority={priority ? "high" : "auto"}
+        className={className}
+      />
+    </picture>
+  );
+}
+
 
 export function Hero() {
   const { ref: sectionRef, inView } = useInView<HTMLElement>();
