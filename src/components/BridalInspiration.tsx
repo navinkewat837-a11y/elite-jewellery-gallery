@@ -2,6 +2,16 @@ import bridalImage from "@/assets/bridal-lehenga.jpg.asset.json";
 import { BlurImage } from "./BlurImage";
 import bridalVideo from "@/assets/bridal-inspiration.mp4.asset.json";
 import bridalPoster from "@/assets/bridal-poster.jpg.asset.json";
+import bpAvif640 from "@/assets/bridal-poster-640.avif.asset.json";
+import bpAvif960 from "@/assets/bridal-poster-960.avif.asset.json";
+import bpAvif1280 from "@/assets/bridal-poster-1280.avif.asset.json";
+import bpWebp640 from "@/assets/bridal-poster-640.webp.asset.json";
+import bpWebp960 from "@/assets/bridal-poster-960.webp.asset.json";
+import bpWebp1280 from "@/assets/bridal-poster-1280.webp.asset.json";
+
+export const bridalPosterAvifSrcSet = `${bpAvif640.url} 640w, ${bpAvif960.url} 960w, ${bpAvif1280.url} 1280w`;
+const bridalPosterWebpSrcSet = `${bpWebp640.url} 640w, ${bpWebp960.url} 960w, ${bpWebp1280.url} 1280w`;
+export const bridalPosterSizes = "(min-width: 1024px) 50vw, 100vw";
 import { useRef } from "react";
 import { useInView } from "@/hooks/useInView";
 
@@ -109,20 +119,32 @@ export function BridalInspiration() {
               ref={videoWrapRef}
               className="relative aspect-[16/10] overflow-hidden bg-charcoal md:aspect-[3/4]"
             >
-              <img
-                src={bridalPoster.url}
-                alt=""
-                aria-hidden="true"
-                width={900}
-                height={1200}
-                loading="lazy"
-                decoding="async"
-                className="absolute inset-0 h-full w-full object-cover"
-              />
+              <picture>
+                <source
+                  type="image/avif"
+                  srcSet={bridalPosterAvifSrcSet}
+                  sizes={bridalPosterSizes}
+                />
+                <source
+                  type="image/webp"
+                  srcSet={bridalPosterWebpSrcSet}
+                  sizes={bridalPosterSizes}
+                />
+                <img
+                  src={bridalPoster.url}
+                  alt=""
+                  aria-hidden="true"
+                  width={900}
+                  height={1200}
+                  loading="lazy"
+                  decoding="async"
+                  className="absolute inset-0 h-full w-full object-cover"
+                />
+              </picture>
               {videoInView && (
                 <video
                   src={bridalVideo.url}
-                  poster={bridalPoster.url}
+                  poster={bpWebp960.url}
                   autoPlay
                   muted
                   loop
