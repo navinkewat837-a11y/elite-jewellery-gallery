@@ -5,7 +5,12 @@ import { Header } from "@/components/Header";
 import { Hero } from "@/components/Hero";
 import { LatestArrivals } from "@/components/LatestArrivals";
 import { Collection } from "@/components/Collection";
-import { BridalInspiration } from "@/components/BridalInspiration";
+import {
+  BridalInspiration,
+  bridalPosterAvifSrcSet,
+  bridalPosterSizes,
+} from "@/components/BridalInspiration";
+import bpAvif640 from "@/assets/bridal-poster-640.avif.asset.json";
 import { About } from "@/components/About";
 import { Contact } from "@/components/Contact";
 import { Footer } from "@/components/Footer";
@@ -88,6 +93,15 @@ export const Route = createFileRoute("/")({
         imageSizes: "100vw",
         type: "image/avif",
         fetchPriority: "high",
+      },
+      {
+        rel: "preload",
+        as: "image",
+        href: bpAvif640.url,
+        imageSrcSet: bridalPosterAvifSrcSet,
+        imageSizes: bridalPosterSizes,
+        type: "image/avif",
+        fetchPriority: "low",
       },
     ],
     scripts: [
