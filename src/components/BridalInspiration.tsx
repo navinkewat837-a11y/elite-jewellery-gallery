@@ -144,7 +144,7 @@ export function BridalInspiration() {
               {videoInView && (
                 <video
                   src={bridalVideo.url}
-                  poster={bridalPoster.url}
+                  poster={bpWebp960.url}
                   autoPlay
                   muted
                   loop
