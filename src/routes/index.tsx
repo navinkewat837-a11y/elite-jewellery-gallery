@@ -11,7 +11,9 @@ import { Contact } from "@/components/Contact";
 import { Footer } from "@/components/Footer";
 import { WhatsAppFAB } from "@/components/WhatsAppFAB";
 import { PRODUCTS, CATEGORIES } from "@/components/products";
-import heroPoster from "@/assets/hero-poster.jpg.asset.json";
+import avif640 from "@/assets/hero-poster-640.avif.asset.json";
+import avif960 from "@/assets/hero-poster-960.avif.asset.json";
+import avif1280 from "@/assets/hero-poster-1280.avif.asset.json";
 
 const SITE_URL = "https://elite-jewellery-gallery.lovable.app";
 
@@ -81,8 +83,10 @@ export const Route = createFileRoute("/")({
       {
         rel: "preload",
         as: "image",
-        href: heroPoster.url,
-        type: "image/jpeg",
+        href: avif640.url,
+        imageSrcSet: `${avif640.url} 640w, ${avif960.url} 960w, ${avif1280.url} 1280w`,
+        imageSizes: "100vw",
+        type: "image/avif",
         fetchPriority: "high",
       },
     ],
