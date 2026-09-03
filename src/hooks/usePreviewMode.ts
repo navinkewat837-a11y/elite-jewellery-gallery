@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { supabase } from "@/integrations/supabase/client";
+import { loadSupabase } from "@/lib/supabase-lazy";
 
 const KEY = "eligallery.previewMode";
 
@@ -34,7 +34,18 @@ export function usePreviewMode() {
 
   useEffect(() => {
     let mounted = true;
+    let unsubscribe: (() => void) | null = null;
+
+    // Only visitors who asked for preview mode need the auth/role check —
+    // everyone else never downloads the database client from this hook.
+    if (!requested) {
+      setIsAdmin(false);
+      setChecked(true);
+      return;
+    }
+
     async function check() {
+      const supabase = await loadSupabase();
       const { data } = await supabase.auth.getSession();
       const uid = data.session?.user.id;
       if (!uid) {
@@ -55,13 +66,18 @@ export function usePreviewMode() {
         setChecked(true);
       }
     }
+
     check();
-    const { data: sub } = supabase.auth.onAuthStateChange(() => check());
+    loadSupabase().then((supabase) => {
+      if (!mounted) return;
+      const { data: sub } = supabase.auth.onAuthStateChange(() => check());
+      unsubscribe = () => sub.subscription.unsubscribe();
+    });
     return () => {
       mounted = false;
-      sub.subscription.unsubscribe();
+      unsubscribe?.();
     };
-  }, []);
+  }, [requested]);
 
   const enabled = requested && isAdmin;
 

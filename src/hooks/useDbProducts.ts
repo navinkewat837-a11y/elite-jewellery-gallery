@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { supabase } from "@/integrations/supabase/client";
+import { loadSupabase } from "@/lib/supabase-lazy";
 
 export interface DbProduct {
   id: string;
@@ -25,6 +25,7 @@ export function useDbProducts(options?: { preview?: boolean }) {
 
   const refetch = async () => {
     setLoading(true);
+    const supabase = await loadSupabase();
     let query = supabase
       .from("products")
       .select("*")
