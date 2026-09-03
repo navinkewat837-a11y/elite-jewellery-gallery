@@ -1,6 +1,6 @@
 import { useMemo, useState } from "react";
 import { getRouteApi } from "@tanstack/react-router";
-import { CATEGORIES, PRODUCTS, type Category, type Product } from "./products";
+import { CATEGORIES, type Category, type Product } from "./products";
 import { ProductDialog } from "./ProductDialog";
 import { quoteUrl } from "./contact";
 import { BlurImage } from "./BlurImage";
@@ -38,7 +38,7 @@ export function Collection() {
   const setSortBy = (v: SortKey) => update({ sort: v });
   const [selected, setSelected] = useState<Product | null>(null);
   const { enabled: previewEnabled, setPreview } = usePreviewMode();
-  const { products: dbProducts } = useDbProducts({ preview: previewEnabled });
+  const { products: dbProducts, loading: productsLoading } = useDbProducts({ preview: previewEnabled });
   const { categories: dbCategories } = useDbCategories({ onlyVisible: true });
 
   const visibleNames = dbCategories.length
@@ -65,7 +65,7 @@ export function Collection() {
   );
 
   const allowed = new Set(visibleNames);
-  const all = [...dbAsProducts, ...PRODUCTS].filter((p) => allowed.has(p.category));
+  const all = dbAsProducts.filter((p) => allowed.has(p.category));
   const byCategory = active === "All" ? all : all.filter((p) => p.category === active);
 
   const priceBounds = useMemo(() => {
@@ -231,6 +231,18 @@ export function Collection() {
         </div>
 
         <div className="mt-14 grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-3">
+          {productsLoading &&
+            items.length === 0 &&
+            Array.from({ length: 6 }).map((_, i) => (
+              <div key={`skeleton-${i}`} className="overflow-hidden rounded-xl bg-background shadow-soft" aria-hidden="true">
+                <div className="aspect-square animate-pulse bg-cream" />
+                <div className="space-y-3 p-6">
+                  <div className="h-6 w-2/3 animate-pulse rounded bg-cream" />
+                  <div className="h-4 w-full animate-pulse rounded bg-cream" />
+                  <div className="h-8 w-1/3 animate-pulse rounded bg-cream" />
+                </div>
+              </div>
+            ))}
           {items.map((p) => (
             <article
               key={p.id}
@@ -289,7 +301,7 @@ export function Collection() {
           ))}
         </div>
 
-        {items.length === 0 && (
+        {!productsLoading && items.length === 0 && (
           <div className="mt-14 rounded-2xl border border-dashed border-border py-16 text-center">
             <p className="font-serif text-2xl">No pieces match your search</p>
             <p className="mt-2 text-sm text-muted-foreground">

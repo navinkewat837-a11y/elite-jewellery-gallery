@@ -1,14 +1,31 @@
 import { useState } from "react";
-import { PRODUCTS, type Product } from "./products";
+import { type Category, type Product } from "./products";
 import { ProductDialog } from "./ProductDialog";
 import { quoteUrl } from "./contact";
 import { BlurImage } from "./BlurImage";
+import { useDbProducts } from "@/hooks/useDbProducts";
 
 const fmt = new Intl.NumberFormat("en-IN", { style: "currency", currency: "INR", maximumFractionDigits: 0 });
 
 export function LatestArrivals() {
   const [selected, setSelected] = useState<Product | null>(null);
-  const items = PRODUCTS.filter((p) => p.isNew);
+  const { products } = useDbProducts();
+  const items: Product[] = products
+    .filter((p) => p.is_new)
+    .slice(0, 6)
+    .map((p) => ({
+      id: `db-${p.id}`,
+      name: p.name,
+      category: p.category as Category,
+      price: Number(p.price),
+      image: p.image,
+      gallery: p.gallery?.length ? p.gallery : undefined,
+      description: p.description,
+      isNew: p.is_new,
+      weight: p.weight ?? undefined,
+      metal: p.metal ?? undefined,
+      createdAt: p.created_at,
+    }));
 
   if (items.length === 0) return null;
 
