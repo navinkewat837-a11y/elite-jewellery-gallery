@@ -1,5 +1,5 @@
 import { useEffect, useState, useCallback } from "react";
-import { supabase } from "@/integrations/supabase/client";
+import { loadSupabase } from "@/lib/supabase-lazy";
 
 export interface DbCategory {
   id: string;
@@ -15,6 +15,7 @@ export function useDbCategories(opts: { onlyVisible?: boolean } = {}) {
 
   const refetch = useCallback(async () => {
     setLoading(true);
+    const supabase = await loadSupabase();
     let query = supabase
       .from("categories")
       .select("id,name,display_order,visible")
