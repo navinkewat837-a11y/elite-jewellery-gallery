@@ -1,10 +1,18 @@
+import { lazy } from "react";
 import { createFileRoute, stripSearchParams } from "@tanstack/react-router";
 import { zodValidator, fallback } from "@tanstack/zod-adapter";
 import { z } from "zod";
 import { Header } from "@/components/Header";
 import { Hero } from "@/components/Hero";
-import { LatestArrivals } from "@/components/LatestArrivals";
-import { Collection } from "@/components/Collection";
+import { LazySection, SectionSkeleton } from "@/components/LazySection";
+
+const LatestArrivals = lazy(() =>
+  import("@/components/LatestArrivals").then((m) => ({ default: m.LatestArrivals })),
+);
+const Collection = lazy(() =>
+  import("@/components/Collection").then((m) => ({ default: m.Collection })),
+);
+
 import {
   BridalInspiration,
   bridalPosterAvifSrcSet,
@@ -145,8 +153,26 @@ function Index() {
       <Header />
       <main>
         <Hero />
-        <LatestArrivals />
-        <Collection />
+        <LazySection
+          minHeight="80vh"
+          fallback={<SectionSkeleton eyebrow="JUST IN" title="Latest Arrivals" cards={3} />}
+        >
+          <LatestArrivals />
+        </LazySection>
+        <LazySection
+          minHeight="120vh"
+          fallback={
+            <SectionSkeleton
+              eyebrow="OUR COLLECTION"
+              title="Curated Masterpieces"
+              cards={6}
+              tone="cream"
+            />
+          }
+        >
+          <Collection />
+        </LazySection>
+
         <BridalInspiration />
         <About />
         <Contact />
