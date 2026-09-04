@@ -153,8 +153,26 @@ function Index() {
       <Header />
       <main>
         <Hero />
-        <LatestArrivals />
-        <Collection />
+        <LazySection
+          minHeight="80vh"
+          fallback={<SectionSkeleton eyebrow="JUST IN" title="Latest Arrivals" cards={3} />}
+        >
+          <LatestArrivals />
+        </LazySection>
+        <LazySection
+          minHeight="120vh"
+          fallback={
+            <SectionSkeleton
+              eyebrow="OUR COLLECTION"
+              title="Curated Masterpieces"
+              cards={6}
+              tone="cream"
+            />
+          }
+        >
+          <Collection />
+        </LazySection>
+
         <BridalInspiration />
         <About />
         <Contact />
