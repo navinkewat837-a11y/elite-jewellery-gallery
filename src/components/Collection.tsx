@@ -1,7 +1,6 @@
-import { useMemo, useState } from "react";
-import { getRouteApi } from "@tanstack/react-router";
+import { useMemo } from "react";
+import { getRouteApi, Link } from "@tanstack/react-router";
 import { CATEGORIES, type Category, type Product } from "./products";
-import { ProductDialog } from "./ProductDialog";
 import { quoteUrl } from "./contact";
 import { BlurImage } from "./BlurImage";
 import { useDbProducts } from "@/hooks/useDbProducts";
@@ -36,7 +35,6 @@ export function Collection() {
   const setMinPrice = (v: string) => update({ min: v });
   const setMaxPrice = (v: string) => update({ max: v });
   const setSortBy = (v: SortKey) => update({ sort: v });
-  const [selected, setSelected] = useState<Product | null>(null);
   const { enabled: previewEnabled, setPreview } = usePreviewMode();
   const { products: dbProducts, loading: productsLoading } = useDbProducts({ preview: previewEnabled });
   const { categories: dbCategories } = useDbCategories({ onlyVisible: true });
@@ -332,7 +330,6 @@ export function Collection() {
           </div>
         )}
       </div>
-      <ProductDialog product={selected} onClose={() => setSelected(null)} />
     </section>
   );
 }
