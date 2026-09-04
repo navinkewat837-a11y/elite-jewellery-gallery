@@ -83,10 +83,26 @@ function ProductDetailsPage() {
 
   const images = product ? (product.gallery?.length ? product.gallery : [product.image]) : [];
 
-  const related = useMemo(
-    () => (product ? PRODUCTS.filter((p) => p.category === product.category && p.id !== product.id).slice(0, 3) : []),
-    [product],
-  );
+  const related: Product[] = useMemo(() => {
+    if (!product) return [];
+    const pool: Product[] = dbProducts.length
+      ? dbProducts.map((db) => ({
+          id: `db-${db.id}`,
+          name: db.name,
+          category: db.category as Category,
+          price: Number(db.price),
+          image: db.image,
+          gallery: db.gallery?.length ? db.gallery : undefined,
+          description: db.description,
+          isNew: db.is_new,
+          weight: db.weight ?? undefined,
+          metal: db.metal ?? undefined,
+          createdAt: db.created_at,
+        }))
+      : [...PRODUCTS];
+    return pool.filter((p) => p.category === product.category && p.id !== product.id).slice(0, 3);
+  }, [product, dbProducts]);
+
 
   if (!product) {
     return (
