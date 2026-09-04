@@ -1,6 +1,5 @@
-import { useState } from "react";
+import { Link } from "@tanstack/react-router";
 import { type Category, type Product } from "./products";
-import { ProductDialog } from "./ProductDialog";
 import { quoteUrl } from "./contact";
 import { BlurImage } from "./BlurImage";
 import { useDbProducts } from "@/hooks/useDbProducts";
@@ -8,8 +7,8 @@ import { useDbProducts } from "@/hooks/useDbProducts";
 const fmt = new Intl.NumberFormat("en-IN", { style: "currency", currency: "INR", maximumFractionDigits: 0 });
 
 export function LatestArrivals() {
-  const [selected, setSelected] = useState<Product | null>(null);
   const { products } = useDbProducts();
+
   const items: Product[] = products
     .filter((p) => p.is_new)
     .slice(0, 6)
