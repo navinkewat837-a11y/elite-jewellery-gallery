@@ -1,10 +1,18 @@
+import { lazy } from "react";
 import { createFileRoute, stripSearchParams } from "@tanstack/react-router";
 import { zodValidator, fallback } from "@tanstack/zod-adapter";
 import { z } from "zod";
 import { Header } from "@/components/Header";
 import { Hero } from "@/components/Hero";
-import { LatestArrivals } from "@/components/LatestArrivals";
-import { Collection } from "@/components/Collection";
+import { LazySection, SectionSkeleton } from "@/components/LazySection";
+
+const LatestArrivals = lazy(() =>
+  import("@/components/LatestArrivals").then((m) => ({ default: m.LatestArrivals })),
+);
+const Collection = lazy(() =>
+  import("@/components/Collection").then((m) => ({ default: m.Collection })),
+);
+
 import {
   BridalInspiration,
   bridalPosterAvifSrcSet,
