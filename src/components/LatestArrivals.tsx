@@ -47,7 +47,12 @@ export function LatestArrivals() {
               key={p.id}
               className="group flex flex-col overflow-hidden rounded-xl bg-cream shadow-soft transition-all hover:-translate-y-1 hover:shadow-luxe"
             >
-              <div className="relative aspect-square overflow-hidden bg-cream">
+              <Link
+                to="/product/$id"
+                params={{ id: p.id }}
+                aria-label={`View details for ${p.name}`}
+                className="relative block aspect-square overflow-hidden bg-cream"
+              >
                 <BlurImage
                   src={p.image}
                   alt={p.name}
@@ -63,10 +68,18 @@ export function LatestArrivals() {
                 <span className="absolute left-4 top-4 rounded-full bg-gradient-gold px-3 py-1 text-[10px] tracking-luxe text-white shadow-soft">
                   NEW ARRIVAL
                 </span>
-              </div>
+              </Link>
               <div className="flex flex-1 flex-col gap-4 p-6">
                 <div>
-                  <h3 className="font-serif text-2xl font-medium">{p.name}</h3>
+                  <h3 className="font-serif text-2xl font-medium">
+                    <Link
+                      to="/product/$id"
+                      params={{ id: p.id }}
+                      className="transition-colors hover:text-[var(--gold-dark)]"
+                    >
+                      {p.name}
+                    </Link>
+                  </h3>
                   <p className="mt-1 text-sm text-muted-foreground line-clamp-2">{p.description}</p>
                 </div>
                 <div className="mt-auto flex items-end justify-between">
@@ -76,12 +89,13 @@ export function LatestArrivals() {
                   </div>
                 </div>
                 <div className="grid grid-cols-2 gap-2">
-                  <button
-                    onClick={() => setSelected(p)}
-                    className="rounded-full border border-border bg-background px-4 py-2.5 text-sm font-medium transition-colors hover:border-[var(--gold)] hover:text-[var(--gold-dark)]"
+                  <Link
+                    to="/product/$id"
+                    params={{ id: p.id }}
+                    className="rounded-full border border-border bg-background px-4 py-2.5 text-center text-sm font-medium transition-colors hover:border-[var(--gold)] hover:text-[var(--gold-dark)]"
                   >
-                    Details
-                  </button>
+                    View Details
+                  </Link>
                   <a
                     href={quoteUrl(p.name, p.price, { category: p.category, weight: p.weight })}
                     target="_blank"
@@ -96,7 +110,7 @@ export function LatestArrivals() {
           ))}
         </div>
       </div>
-      <ProductDialog product={selected} onClose={() => setSelected(null)} />
+
     </section>
   );
 }
