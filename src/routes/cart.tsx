@@ -3,7 +3,7 @@ import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
 import { WhatsAppFAB } from "@/components/WhatsAppFAB";
 import { useCart } from "@/hooks/useCart";
-import { WA_NUMBER } from "@/components/contact";
+import { PHONE_INTL } from "@/components/contact";
 import { Minus, Plus, Trash2 } from "lucide-react";
 
 const fmt = new Intl.NumberFormat("en-IN", { style: "currency", currency: "INR", maximumFractionDigits: 0 });
@@ -37,7 +37,7 @@ function CartPage() {
       `Total estimate: ${fmt.format(total)}`,
       "Please confirm availability and final pricing.",
     ];
-    return `https://wa.me/${WA_NUMBER}?text=${encodeURIComponent(lines.join("\n"))}`;
+    return `https://wa.me/${PHONE_INTL}?text=${encodeURIComponent(lines.join("\n"))}`;
   })();
 
   return (

@@ -1,5 +1,7 @@
 import { useState } from "react";
-import { Menu, X } from "lucide-react";
+import { Link } from "@tanstack/react-router";
+import { Menu, ShoppingBag, X } from "lucide-react";
+import { useCart } from "@/hooks/useCart";
 
 const links = [
   { href: "#home", label: "Home" },
@@ -31,13 +33,26 @@ export function Header() {
             </a>
           ))}
         </nav>
-        <a
-          href="#collection"
-          className="hidden rounded-full bg-gradient-gold px-6 py-2.5 text-sm font-medium text-white shadow-soft transition-transform hover:scale-105 md:inline-block"
-        >
-          Shop Now
-        </a>
-        <button
+        <div className="flex items-center gap-3">
+          <Link
+            to="/cart"
+            aria-label={`View cart${count > 0 ? `, ${count} item${count === 1 ? "" : "s"}` : ""}`}
+            className="relative rounded-full p-2 text-foreground/80 transition-colors hover:text-[var(--gold-dark)]"
+          >
+            <ShoppingBag className="h-5 w-5" />
+            {count > 0 && (
+              <span className="absolute -right-0.5 -top-0.5 flex h-5 min-w-5 items-center justify-center rounded-full bg-gradient-gold px-1 text-[10px] font-semibold text-white shadow-soft">
+                {count}
+              </span>
+            )}
+          </Link>
+          <a
+            href="#collection"
+            className="hidden rounded-full bg-gradient-gold px-6 py-2.5 text-sm font-medium text-white shadow-soft transition-transform hover:scale-105 md:inline-block"
+          >
+            Shop Now
+          </a>
+          <button
           aria-label="Toggle menu"
           className="md:hidden"
           onClick={() => setOpen(!open)}
