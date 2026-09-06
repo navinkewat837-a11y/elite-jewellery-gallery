@@ -8,6 +8,8 @@ import { PRODUCTS, type Category, type Product } from "@/components/products";
 import { quoteUrl } from "@/components/contact";
 import { useDbProducts } from "@/hooks/useDbProducts";
 import { usePreviewMode } from "@/hooks/usePreviewMode";
+import { useCart } from "@/hooks/useCart";
+import { ShoppingBag, Check } from "lucide-react";
 
 const fmt = new Intl.NumberFormat("en-IN", { style: "currency", currency: "INR", maximumFractionDigits: 0 });
 const SITE = "https://elite-jewellery-gallery.lovable.app";
@@ -53,6 +55,8 @@ function ProductDetailsPage() {
   const [metalChoice, setMetalChoice] = useState("");
   const [sizeChoice, setSizeChoice] = useState("");
   const [note, setNote] = useState("");
+  const [added, setAdded] = useState(false);
+  const { addItem } = useCart();
 
   const product: Product | null = useMemo(() => {
     const stat = PRODUCTS.find((p) => p.id === id);
@@ -300,6 +304,18 @@ function ProductDetailsPage() {
               )}
             </div>
 
+            <button
+              type="button"
+              onClick={() => {
+                addItem({ id: product.id, name: product.name, price: product.price, image: product.image });
+                setAdded(true);
+                window.setTimeout(() => setAdded(false), 2000);
+              }}
+              className="hidden items-center justify-center gap-2 rounded-full bg-gradient-gold px-8 py-4 text-sm font-medium text-white shadow-soft transition-transform hover:scale-[1.02] md:inline-flex"
+            >
+              {added ? <Check className="h-5 w-5" /> : <ShoppingBag className="h-5 w-5" />}
+              {added ? "Added to Cart" : "Add to Cart"}
+            </button>
             <a
               href={quote}
               target="_blank"
@@ -358,6 +374,18 @@ function ProductDetailsPage() {
             <p className="truncate font-serif text-sm">{product.name}</p>
             <p className="font-serif text-lg text-gradient-gold">{fmt.format(product.price)}</p>
           </div>
+          <button
+            type="button"
+            aria-label={added ? "Added to cart" : "Add to cart"}
+            onClick={() => {
+              addItem({ id: product.id, name: product.name, price: product.price, image: product.image });
+              setAdded(true);
+              window.setTimeout(() => setAdded(false), 2000);
+            }}
+            className="inline-flex shrink-0 items-center rounded-full bg-gradient-gold p-3 text-white shadow-soft"
+          >
+            {added ? <Check className="h-5 w-5" /> : <ShoppingBag className="h-5 w-5" />}
+          </button>
           <a
             href={quote}
             target="_blank"
