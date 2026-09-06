@@ -13,6 +13,7 @@ const links = [
 
 export function Header() {
   const [open, setOpen] = useState(false);
+  const { count } = useCart();
   return (
     <header className="sticky top-0 z-40 w-full border-b border-border/60 bg-background/80 backdrop-blur-md">
       <div className="mx-auto flex h-20 max-w-7xl items-center justify-between px-5 md:px-10">
@@ -58,7 +59,8 @@ export function Header() {
           onClick={() => setOpen(!open)}
         >
           {open ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
-        </button>
+          </button>
+        </div>
       </div>
       {open && (
         <div className="border-t border-border bg-background md:hidden">
