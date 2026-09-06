@@ -28,10 +28,12 @@ function writeCart(items: CartItem[]) {
 }
 
 export function useCart() {
-  const [items, setItems] = useState<CartItem[]>(readCart);
+  // Start empty so SSR and first client render match; hydrate from storage in effect.
+  const [items, setItems] = useState<CartItem[]>([]);
 
   useEffect(() => {
     const sync = () => setItems(readCart());
+    sync();
     window.addEventListener(CART_EVENT, sync);
     window.addEventListener("storage", sync);
     return () => {
