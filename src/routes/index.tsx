@@ -188,12 +188,23 @@ function Index() {
           <Collection />
         </LazySection>
 
-        <BridalInspiration />
-        <About />
-        <Contact />
+        <LazySection minHeight="90vh" fallback={<div className="min-h-[90vh]" aria-hidden />}>
+          <BridalInspiration />
+        </LazySection>
+        <LazySection minHeight="70vh" fallback={<div className="min-h-[70vh]" aria-hidden />}>
+          <About />
+        </LazySection>
+        <LazySection minHeight="70vh" fallback={<div className="min-h-[70vh]" aria-hidden />}>
+          <Contact />
+        </LazySection>
       </main>
-      <Footer />
-      <WhatsAppFAB />
+      <LazySection minHeight="40vh" fallback={<div className="min-h-[40vh]" aria-hidden />}>
+        <Footer />
+      </LazySection>
+      <LazySection minHeight="0px" fallback={null}>
+        <WhatsAppFAB />
+      </LazySection>
     </div>
   );
 }
+
