@@ -2,18 +2,14 @@ import bridalImage from "@/assets/bridal-lehenga.jpg.asset.json";
 import { BlurImage } from "./BlurImage";
 import bridalVideo from "@/assets/bridal-inspiration.mp4.asset.json";
 import bridalPoster from "@/assets/bridal-poster.jpg.asset.json";
-import bpAvif640 from "@/assets/bridal-poster-640.avif.asset.json";
-import bpAvif960 from "@/assets/bridal-poster-960.avif.asset.json";
-import bpAvif1280 from "@/assets/bridal-poster-1280.avif.asset.json";
-import bpWebp640 from "@/assets/bridal-poster-640.webp.asset.json";
-import bpWebp960 from "@/assets/bridal-poster-960.webp.asset.json";
-import bpWebp1280 from "@/assets/bridal-poster-1280.webp.asset.json";
-
-export const bridalPosterAvifSrcSet = `${bpAvif640.url} 640w, ${bpAvif960.url} 960w, ${bpAvif1280.url} 1280w`;
-const bridalPosterWebpSrcSet = `${bpWebp640.url} 640w, ${bpWebp960.url} 960w, ${bpWebp1280.url} 1280w`;
-export const bridalPosterSizes = "(min-width: 1024px) 50vw, 100vw";
+import {
+  bridalPosterAvifSrcSet,
+  bridalPosterWebpSrcSet,
+  bridalPosterSizes,
+} from "./bridal-poster";
 import { useRef } from "react";
 import { useInView } from "@/hooks/useInView";
+
 
 export function BridalInspiration() {
   const lehengaRef = useRef<HTMLElement>(null);
@@ -144,7 +140,7 @@ export function BridalInspiration() {
               {videoInView && (
                 <video
                   src={bridalVideo.url}
-                  poster={bpWebp960.url}
+                  poster={bridalPoster.url}
                   autoPlay
                   muted
                   loop

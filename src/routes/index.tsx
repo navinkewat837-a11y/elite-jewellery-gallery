@@ -1,4 +1,4 @@
-import { lazy } from "react";
+import { lazy, Suspense } from "react";
 import { createFileRoute, stripSearchParams } from "@tanstack/react-router";
 import { zodValidator, fallback } from "@tanstack/zod-adapter";
 import { z } from "zod";
@@ -12,23 +12,29 @@ const LatestArrivals = lazy(() =>
 const Collection = lazy(() =>
   import("@/components/Collection").then((m) => ({ default: m.Collection })),
 );
+const BridalInspiration = lazy(() =>
+  import("@/components/BridalInspiration").then((m) => ({ default: m.BridalInspiration })),
+);
+const About = lazy(() => import("@/components/About").then((m) => ({ default: m.About })));
+const Contact = lazy(() => import("@/components/Contact").then((m) => ({ default: m.Contact })));
+const Footer = lazy(() => import("@/components/Footer").then((m) => ({ default: m.Footer })));
+const WhatsAppFAB = lazy(() =>
+  import("@/components/WhatsAppFAB").then((m) => ({ default: m.WhatsAppFAB })),
+);
 
 import {
-  BridalInspiration,
+  bridalPosterAvif640,
   bridalPosterAvifSrcSet,
   bridalPosterSizes,
-} from "@/components/BridalInspiration";
-import bpAvif640 from "@/assets/bridal-poster-640.avif.asset.json";
-import { About } from "@/components/About";
-import { Contact } from "@/components/Contact";
-import { Footer } from "@/components/Footer";
-import { WhatsAppFAB } from "@/components/WhatsAppFAB";
+} from "@/components/bridal-poster";
 import { PRODUCTS, CATEGORIES } from "@/components/products";
 import avif640 from "@/assets/hero-poster-640.avif.asset.json";
 import avif960 from "@/assets/hero-poster-960.avif.asset.json";
 import avif1280 from "@/assets/hero-poster-1280.avif.asset.json";
 
 const SITE_URL = "https://elite-jewellery-gallery.lovable.app";
+const SUPABASE_ORIGIN = import.meta.env.VITE_SUPABASE_URL as string | undefined;
+
 
 const productSchemas = PRODUCTS.map((p) => ({
   "@context": "https://schema.org",
@@ -93,6 +99,14 @@ export const Route = createFileRoute("/")({
     ],
     links: [
       { rel: "canonical", href: "https://elite-jewellery-gallery.lovable.app/" },
+      // Warm up the data connection early so the lazily-loaded catalogue
+      // fetch doesn't pay DNS + TLS cost after hydration.
+      ...(SUPABASE_ORIGIN
+        ? [
+            { rel: "preconnect", href: SUPABASE_ORIGIN, crossOrigin: "anonymous" as const },
+            { rel: "dns-prefetch", href: SUPABASE_ORIGIN },
+          ]
+        : []),
       {
         rel: "preload",
         as: "image",
@@ -105,13 +119,14 @@ export const Route = createFileRoute("/")({
       {
         rel: "preload",
         as: "image",
-        href: bpAvif640.url,
+        href: bridalPosterAvif640,
         imageSrcSet: bridalPosterAvifSrcSet,
         imageSizes: bridalPosterSizes,
         type: "image/avif",
         fetchPriority: "low",
       },
     ],
+
     scripts: [
       {
         type: "application/ld+json",
@@ -173,12 +188,24 @@ function Index() {
           <Collection />
         </LazySection>
 
-        <BridalInspiration />
-        <About />
-        <Contact />
+        <LazySection minHeight="90vh" fallback={<div className="min-h-[90vh]" aria-hidden />}>
+          <BridalInspiration />
+        </LazySection>
+        <LazySection minHeight="70vh" fallback={<div className="min-h-[70vh]" aria-hidden />}>
+          <About />
+        </LazySection>
+        <LazySection minHeight="70vh" fallback={<div className="min-h-[70vh]" aria-hidden />}>
+          <Contact />
+        </LazySection>
       </main>
-      <Footer />
-      <WhatsAppFAB />
+      <LazySection minHeight="40vh" fallback={<div className="min-h-[40vh]" aria-hidden />}>
+        <Footer />
+      </LazySection>
+      <Suspense fallback={null}>
+        <WhatsAppFAB />
+      </Suspense>
+
     </div>
   );
 }
+

@@ -15,5 +15,17 @@ export default defineConfig({
   },
   vite: {
     plugins: [mcpPlugin()],
+    build: {
+      rollupOptions: {
+        output: {
+          // Keep the database/auth SDK out of the initial page bundle so it
+          // downloads and parses only when data is actually requested.
+          manualChunks(id: string) {
+            if (id.includes("node_modules/@supabase/")) return "supabase";
+          },
+        },
+      },
+    },
   },
 });
+
