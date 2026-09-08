@@ -99,6 +99,14 @@ export const Route = createFileRoute("/")({
     ],
     links: [
       { rel: "canonical", href: "https://elite-jewellery-gallery.lovable.app/" },
+      // Warm up the data connection early so the lazily-loaded catalogue
+      // fetch doesn't pay DNS + TLS cost after hydration.
+      ...(SUPABASE_ORIGIN
+        ? [
+            { rel: "preconnect", href: SUPABASE_ORIGIN, crossOrigin: "anonymous" as const },
+            { rel: "dns-prefetch", href: SUPABASE_ORIGIN },
+          ]
+        : []),
       {
         rel: "preload",
         as: "image",
@@ -111,13 +119,14 @@ export const Route = createFileRoute("/")({
       {
         rel: "preload",
         as: "image",
-        href: bpAvif640.url,
+        href: bridalPosterAvif640,
         imageSrcSet: bridalPosterAvifSrcSet,
         imageSizes: bridalPosterSizes,
         type: "image/avif",
         fetchPriority: "low",
       },
     ],
+
     scripts: [
       {
         type: "application/ld+json",
