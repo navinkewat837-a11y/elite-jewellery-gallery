@@ -12,23 +12,29 @@ const LatestArrivals = lazy(() =>
 const Collection = lazy(() =>
   import("@/components/Collection").then((m) => ({ default: m.Collection })),
 );
+const BridalInspiration = lazy(() =>
+  import("@/components/BridalInspiration").then((m) => ({ default: m.BridalInspiration })),
+);
+const About = lazy(() => import("@/components/About").then((m) => ({ default: m.About })));
+const Contact = lazy(() => import("@/components/Contact").then((m) => ({ default: m.Contact })));
+const Footer = lazy(() => import("@/components/Footer").then((m) => ({ default: m.Footer })));
+const WhatsAppFAB = lazy(() =>
+  import("@/components/WhatsAppFAB").then((m) => ({ default: m.WhatsAppFAB })),
+);
 
 import {
-  BridalInspiration,
+  bridalPosterAvif640,
   bridalPosterAvifSrcSet,
   bridalPosterSizes,
-} from "@/components/BridalInspiration";
-import bpAvif640 from "@/assets/bridal-poster-640.avif.asset.json";
-import { About } from "@/components/About";
-import { Contact } from "@/components/Contact";
-import { Footer } from "@/components/Footer";
-import { WhatsAppFAB } from "@/components/WhatsAppFAB";
+} from "@/components/bridal-poster";
 import { PRODUCTS, CATEGORIES } from "@/components/products";
 import avif640 from "@/assets/hero-poster-640.avif.asset.json";
 import avif960 from "@/assets/hero-poster-960.avif.asset.json";
 import avif1280 from "@/assets/hero-poster-1280.avif.asset.json";
 
 const SITE_URL = "https://elite-jewellery-gallery.lovable.app";
+const SUPABASE_ORIGIN = import.meta.env.VITE_SUPABASE_URL as string | undefined;
+
 
 const productSchemas = PRODUCTS.map((p) => ({
   "@context": "https://schema.org",
