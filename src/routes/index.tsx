@@ -201,9 +201,10 @@ function Index() {
       <LazySection minHeight="40vh" fallback={<div className="min-h-[40vh]" aria-hidden />}>
         <Footer />
       </LazySection>
-      <LazySection minHeight="0px" fallback={null}>
+      <Suspense fallback={null}>
         <WhatsAppFAB />
-      </LazySection>
+      </Suspense>
+
     </div>
   );
 }
