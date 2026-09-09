@@ -1,3 +1,4 @@
+import { useEffect } from "react";
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
@@ -25,7 +26,16 @@ export const Route = createFileRoute("/cart")({
 });
 
 function CartPage() {
-  const { items, total, setQty, removeItem, clear } = useCart();
+  const { items, total, setQty, removeItem, clear, checkoutUrl, isLoading, syncCart } = useCart();
+
+  useEffect(() => {
+    syncCart();
+    const onVisible = () => {
+      if (document.visibilityState === "visible") syncCart();
+    };
+    document.addEventListener("visibilitychange", onVisible);
+    return () => document.removeEventListener("visibilitychange", onVisible);
+  }, [syncCart]);
 
   const orderUrl = (() => {
     const lines = [
@@ -131,16 +141,26 @@ function CartPage() {
               </div>
             </div>
 
+            <button
+              type="button"
+              disabled={!checkoutUrl || isLoading}
+              onClick={() => {
+                if (checkoutUrl) window.open(checkoutUrl, "_blank");
+              }}
+              className="mt-8 flex w-full items-center justify-center gap-2 rounded-full bg-gradient-gold px-8 py-4 text-sm font-medium text-white shadow-soft transition-transform hover:scale-[1.02] disabled:opacity-60"
+            >
+              {isLoading ? "Preparing secure checkout…" : "Proceed to Secure Checkout"}
+            </button>
             <a
               href={orderUrl}
               target="_blank"
               rel="noopener noreferrer"
-              className="mt-8 flex items-center justify-center gap-2 rounded-full bg-[#25D366] px-8 py-4 text-sm font-medium text-white shadow-soft transition-transform hover:scale-[1.02]"
+              className="mt-3 flex items-center justify-center gap-2 rounded-full border border-[#25D366] px-8 py-4 text-sm font-medium text-[#128C7E] transition-transform hover:scale-[1.02]"
             >
-              Send Order Enquiry on WhatsApp
+              Prefer WhatsApp? Send Order Enquiry
             </a>
             <p className="mt-3 text-center text-xs text-muted-foreground">
-              Final price confirmed on enquiry · Inclusive of making charges
+              Secure payment powered by Shopify · Prices inclusive of making charges
             </p>
           </>
         )}
