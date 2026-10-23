@@ -3,7 +3,7 @@ import {
   addLineToShopifyCart,
   createShopifyCart,
   findVariantIdByTitle,
-  getShopifyCartQuantity,
+  getShopifyCartCheckout,
   removeLineFromShopifyCart,
   updateShopifyCartLine,
 } from "@/lib/shopify";
@@ -182,6 +182,79 @@ export function useCart() {
       if (remaining === 0) writeState(EMPTY);
     } catch (e) {
       console.error("Failed to sync cart with Shopify:", e);
+    }
+  }, []);
+
+  /**
+   * Guarantees a Shopify cart holding every local item, then returns its
+   * checkout URL. Used by the cart page's Buy button so checkout always
+   * opens even when the local cart predates the Shopify sync.
+   */
+  const ensureCheckout = useCallback(async (): Promise<string | null> => {
+    const current = readState();
+    if (current.items.length === 0) return null;
+    if (current.checkoutUrl) return current.checkoutUrl;
+
+    setIsLoading(true);
+    try {
+      // 1. Reuse an existing Shopify cart when it is still alive.
+      if (current.cartId) {
+        const existing = await getShopifyCartCheckout(current.cartId);
+        if (existing?.checkoutUrl) {
+          writeState({ ...readState(), checkoutUrl: formatCheckoutUrlSafe(existing.checkoutUrl) });
+          return formatCheckoutUrlSafe(existing.checkoutUrl);
+        }
+        // Cart expired/removed — drop stale ids and rebuild below.
+        writeState({ items: readState().items.map((i) => ({ ...i, lineId: null })), cartId: null, checkoutUrl: null });
+      }
+
+      // 2. Resolve any item that is still missing its Shopify variant id.
+      const items = readState().items;
+      const resolved: { item: CartItem; variantId: string }[] = [];
+      for (const item of items) {
+        const variantId = item.variantId ?? (await findVariantIdByTitle(item.name));
+        if (variantId) {
+          resolved.push({ item, variantId });
+          if (variantId !== item.variantId) {
+            const s = readState();
+            writeState({ ...s, items: s.items.map((i) => (i.id === item.id ? { ...i, variantId } : i)) });
+          }
+        } else {
+          console.error("No Shopify variant found for", item.name);
+        }
+      }
+      if (resolved.length === 0) return null;
+
+      // 3. Create a fresh Shopify cart with the first item, then add the rest.
+      const first = resolved[0];
+      const created = await createShopifyCart(first.variantId, first.item.qty);
+      if (!created) return null;
+      const url = created.checkoutUrl;
+      const withFirst: CartState = {
+        cartId: created.cartId,
+        checkoutUrl: url,
+        items: readState().items.map((i) =>
+          i.id === first.item.id ? { ...i, variantId: first.variantId, lineId: created.lineId } : i,
+        ),
+      };
+      writeState(withFirst);
+
+      for (const { item, variantId } of resolved.slice(1)) {
+        const res = await addLineToShopifyCart(created.cartId, variantId, item.qty);
+        if (res.success) {
+          const s = readState();
+          writeState({
+            ...s,
+            items: s.items.map((i) => (i.id === item.id ? { ...i, variantId, lineId: res.lineId ?? null } : i)),
+          });
+        }
+      }
+      return url;
+    } catch (error) {
+      console.error("Failed to prepare Shopify checkout:", error);
+      return null;
+    } finally {
+      setIsLoading(false);
     }
   }, []);
 
