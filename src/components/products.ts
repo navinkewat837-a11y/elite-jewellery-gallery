@@ -37,6 +37,8 @@ export interface Product {
   weight?: string;
   metal?: string;
   createdAt?: string;
+  /** Shopify variant id (gid://shopify/ProductVariant/...) when the item is linked to the store */
+  shopifyVariantId?: string | null;
 }
 
 export const CATEGORIES: Category[] = ["Rings", "Necklaces", "Earrings", "Bracelets", "Bangles", "Anklets"];
