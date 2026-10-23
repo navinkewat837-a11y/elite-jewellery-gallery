@@ -13,6 +13,8 @@ export interface DbProduct {
   metal: string | null;
   is_new: boolean;
   display_order: number;
+  shopify_product_id: string | null;
+  shopify_variant_id: string | null;
   status: "draft" | "published";
   publish_at: string | null;
   created_at: string;

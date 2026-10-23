@@ -50,6 +50,7 @@ export function Collection() {
     category: p.category as Category,
     price: Number(p.price),
     image: p.image,
+    shopifyVariantId: p.shopify_variant_id,
     gallery: p.gallery?.length ? p.gallery : undefined,
     description: p.description,
     isNew: p.is_new,
