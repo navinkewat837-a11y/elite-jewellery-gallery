@@ -3,6 +3,7 @@ import {
   addLineToShopifyCart,
   createShopifyCart,
   findVariantIdByTitle,
+  formatCheckoutUrl,
   getShopifyCartCheckout,
   removeLineFromShopifyCart,
   updateShopifyCartLine,
@@ -201,8 +202,9 @@ export function useCart() {
       if (current.cartId) {
         const existing = await getShopifyCartCheckout(current.cartId);
         if (existing?.checkoutUrl) {
-          writeState({ ...readState(), checkoutUrl: formatCheckoutUrlSafe(existing.checkoutUrl) });
-          return formatCheckoutUrlSafe(existing.checkoutUrl);
+          const url = formatCheckoutUrl(existing.checkoutUrl);
+          writeState({ ...readState(), checkoutUrl: url });
+          return url;
         }
         // Cart expired/removed — drop stale ids and rebuild below.
         writeState({ items: readState().items.map((i) => ({ ...i, lineId: null })), cartId: null, checkoutUrl: null });
