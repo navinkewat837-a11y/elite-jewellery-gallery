@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from "react";
+import { Link } from "@tanstack/react-router";
 import heroVideo from "@/assets/hero.mp4.asset.json";
 
 import avif640 from "@/assets/hero-poster-640.avif.asset.json";
@@ -11,6 +12,7 @@ import jpg640 from "@/assets/hero-poster-640.jpg.asset.json";
 import jpg960 from "@/assets/hero-poster-960.jpg.asset.json";
 import jpg1280 from "@/assets/hero-poster-1280.jpg.asset.json";
 import { useInView } from "@/hooks/useInView";
+import { BookConsultationModal } from "./BookConsultation";
 
 const POSTER_SIZES = "100vw";
 const avifSrcSet = `${avif640.url} 640w, ${avif960.url} 960w, ${avif1280.url} 1280w`;
@@ -61,6 +63,7 @@ export function Hero() {
   const [videoFailed, setVideoFailed] = useState(false);
   const [retrying, setRetrying] = useState(false);
   const [retryAttempt, setRetryAttempt] = useState(0);
+  const [bookingOpen, setBookingOpen] = useState(false);
 
   const clearRetryTimer = () => {
     if (retryTimerRef.current) {
@@ -226,20 +229,22 @@ export function Hero() {
           Shine with Elegance — Discover Our Exclusive Heritage Collection.
         </p>
         <div className="mt-10 flex w-full flex-col gap-3 sm:w-auto sm:flex-row">
-          <a
-            href="#collection"
+          <Link
+            to="/shop"
             className="w-full rounded-full bg-gradient-gold px-8 py-4 text-center text-sm font-medium tracking-wide text-white shadow-luxe transition-transform hover:scale-[1.03] sm:w-auto"
           >
             View Collection
-          </a>
-          <a
-            href="#contact"
+          </Link>
+          <button
+            type="button"
+            onClick={() => setBookingOpen(true)}
             className="w-full rounded-full border border-white/40 bg-white/10 px-8 py-4 text-center text-sm font-medium text-white backdrop-blur-md transition-colors hover:bg-white/20 sm:w-auto"
           >
             Book Consultation
-          </a>
+          </button>
         </div>
       </div>
+      <BookConsultationModal open={bookingOpen} onClose={() => setBookingOpen(false)} />
     </section>
   );
 }
