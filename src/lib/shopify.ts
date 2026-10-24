@@ -91,6 +91,27 @@ const CART_LINES_REMOVE_MUTATION = `
 
 const CART_QUERY = `query cart($id: ID!) { cart(id: $id) { id totalQuantity } }`;
 
+const CART_CHECKOUT_QUERY = `
+  query cartCheckout($id: ID!) {
+    cart(id: $id) { id checkoutUrl totalQuantity }
+  }
+`;
+
+/** Fetches a live checkout URL for an existing Shopify cart, or null if it is gone. */
+export async function getShopifyCartCheckout(
+  cartId: string,
+): Promise<{ checkoutUrl: string } | null> {
+  try {
+    const data = await storefrontApiRequest(CART_CHECKOUT_QUERY, { id: cartId });
+    if (!data) return null;
+    const cart = data?.data?.cart;
+    if (!cart?.checkoutUrl) return null;
+    return { checkoutUrl: cart.checkoutUrl as string };
+  } catch {
+    return null;
+  }
+}
+
 type UserError = { field: string[] | null; message: string };
 
 function isCartNotFoundError(errors: UserError[] = []): boolean {
@@ -101,7 +122,7 @@ function isCartNotFoundError(errors: UserError[] = []): boolean {
   );
 }
 
-function formatCheckoutUrl(checkoutUrl: string): string {
+export function formatCheckoutUrl(checkoutUrl: string): string {
   try {
     const url = new URL(checkoutUrl);
     url.searchParams.set("channel", "online_store");

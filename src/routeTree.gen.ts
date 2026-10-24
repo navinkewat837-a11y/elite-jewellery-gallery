@@ -9,49 +9,25 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
-import { Route as SitemapDotxmlRouteImport } from './routes/sitemap[.]xml'
-import { Route as ShopRouteImport } from './routes/shop'
-import { Route as McpRouteImport } from './routes/mcp'
-import { Route as LookbookRouteImport } from './routes/lookbook'
-import { Route as CartRouteImport } from './routes/cart'
-import { Route as AuthRouteImport } from './routes/auth'
-import { Route as AdminRouteImport } from './routes/admin'
 import { Route as IndexRouteImport } from './routes/index'
-import { Route as ProductIdRouteImport } from './routes/product.$id'
-import { Route as PreviewTokenRouteImport } from './routes/preview.$token'
-import { Route as CollectionsFloralRingsRouteImport } from './routes/collections.floral-rings'
-import { Route as Char91DotwellKnownChar93OauthProtectedResourceRouteImport } from './routes/[.well-known]/oauth-protected-resource'
+import { Route as AdminRouteImport } from './routes/admin'
+import { Route as AuthRouteImport } from './routes/auth'
+import { Route as CartRouteImport } from './routes/cart'
+import { Route as LookbookRouteImport } from './routes/lookbook'
+import { Route as McpRouteImport } from './routes/mcp'
+import { Route as ShopRouteImport } from './routes/shop'
+import { Route as SitemapDotxmlRouteImport } from './routes/sitemap[.]xml'
 import { Route as Char91DotmcpChar93ListToolsRouteImport } from './routes/[.mcp]/list-tools'
+import { Route as Char91DotwellKnownChar93OauthProtectedResourceRouteImport } from './routes/[.well-known]/oauth-protected-resource'
+import { Route as CollectionsFloralRingsRouteImport } from './routes/collections.floral-rings'
+import { Route as PreviewTokenRouteImport } from './routes/preview.$token'
+import { Route as ProductIdRouteImport } from './routes/product.$id'
+import { Route as ShopHandleRouteImport } from './routes/shop.$handle'
 import { Route as Char91DotmcpChar93InvokeToolToolRouteImport } from './routes/[.mcp]/invoke-tool/$tool'
 
-const SitemapDotxmlRoute = SitemapDotxmlRouteImport.update({
-  id: '/sitemap.xml',
-  path: '/sitemap.xml',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const ShopRoute = ShopRouteImport.update({
-  id: '/shop',
-  path: '/shop',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const McpRoute = McpRouteImport.update({
-  id: '/mcp',
-  path: '/mcp',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const LookbookRoute = LookbookRouteImport.update({
-  id: '/lookbook',
-  path: '/lookbook',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const CartRoute = CartRouteImport.update({
-  id: '/cart',
-  path: '/cart',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const AuthRoute = AuthRouteImport.update({
-  id: '/auth',
-  path: '/auth',
+const IndexRoute = IndexRouteImport.update({
+  id: '/',
+  path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
 const AdminRoute = AdminRouteImport.update({
@@ -59,14 +35,51 @@ const AdminRoute = AdminRouteImport.update({
   path: '/admin',
   getParentRoute: () => rootRouteImport,
 } as any)
-const IndexRoute = IndexRouteImport.update({
-  id: '/',
-  path: '/',
+const AuthRoute = AuthRouteImport.update({
+  id: '/auth',
+  path: '/auth',
   getParentRoute: () => rootRouteImport,
 } as any)
-const ProductIdRoute = ProductIdRouteImport.update({
-  id: '/product/$id',
-  path: '/product/$id',
+const CartRoute = CartRouteImport.update({
+  id: '/cart',
+  path: '/cart',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const LookbookRoute = LookbookRouteImport.update({
+  id: '/lookbook',
+  path: '/lookbook',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const McpRoute = McpRouteImport.update({
+  id: '/mcp',
+  path: '/mcp',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ShopRoute = ShopRouteImport.update({
+  id: '/shop',
+  path: '/shop',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const SitemapDotxmlRoute = SitemapDotxmlRouteImport.update({
+  id: '/sitemap.xml',
+  path: '/sitemap.xml',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const Char91DotmcpChar93ListToolsRoute =
+  Char91DotmcpChar93ListToolsRouteImport.update({
+    id: '/.mcp/list-tools',
+    path: '/.mcp/list-tools',
+    getParentRoute: () => rootRouteImport,
+  } as any)
+const Char91DotwellKnownChar93OauthProtectedResourceRoute =
+  Char91DotwellKnownChar93OauthProtectedResourceRouteImport.update({
+    id: '/.well-known/oauth-protected-resource',
+    path: '/.well-known/oauth-protected-resource',
+    getParentRoute: () => rootRouteImport,
+  } as any)
+const CollectionsFloralRingsRoute = CollectionsFloralRingsRouteImport.update({
+  id: '/collections/floral-rings',
+  path: '/collections/floral-rings',
   getParentRoute: () => rootRouteImport,
 } as any)
 const PreviewTokenRoute = PreviewTokenRouteImport.update({
@@ -74,23 +87,16 @@ const PreviewTokenRoute = PreviewTokenRouteImport.update({
   path: '/preview/$token',
   getParentRoute: () => rootRouteImport,
 } as any)
-const CollectionsFloralRingsRoute = CollectionsFloralRingsRouteImport.update({
-  id: '/collections/floral-rings',
-  path: '/collections/floral-rings',
+const ProductIdRoute = ProductIdRouteImport.update({
+  id: '/product/$id',
+  path: '/product/$id',
   getParentRoute: () => rootRouteImport,
 } as any)
-const Char91DotwellKnownChar93OauthProtectedResourceRoute =
-  Char91DotwellKnownChar93OauthProtectedResourceRouteImport.update({
-    id: '/.well-known/oauth-protected-resource',
-    path: '/.well-known/oauth-protected-resource',
-    getParentRoute: () => rootRouteImport,
-  } as any)
-const Char91DotmcpChar93ListToolsRoute =
-  Char91DotmcpChar93ListToolsRouteImport.update({
-    id: '/.mcp/list-tools',
-    path: '/.mcp/list-tools',
-    getParentRoute: () => rootRouteImport,
-  } as any)
+const ShopHandleRoute = ShopHandleRouteImport.update({
+  id: '/$handle',
+  path: '/$handle',
+  getParentRoute: () => ShopRoute,
+} as any)
 const Char91DotmcpChar93InvokeToolToolRoute =
   Char91DotmcpChar93InvokeToolToolRouteImport.update({
     id: '/.mcp/invoke-tool/$tool',
@@ -105,13 +111,14 @@ export interface FileRoutesByFullPath {
   '/cart': typeof CartRoute
   '/lookbook': typeof LookbookRoute
   '/mcp': typeof McpRoute
-  '/shop': typeof ShopRoute
+  '/shop': typeof ShopRouteWithChildren
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/.mcp/list-tools': typeof Char91DotmcpChar93ListToolsRoute
   '/.well-known/oauth-protected-resource': typeof Char91DotwellKnownChar93OauthProtectedResourceRoute
   '/collections/floral-rings': typeof CollectionsFloralRingsRoute
   '/preview/$token': typeof PreviewTokenRoute
   '/product/$id': typeof ProductIdRoute
+  '/shop/$handle': typeof ShopHandleRoute
   '/.mcp/invoke-tool/$tool': typeof Char91DotmcpChar93InvokeToolToolRoute
 }
 export interface FileRoutesByTo {
@@ -121,13 +128,14 @@ export interface FileRoutesByTo {
   '/cart': typeof CartRoute
   '/lookbook': typeof LookbookRoute
   '/mcp': typeof McpRoute
-  '/shop': typeof ShopRoute
+  '/shop': typeof ShopRouteWithChildren
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/.mcp/list-tools': typeof Char91DotmcpChar93ListToolsRoute
   '/.well-known/oauth-protected-resource': typeof Char91DotwellKnownChar93OauthProtectedResourceRoute
   '/collections/floral-rings': typeof CollectionsFloralRingsRoute
   '/preview/$token': typeof PreviewTokenRoute
   '/product/$id': typeof ProductIdRoute
+  '/shop/$handle': typeof ShopHandleRoute
   '/.mcp/invoke-tool/$tool': typeof Char91DotmcpChar93InvokeToolToolRoute
 }
 export interface FileRoutesById {
@@ -138,13 +146,14 @@ export interface FileRoutesById {
   '/cart': typeof CartRoute
   '/lookbook': typeof LookbookRoute
   '/mcp': typeof McpRoute
-  '/shop': typeof ShopRoute
+  '/shop': typeof ShopRouteWithChildren
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/.mcp/list-tools': typeof Char91DotmcpChar93ListToolsRoute
   '/.well-known/oauth-protected-resource': typeof Char91DotwellKnownChar93OauthProtectedResourceRoute
   '/collections/floral-rings': typeof CollectionsFloralRingsRoute
   '/preview/$token': typeof PreviewTokenRoute
   '/product/$id': typeof ProductIdRoute
+  '/shop/$handle': typeof ShopHandleRoute
   '/.mcp/invoke-tool/$tool': typeof Char91DotmcpChar93InvokeToolToolRoute
 }
 export interface FileRouteTypes {
@@ -163,6 +172,7 @@ export interface FileRouteTypes {
     | '/collections/floral-rings'
     | '/preview/$token'
     | '/product/$id'
+    | '/shop/$handle'
     | '/.mcp/invoke-tool/$tool'
   fileRoutesByTo: FileRoutesByTo
   to:
@@ -179,6 +189,7 @@ export interface FileRouteTypes {
     | '/collections/floral-rings'
     | '/preview/$token'
     | '/product/$id'
+    | '/shop/$handle'
     | '/.mcp/invoke-tool/$tool'
   id:
     | '__root__'
@@ -195,6 +206,7 @@ export interface FileRouteTypes {
     | '/collections/floral-rings'
     | '/preview/$token'
     | '/product/$id'
+    | '/shop/$handle'
     | '/.mcp/invoke-tool/$tool'
   fileRoutesById: FileRoutesById
 }
@@ -205,7 +217,7 @@ export interface RootRouteChildren {
   CartRoute: typeof CartRoute
   LookbookRoute: typeof LookbookRoute
   McpRoute: typeof McpRoute
-  ShopRoute: typeof ShopRoute
+  ShopRoute: typeof ShopRouteWithChildren
   SitemapDotxmlRoute: typeof SitemapDotxmlRoute
   Char91DotmcpChar93ListToolsRoute: typeof Char91DotmcpChar93ListToolsRoute
   Char91DotwellKnownChar93OauthProtectedResourceRoute: typeof Char91DotwellKnownChar93OauthProtectedResourceRoute
@@ -217,46 +229,11 @@ export interface RootRouteChildren {
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
-    '/sitemap.xml': {
-      id: '/sitemap.xml'
-      path: '/sitemap.xml'
-      fullPath: '/sitemap.xml'
-      preLoaderRoute: typeof SitemapDotxmlRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/shop': {
-      id: '/shop'
-      path: '/shop'
-      fullPath: '/shop'
-      preLoaderRoute: typeof ShopRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/mcp': {
-      id: '/mcp'
-      path: '/mcp'
-      fullPath: '/mcp'
-      preLoaderRoute: typeof McpRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/lookbook': {
-      id: '/lookbook'
-      path: '/lookbook'
-      fullPath: '/lookbook'
-      preLoaderRoute: typeof LookbookRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/cart': {
-      id: '/cart'
-      path: '/cart'
-      fullPath: '/cart'
-      preLoaderRoute: typeof CartRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/auth': {
-      id: '/auth'
-      path: '/auth'
-      fullPath: '/auth'
-      preLoaderRoute: typeof AuthRouteImport
+    '/': {
+      id: '/'
+      path: '/'
+      fullPath: '/'
+      preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/admin': {
@@ -266,32 +243,53 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/': {
-      id: '/'
-      path: '/'
-      fullPath: '/'
-      preLoaderRoute: typeof IndexRouteImport
+    '/auth': {
+      id: '/auth'
+      path: '/auth'
+      fullPath: '/auth'
+      preLoaderRoute: typeof AuthRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/product/$id': {
-      id: '/product/$id'
-      path: '/product/$id'
-      fullPath: '/product/$id'
-      preLoaderRoute: typeof ProductIdRouteImport
+    '/cart': {
+      id: '/cart'
+      path: '/cart'
+      fullPath: '/cart'
+      preLoaderRoute: typeof CartRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/preview/$token': {
-      id: '/preview/$token'
-      path: '/preview/$token'
-      fullPath: '/preview/$token'
-      preLoaderRoute: typeof PreviewTokenRouteImport
+    '/lookbook': {
+      id: '/lookbook'
+      path: '/lookbook'
+      fullPath: '/lookbook'
+      preLoaderRoute: typeof LookbookRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/collections/floral-rings': {
-      id: '/collections/floral-rings'
-      path: '/collections/floral-rings'
-      fullPath: '/collections/floral-rings'
-      preLoaderRoute: typeof CollectionsFloralRingsRouteImport
+    '/mcp': {
+      id: '/mcp'
+      path: '/mcp'
+      fullPath: '/mcp'
+      preLoaderRoute: typeof McpRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/shop': {
+      id: '/shop'
+      path: '/shop'
+      fullPath: '/shop'
+      preLoaderRoute: typeof ShopRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/sitemap.xml': {
+      id: '/sitemap.xml'
+      path: '/sitemap.xml'
+      fullPath: '/sitemap.xml'
+      preLoaderRoute: typeof SitemapDotxmlRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/.mcp/list-tools': {
+      id: '/.mcp/list-tools'
+      path: '/.mcp/list-tools'
+      fullPath: '/.mcp/list-tools'
+      preLoaderRoute: typeof Char91DotmcpChar93ListToolsRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/.well-known/oauth-protected-resource': {
@@ -301,12 +299,33 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof Char91DotwellKnownChar93OauthProtectedResourceRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/.mcp/list-tools': {
-      id: '/.mcp/list-tools'
-      path: '/.mcp/list-tools'
-      fullPath: '/.mcp/list-tools'
-      preLoaderRoute: typeof Char91DotmcpChar93ListToolsRouteImport
+    '/collections/floral-rings': {
+      id: '/collections/floral-rings'
+      path: '/collections/floral-rings'
+      fullPath: '/collections/floral-rings'
+      preLoaderRoute: typeof CollectionsFloralRingsRouteImport
       parentRoute: typeof rootRouteImport
+    }
+    '/preview/$token': {
+      id: '/preview/$token'
+      path: '/preview/$token'
+      fullPath: '/preview/$token'
+      preLoaderRoute: typeof PreviewTokenRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/product/$id': {
+      id: '/product/$id'
+      path: '/product/$id'
+      fullPath: '/product/$id'
+      preLoaderRoute: typeof ProductIdRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/shop/$handle': {
+      id: '/shop/$handle'
+      path: '/$handle'
+      fullPath: '/shop/$handle'
+      preLoaderRoute: typeof ShopHandleRouteImport
+      parentRoute: typeof ShopRoute
     }
     '/.mcp/invoke-tool/$tool': {
       id: '/.mcp/invoke-tool/$tool'
@@ -318,6 +337,16 @@ declare module '@tanstack/react-router' {
   }
 }
 
+interface ShopRouteChildren {
+  ShopHandleRoute: typeof ShopHandleRoute
+}
+
+const ShopRouteChildren: ShopRouteChildren = {
+  ShopHandleRoute: ShopHandleRoute,
+}
+
+const ShopRouteWithChildren = ShopRoute._addFileChildren(ShopRouteChildren)
+
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AdminRoute: AdminRoute,
@@ -325,7 +354,7 @@ const rootRouteChildren: RootRouteChildren = {
   CartRoute: CartRoute,
   LookbookRoute: LookbookRoute,
   McpRoute: McpRoute,
-  ShopRoute: ShopRoute,
+  ShopRoute: ShopRouteWithChildren,
   SitemapDotxmlRoute: SitemapDotxmlRoute,
   Char91DotmcpChar93ListToolsRoute: Char91DotmcpChar93ListToolsRoute,
   Char91DotwellKnownChar93OauthProtectedResourceRoute:

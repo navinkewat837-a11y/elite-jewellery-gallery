@@ -1,0 +1,1 @@
+ALTER TABLE public.products ADD COLUMN IF NOT EXISTS shopify_product_id TEXT, ADD COLUMN IF NOT EXISTS shopify_variant_id TEXT;
