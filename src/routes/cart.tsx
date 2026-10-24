@@ -1,10 +1,9 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
 import { WhatsAppFAB } from "@/components/WhatsAppFAB";
 import { useCart } from "@/hooks/useCart";
-import { PHONE_INTL } from "@/components/contact";
 import { Minus, Plus, Trash2 } from "lucide-react";
 
 const fmt = new Intl.NumberFormat("en-IN", { style: "currency", currency: "INR", maximumFractionDigits: 0 });
@@ -14,9 +13,9 @@ export const Route = createFileRoute("/cart")({
   head: () => ({
     meta: [
       { title: "Your Cart | Elite Jewellery Gallery" },
-      { name: "description", content: "Review your selected jewellery pieces and send your order enquiry on WhatsApp." },
+      { name: "description", content: "Review your selected jewellery pieces and check out securely online." },
       { property: "og:title", content: "Your Cart | Elite Jewellery Gallery" },
-      { property: "og:description", content: "Review your selected jewellery pieces and send your order enquiry on WhatsApp." },
+      { property: "og:description", content: "Review your selected jewellery pieces and check out securely online." },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary" },
     ],
@@ -26,7 +25,18 @@ export const Route = createFileRoute("/cart")({
 });
 
 function CartPage() {
-  const { items, total, setQty, removeItem, clear, checkoutUrl, isLoading, syncCart } = useCart();
+  const { items, total, setQty, removeItem, clear, checkoutUrl, isLoading, syncCart, ensureCheckout } = useCart();
+  const [preparing, setPreparing] = useState(false);
+
+  const handleCheckout = async () => {
+    setPreparing(true);
+    try {
+      const url = checkoutUrl ?? (await ensureCheckout());
+      if (url) window.open(url, "_blank", "noopener,noreferrer");
+    } finally {
+      setPreparing(false);
+    }
+  };
 
   useEffect(() => {
     syncCart();
@@ -36,19 +46,6 @@ function CartPage() {
     document.addEventListener("visibilitychange", onVisible);
     return () => document.removeEventListener("visibilitychange", onVisible);
   }, [syncCart]);
-
-  const orderUrl = (() => {
-    const lines = [
-      "Hi Elite Jewellery Gallery! I'd like to place an order enquiry for:",
-      ...items.map(
-        (i, idx) =>
-          `${idx + 1}. ${i.name} — ${fmt.format(i.price)} × ${i.qty} = ${fmt.format(i.price * i.qty)} (${SITE}/product/${i.id})`
-      ),
-      `Total estimate: ${fmt.format(total)}`,
-      "Please confirm availability and final pricing.",
-    ];
-    return `https://wa.me/${PHONE_INTL}?text=${encodeURIComponent(lines.join("\n"))}`;
-  })();
 
   return (
     <div className="min-h-screen bg-background">
@@ -60,8 +57,7 @@ function CartPage() {
           <div className="mt-12 text-center">
             <p className="text-muted-foreground">Your cart is empty. Browse the collection to find something you love.</p>
             <Link
-              to="/"
-              hash="collection"
+              to="/shop"
               className="mt-8 inline-block rounded-full bg-gradient-gold px-7 py-3 text-sm font-medium text-white"
             >
               View Collection
@@ -143,22 +139,12 @@ function CartPage() {
 
             <button
               type="button"
-              disabled={!checkoutUrl || isLoading}
-              onClick={() => {
-                if (checkoutUrl) window.open(checkoutUrl, "_blank");
-              }}
+              disabled={isLoading || preparing || items.length === 0}
+              onClick={handleCheckout}
               className="mt-8 flex w-full items-center justify-center gap-2 rounded-full bg-gradient-gold px-8 py-4 text-sm font-medium text-white shadow-soft transition-transform hover:scale-[1.02] disabled:opacity-60"
             >
-              {isLoading ? "Preparing secure checkout…" : "Proceed to Secure Checkout"}
+              {isLoading || preparing ? "Preparing secure checkout…" : "Proceed to Secure Checkout"}
             </button>
-            <a
-              href={orderUrl}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="mt-3 flex items-center justify-center gap-2 rounded-full border border-[#25D366] px-8 py-4 text-sm font-medium text-[#128C7E] transition-transform hover:scale-[1.02]"
-            >
-              Prefer WhatsApp? Send Order Enquiry
-            </a>
             <p className="mt-3 text-center text-xs text-muted-foreground">
               Secure payment powered by Shopify · Prices inclusive of making charges
             </p>
