@@ -24,7 +24,7 @@ export const Route = createFileRoute("/cart")({
 });
 
 function CartPage() {
-  const { items, total, setQty, removeItem, clear, checkoutUrl, isLoading, syncCart, ensureCheckout } = useCart();
+  const { items, total, setQty, removeItem, clear, isLoading, syncCart, ensureCheckout } = useCart();
   const [preparing, setPreparing] = useState(false);
 
   const handleCheckout = async () => {
