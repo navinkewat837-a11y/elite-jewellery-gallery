@@ -7,7 +7,6 @@ import { useCart } from "@/hooks/useCart";
 import { Minus, Plus, Trash2 } from "lucide-react";
 
 const fmt = new Intl.NumberFormat("en-IN", { style: "currency", currency: "INR", maximumFractionDigits: 0 });
-const SITE = "https://elite-jewellery-gallery.lovable.app";
 
 export const Route = createFileRoute("/cart")({
   head: () => ({
@@ -31,7 +30,7 @@ function CartPage() {
   const handleCheckout = async () => {
     setPreparing(true);
     try {
-      const url = checkoutUrl ?? (await ensureCheckout());
+      const url = await ensureCheckout();
       if (url) window.open(url, "_blank", "noopener,noreferrer");
     } finally {
       setPreparing(false);
