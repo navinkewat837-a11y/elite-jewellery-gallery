@@ -78,3 +78,28 @@ export function generalWhatsAppUrl() {
   const msg = `Hello Elite Jewellery Gallery, I'd like to know more about your collection.`;
   return `https://wa.me/${PHONE_INTL}?text=${encodeURIComponent(msg)}`;
 }
+
+export interface BookingOptions {
+  name?: string;
+  phone?: string;
+  date?: string;
+  interest?: string;
+  note?: string;
+}
+
+export function bookingWhatsAppUrl(opts: BookingOptions = {}) {
+  const lines = [
+    "Hello Elite Jewellery Gallery,",
+    "",
+    "I'd like to book a consultation.",
+    "",
+    `• Name: ${opts.name || "—"}`,
+    `• Phone / WhatsApp: ${opts.phone || "—"}`,
+    ...(opts.date ? [`• Preferred date: ${opts.date}`] : []),
+    ...(opts.interest ? [`• Interested in: ${opts.interest}`] : []),
+    ...(opts.note ? [`• Notes: ${opts.note}`] : []),
+    "",
+    "Please confirm a convenient time. Thank you!",
+  ];
+  return `https://wa.me/${PHONE_INTL}?text=${encodeURIComponent(lines.join("\n"))}`;
+}
