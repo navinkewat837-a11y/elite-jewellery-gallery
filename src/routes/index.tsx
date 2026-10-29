@@ -1,7 +1,5 @@
 import { lazy, Suspense } from "react";
 import { createFileRoute, stripSearchParams } from "@tanstack/react-router";
-import { zodValidator, fallback } from "@tanstack/zod-adapter";
-import { z } from "zod";
 import { Header } from "@/components/Header";
 import { Hero } from "@/components/Hero";
 import { LazySection, SectionSkeleton } from "@/components/LazySection";
@@ -74,15 +72,13 @@ const categoryListSchema = {
 };
 
 export const Route = createFileRoute("/")({
-  validateSearch: zodValidator(
-    z.object({
-      q: fallback(z.string(), "").default(""),
-      category: fallback(z.string(), "All").default("All"),
-      min: fallback(z.string(), "").default(""),
-      max: fallback(z.string(), "").default(""),
-      sort: fallback(z.string(), "default").default("default"),
-    }),
-  ),
+  validateSearch: (search: Record<string, unknown>) => ({
+    q: typeof search.q === "string" ? search.q : "",
+    category: typeof search.category === "string" ? search.category : "All",
+    min: typeof search.min === "string" ? search.min : "",
+    max: typeof search.max === "string" ? search.max : "",
+    sort: typeof search.sort === "string" ? search.sort : "default",
+  }),
   search: {
     middlewares: [
       stripSearchParams({ q: "", category: "All", min: "", max: "", sort: "default" }),

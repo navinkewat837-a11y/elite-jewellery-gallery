@@ -11,7 +11,7 @@ import { ShoppingBag, Check, ChevronLeft } from "lucide-react";
 const SITE = "https://elite-jewellery-gallery.lovable.app";
 
 export const Route = createFileRoute("/shop/$handle")({
-  head: ({ params }: { params: { handle: string } }) => ({
+  head: ({ params }) => ({
     meta: [
       { title: `Product | Elite Jewellery Gallery` },
       {
@@ -28,7 +28,7 @@ export const Route = createFileRoute("/shop/$handle")({
     ],
     links: [{ rel: "canonical", href: `${SITE}/shop/${params.handle}` }],
   }),
-  loader: async ({ params }: { params: { handle: string } }) => {
+  loader: async ({ params }) => {
     const product = await fetchShopifyProduct(params.handle).catch(() => null);
     return { product };
   },
@@ -36,7 +36,7 @@ export const Route = createFileRoute("/shop/$handle")({
 });
 
 function ShopProductPage() {
-  const { product } = Route.useLoaderData<{ product: ShopifyProduct | null }>();
+  const { product } = Route.useLoaderData();
   const { addItem } = useCart();
   const [activeImage, setActiveImage] = useState(0);
   const [selectedVariantId, setSelectedVariantId] = useState<string | null>(null);

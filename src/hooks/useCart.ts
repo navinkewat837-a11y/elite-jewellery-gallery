@@ -5,6 +5,7 @@ import {
   findVariantIdByTitle,
   formatCheckoutUrl,
   getShopifyCartCheckout,
+  getShopifyCartQuantity,
   removeLineFromShopifyCart,
   updateShopifyCartLine,
 } from "@/lib/shopify";
@@ -275,5 +276,6 @@ export function useCart() {
     setQty,
     clear,
     syncCart,
+    ensureCheckout,
   };
 }
