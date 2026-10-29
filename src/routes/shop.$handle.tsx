@@ -28,21 +28,58 @@ export const Route = createFileRoute("/shop/$handle")({
     ],
     links: [{ rel: "canonical", href: `${SITE}/shop/${params.handle}` }],
   }),
-  loader: async ({ params }) => {
-    const product = await fetchShopifyProduct(params.handle).catch(() => null);
-    return { product };
-  },
   component: ShopProductPage,
 });
 
 function ShopProductPage() {
-  const { product } = Route.useLoaderData();
+  const { handle } = Route.useParams();
+  // undefined = still loading, null = not found
+  const [product, setProduct] = useState<ShopifyProduct | null | undefined>(undefined);
   const { addItem } = useCart();
   const [activeImage, setActiveImage] = useState(0);
   const [selectedVariantId, setSelectedVariantId] = useState<string | null>(null);
   const [added, setAdded] = useState(false);
 
-  if (!product) {
+  useEffect(() => {
+    let cancelled = false;
+    setProduct(undefined);
+    setActiveImage(0);
+    setSelectedVariantId(null);
+    fetchShopifyProduct(handle)
+      .then((p) => {
+        if (!cancelled) setProduct(p);
+      })
+      .catch(() => {
+        if (!cancelled) setProduct(null);
+      });
+    return () => {
+      cancelled = true;
+    };
+  }, [handle]);
+
+  if (product === undefined) {
+    return (
+      <div className="min-h-screen bg-background">
+        <Header />
+        <main className="mx-auto max-w-6xl px-5 pb-24 pt-28 md:px-10 md:pt-32">
+          <div className="grid gap-10 lg:grid-cols-2">
+            <div className="aspect-square animate-pulse rounded-2xl bg-muted" />
+            <div className="space-y-4">
+              <div className="h-4 w-24 animate-pulse rounded bg-muted" />
+              <div className="h-10 w-3/4 animate-pulse rounded bg-muted" />
+              <div className="h-8 w-40 animate-pulse rounded bg-muted" />
+              <div className="h-24 w-full animate-pulse rounded bg-muted" />
+              <div className="h-14 w-64 animate-pulse rounded-full bg-muted" />
+            </div>
+          </div>
+        </main>
+        <Footer />
+        <WhatsAppFAB />
+      </div>
+    );
+  }
+
+  if (product === null) {
     return (
       <div className="min-h-screen bg-background">
         <Header />
